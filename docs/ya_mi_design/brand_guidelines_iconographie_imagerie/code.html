@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .elephant-pattern {
+            background-color: #fcf9f4;
+            background-image: radial-gradient(#8c7071 0.5px, transparent 0.5px);
+            background-size: 24px 24px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary": "#ffffff",
+                        "tertiary-container": "#731e2c",
+                        "on-secondary-fixed-variant": "#554500",
+                        "tertiary-fixed-dim": "#ffb2b8",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed-variant": "#8e0f28",
+                        "error": "#ba1a1a",
+                        "outline-variant": "#e0bfbf",
+                        "on-background": "#1c1c19",
+                        "error-container": "#ffdad6",
+                        "surface-container-low": "#f6f3ee",
+                        "on-surface": "#1c1c19",
+                        "inverse-on-surface": "#f3f0eb",
+                        "secondary-fixed-dim": "#e6c443",
+                        "surface-container-highest": "#e5e2dd",
+                        "inverse-primary": "#ffb3b5",
+                        "surface-container-high": "#ebe8e3",
+                        "on-secondary-fixed": "#231b00",
+                        "on-primary": "#ffffff",
+                        "secondary": "#715c00",
+                        "secondary-fixed": "#ffe179",
+                        "primary": "#570013",
+                        "tertiary-fixed": "#ffdadb",
+                        "surface": "#fcf9f4",
+                        "background": "#fcf9f4",
+                        "primary-container": "#800020",
+                        "primary-fixed-dim": "#ffb3b5",
+                        "on-secondary-container": "#745f00",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-tint": "#af2b3e",
+                        "on-primary-fixed": "#40000b",
+                        "on-primary-container": "#ff828a",
+                        "surface-container": "#f0ede9",
+                        "secondary-container": "#feda57",
+                        "tertiary": "#540518",
+                        "surface-bright": "#fcf9f4",
+                        "on-tertiary-fixed": "#40000e",
+                        "inverse-surface": "#31302d",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#7f2735",
+                        "surface-variant": "#e5e2dd",
+                        "outline": "#8c7071",
+                        "primary-fixed": "#ffdada",
+                        "on-tertiary-container": "#f98691",
+                        "on-surface-variant": "#584141",
+                        "surface-dim": "#dcdad5",
+                        "on-error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "stack-lg": "40px",
+                        "margin-desktop": "64px",
+                        "gutter": "16px",
+                        "stack-md": "24px",
+                        "margin-mobile": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Plus Jakarta Sans"],
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Libre Caslon Text"],
+                        "display-lg": ["Libre Caslon Text"],
+                        "headline-md": ["Libre Caslon Text"],
+                        "headline-lg": ["Libre Caslon Text"],
+                        "body-sm": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "500"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                        "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background font-body-md text-on-background">
+<!-- Top Navigation Shell -->
+<nav class="bg-background text-primary flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-20 max-w-7xl mx-auto">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-headline-md" data-icon="account_balance">account_balance</span>
+<span class="text-headline-md font-headline-md text-primary tracking-tight">Ya Mi</span>
+</div>
+<div class="flex items-center gap-gutter">
+<span class="material-symbols-outlined text-on-surface-variant hover:opacity-80 transition-opacity cursor-pointer" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:opacity-80 transition-opacity cursor-pointer" data-icon="account_circle">account_circle</span>
+</div>
+</nav>
+<main class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop py-stack-lg space-y-20">
+<!-- Header Section -->
+<header class="max-w-3xl">
+<h1 class="text-display-lg font-display-lg text-primary mb-4">Iconography &amp; Imagery</h1>
+<p class="text-body-lg font-body-lg text-on-surface-variant">Defining the visual language of Ya Mi through dignified symbols and authentic community-focused photography.</p>
+</header>
+<!-- Logo Variations Section -->
+<section class="space-y-stack-md">
+<div class="flex items-center gap-4 mb-stack-md">
+<span class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container" data-icon="token">token</span>
+</span>
+<h2 class="text-headline-lg font-headline-lg text-primary">Logo Architecture</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Primary Logo Card -->
+<div class="bg-surface-container-lowest rounded-xl p-10 shadow-[0_-4px_20px_rgba(77,0,19,0.05)] border border-surface-variant/20 flex flex-col items-center justify-center space-y-6">
+<div class="flex flex-col items-center gap-2">
+<span class="material-symbols-outlined text-7xl text-primary" data-icon="account_balance" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+<span class="text-headline-md font-headline-md text-primary tracking-tighter">Ya Mi</span>
+</div>
+<span class="text-label-md font-label-md text-on-surface-variant px-4 py-1 bg-surface-container rounded-full">Primary Full Logo</span>
+</div>
+<!-- Monochrome Logo Card -->
+<div class="bg-primary rounded-xl p-10 shadow-[0_-4px_20px_rgba(77,0,19,0.05)] flex flex-col items-center justify-center space-y-6">
+<div class="flex flex-col items-center gap-2">
+<span class="material-symbols-outlined text-7xl text-background" data-icon="account_balance">account_balance</span>
+<span class="text-headline-md font-headline-md text-background tracking-tighter">Ya Mi</span>
+</div>
+<span class="text-label-md font-label-md text-primary-fixed/50 px-4 py-1 bg-primary-container rounded-full">Monochrome Reverse</span>
+</div>
+<!-- Icon Only Card -->
+<div class="bg-surface-container-lowest rounded-xl p-10 shadow-[0_-4px_20px_rgba(77,0,19,0.05)] border border-surface-variant/20 flex flex-col items-center justify-center space-y-6">
+<div class="w-24 h-24 bg-secondary-container rounded-3xl flex items-center justify-center">
+<span class="material-symbols-outlined text-5xl text-on-secondary-container" data-icon="account_balance" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+</div>
+<span class="text-label-md font-label-md text-on-surface-variant px-4 py-1 bg-surface-container rounded-full">Icon Mark</span>
+</div>
+</div>
+</section>
+<!-- Custom Linear Icons Section -->
+<section class="space-y-stack-md">
+<div class="flex items-center gap-4 mb-stack-md">
+<span class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container" data-icon="category">category</span>
+</span>
+<h2 class="text-headline-lg font-headline-lg text-primary">System Iconography</h2>
+</div>
+<div class="bg-white rounded-xl p-8 md:p-12 shadow-[0_-4px_20px_rgba(77,0,19,0.05)] border border-surface-variant/10">
+<div class="grid grid-cols-2 md:grid-cols-5 gap-y-12">
+<!-- Loan -->
+<div class="flex flex-col items-center space-y-4">
+<div class="w-16 h-16 border-2 border-primary rounded-2xl flex items-center justify-center group hover:bg-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-3xl text-primary group-hover:text-background" data-icon="payments">payments</span>
+</div>
+<span class="text-label-md font-label-md text-primary">Loan</span>
+</div>
+<!-- History -->
+<div class="flex flex-col items-center space-y-4">
+<div class="w-16 h-16 border-2 border-primary rounded-2xl flex items-center justify-center group hover:bg-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-3xl text-primary group-hover:text-background" data-icon="history">history</span>
+</div>
+<span class="text-label-md font-label-md text-primary">History</span>
+</div>
+<!-- Wallet -->
+<div class="flex flex-col items-center space-y-4">
+<div class="w-16 h-16 border-2 border-primary rounded-2xl flex items-center justify-center group hover:bg-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-3xl text-primary group-hover:text-background" data-icon="account_balance_wallet">account_balance_wallet</span>
+</div>
+<span class="text-label-md font-label-md text-primary">Wallet</span>
+</div>
+<!-- Contract -->
+<div class="flex flex-col items-center space-y-4">
+<div class="w-16 h-16 border-2 border-primary rounded-2xl flex items-center justify-center group hover:bg-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-3xl text-primary group-hover:text-background" data-icon="description">description</span>
+</div>
+<span class="text-label-md font-label-md text-primary">Contract</span>
+</div>
+<!-- Support -->
+<div class="flex flex-col items-center space-y-4">
+<div class="w-16 h-16 border-2 border-primary rounded-2xl flex items-center justify-center group hover:bg-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-3xl text-primary group-hover:text-background" data-icon="support_agent">support_agent</span>
+</div>
+<span class="text-label-md font-label-md text-primary">Support</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Photography Style Section - Bento Grid -->
+<section class="space-y-stack-md">
+<div class="flex items-center gap-4 mb-stack-md">
+<span class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container" data-icon="photo_camera">photo_camera</span>
+</span>
+<h2 class="text-headline-lg font-headline-lg text-primary">Photography Style</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Large Image - Community Focus -->
+<div class="md:col-span-8 h-[400px] rounded-xl overflow-hidden relative group">
+<img alt="Community Support" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A warm, community-focused photograph of African business owners collaborating in a sun-drenched outdoor marketplace. The lighting is soft and golden, emphasizing human connection and dignity. The scene is shot with a professional shallow depth of field, highlighting authentic smiles and engagement. The color story features subtle deep burgundy textiles and earth tones, maintaining a premium and reliable aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC36ImKqm7P2FhAJSw8U1jsrPJkerx5-AgloZc5d7NUFEMdD4r3WOpKApeQKAymtbkRgPv8hp_GpjS0HKPrQyyi-oey-UAvVXN0gUBjfhoSwjP5zveabcdB06vIqxafLyXEoZlel0Pfufauv6guf8IJuA_dBNPP1ykgmiNSW78ubR8_V_TQ-aDmmXGIXgQJGxTmkhkiX5pFYnZBba9Ws6pmoSfWtEmGdY_KjvDIghH7VSTk8YU1Xb_C6Spern8USIcbbtMhSNFwlbQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent flex flex-col justify-end p-8">
+<h3 class="text-background text-headline-md font-headline-md">Warm Community Focus</h3>
+<p class="text-background/80 text-body-sm mt-2 max-w-lg">Images should capture authentic moments of progress and collaboration within the community, using natural golden hour lighting.</p>
+</div>
+</div>
+<!-- Small Image - Soft Lighting Detail -->
+<div class="md:col-span-4 h-[400px] rounded-xl overflow-hidden relative group">
+<img alt="Entrepreneur Profile" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A close-up, authentic photograph of a young African entrepreneur smiling warmly while working in a bright, modern workshop. Soft, diffused lighting creates a serene and hopeful mood, avoiding harsh shadows. The color palette is composed of creamy whites and natural wood tones, reflecting the brand's 'Dignified Accessibility' and premium reliable feel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAIM-NvFSvMUf0ScEP7G2Zua8UIZmJkqMv3aHwm129IzmQHCjjyy0RbsDDqd3nuumNxflPCfduEMQ8XPhICEu2yJZrnNvuahgs8I6SdG4oRctLFIQt0KZldB7YvNWgNQlROaHuCXu-WwJSh8gYgIbP_ggfzmFVlPAYEu3fyoDptE6c7lVM6wPTO48odze-J5uVpCjsOLLbHXAarKTac7FoD9oaFZ4sFxoN-0nQ55e2Q8qJE6YwUTNZN7VG_YqQx9EFUzYjhHKgbInQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-secondary/80 to-transparent flex flex-col justify-end p-8">
+<h3 class="text-on-secondary text-headline-md font-headline-md">Authentic Portraits</h3>
+</div>
+</div>
+<!-- Bottom Row Detail Images -->
+<div class="md:col-span-4 h-[240px] rounded-xl overflow-hidden relative group">
+<img alt="Dignified Lifestyle" class="w-full h-full object-cover group-hover:scale-105 transition-transform" data-alt="A group of people sharing a meal outdoors, with soft bokeh background and warm evening light. The atmosphere is dignified and serene, with a focus on togetherness and reliability. The image emphasizes a sense of security and belonging within an African cultural context." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCV87tl7rEmR0i3Thg9-oFuzHqul0tF42K6fTVSzHo3iSaiX0z1eqyasD40ddsCFdLwORnIo1MFigl1urRURYvWodYLCbJNdteiLGNJLNAIcYhLAIrVUf8_yOeXFqG-3nyBsWgFHQxH-k-h3yaXNZno4fxPJHn9h6vW2FXlHbP-b8zyRz_G9F9jlXE2YO4soY74XYj1NvRSi5Co308yB6KF7gFClK_ALSWOeq1_Lac6EsjrAu3Rf79MJdW4_jjkQ9j6dstqkePvKf0"/>
+</div>
+<div class="md:col-span-4 h-[240px] bg-primary rounded-xl flex flex-col items-center justify-center text-center p-6 border-4 border-secondary-container">
+<span class="material-symbols-outlined text-4xl text-secondary-container mb-4" data-icon="flare">flare</span>
+<p class="text-background font-headline-md text-headline-md">Soft Lighting Only</p>
+<p class="text-background/70 text-body-sm mt-2">Avoid harsh flash or clinical office environments.</p>
+</div>
+<div class="md:col-span-4 h-[240px] rounded-xl overflow-hidden relative group">
+<img alt="Tactile Connection" class="w-full h-full object-cover group-hover:scale-105 transition-transform" data-alt="A beautiful, soft-lit close up of hands exchanging a woven textile, symbolizing trust and contract. The lighting is warm and organic, with high contrast between deep shadows and bright creamy highlights. The visual style is minimal yet rich in texture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCc0lMbcrQEZTYO-Ux4YAqB3TYAB7NExF8cjBBqmSMqewj-uPveF_05Z6IRnBa92Yq2Y0uTjGK7ryGQHFW8zdimOtok1SWZrDIi6Yx7VS5LWKJ0Wlg95fuvUNjOysB7rUFw9OTgN5b_5lc4MRD0kPX8295x4GTHVYnbmQUSxaCOScCoTeMvPDf9Mpheol6UXsba2bf0AJX-PhYnxsKromo0LFSYaRijWMYTj4OL-f5ZTmOri8CB1AMqv9bgbQ42qA9t2Okye17TD9U"/>
+</div>
+</div>
+</section>
+<!-- Color Story Summary -->
+<section class="bg-surface-container rounded-xl p-8 md:p-12 flex flex-col md:flex-row items-center gap-stack-lg shadow-[0_-4px_20px_rgba(77,0,19,0.05)] border border-surface-variant/30">
+<div class="flex-1 space-y-4">
+<h2 class="text-headline-lg font-headline-lg text-primary">The Palette Harmony</h2>
+<p class="text-body-md text-on-surface-variant">Our visual assets are anchored by the deep, reliable <strong>Burgundy</strong> and the optimistic, energetic <strong>Mustard</strong>. This combination ensures every icon and image feels culturally resonant and professionally poised.</p>
+</div>
+<div class="flex gap-4">
+<div class="flex flex-col items-center gap-2">
+<div class="w-20 h-20 bg-primary rounded-full shadow-lg"></div>
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-widest">Burgundy</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-20 h-20 bg-secondary-container rounded-full shadow-lg"></div>
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-widest">Mustard</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-20 h-20 bg-surface rounded-full shadow-lg border border-surface-variant"></div>
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-widest">Cream</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Shell (Mobile) -->
+<div class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-margin-mobile py-4 bg-surface rounded-t-xl shadow-[0_-4px_20px_rgba(77,0,19,0.05)]">
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="text-label-sm font-label-sm">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="text-label-sm font-label-sm">Wallet</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-6 py-1">
+<span class="material-symbols-outlined" data-icon="auto_awesome_motion">auto_awesome_motion</span>
+<span class="text-label-sm font-label-sm">System</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="text-label-sm font-label-sm">Profile</span>
+</div>
+</div>
+<!-- Space for Bottom Nav -->
+<div class="h-24 md:hidden"></div>
+</body></html>

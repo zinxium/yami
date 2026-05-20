@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Ya Mi - Home Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:wght@400;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "on-primary-fixed-variant": "#8e0f28",
+                    "on-primary-container": "#ff828a",
+                    "primary-fixed": "#ffdada",
+                    "on-surface": "#1c1c19",
+                    "secondary-container": "#feda57",
+                    "secondary-fixed": "#ffe179",
+                    "on-primary-fixed": "#40000b",
+                    "tertiary-fixed-dim": "#ffb2b8",
+                    "secondary": "#715c00",
+                    "on-tertiary-fixed-variant": "#7f2735",
+                    "tertiary-fixed": "#ffdadb",
+                    "on-error-container": "#93000a",
+                    "surface-container-highest": "#e5e2dd",
+                    "surface-dim": "#dcdad5",
+                    "inverse-primary": "#ffb3b5",
+                    "error-container": "#ffdad6",
+                    "on-background": "#1c1c19",
+                    "secondary-fixed-dim": "#e6c443",
+                    "on-secondary-fixed-variant": "#554500",
+                    "outline": "#8c7071",
+                    "outline-variant": "#e0bfbf",
+                    "primary-container": "#800020",
+                    "tertiary-container": "#731e2c",
+                    "background": "#fcf9f4",
+                    "surface": "#fcf9f4",
+                    "surface-bright": "#fcf9f4",
+                    "on-tertiary-fixed": "#40000e",
+                    "inverse-on-surface": "#f3f0eb",
+                    "primary": "#570013",
+                    "on-surface-variant": "#584141",
+                    "on-error": "#ffffff",
+                    "on-secondary-fixed": "#231b00",
+                    "surface-container-high": "#ebe8e3",
+                    "surface-variant": "#e5e2dd",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "surface-tint": "#af2b3e",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-low": "#f6f3ee",
+                    "primary-fixed-dim": "#ffb3b5",
+                    "on-secondary-container": "#745f00",
+                    "surface-container": "#f0ede9",
+                    "on-tertiary-container": "#f98691",
+                    "inverse-surface": "#31302d",
+                    "tertiary": "#540518",
+                    "ui-mustard": "#ffdb58"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-desktop": "64px",
+                    "margin-mobile": "24px",
+                    "base": "8px",
+                    "gutter": "16px",
+                    "stack-sm": "12px",
+                    "stack-lg": "40px",
+                    "stack-md": "24px"
+            },
+            "fontFamily": {
+                    "label-md": ["Plus Jakarta Sans"],
+                    "headline-lg": ["Libre Caslon Text"],
+                    "display-lg": ["Libre Caslon Text"],
+                    "body-md": ["Plus Jakarta Sans"],
+                    "label-sm": ["Plus Jakarta Sans"],
+                    "body-sm": ["Plus Jakarta Sans"],
+                    "body-lg": ["Plus Jakarta Sans"],
+                    "headline-md": ["Libre Caslon Text"],
+                    "headline-lg-mobile": ["Libre Caslon Text"]
+            },
+            "fontSize": {
+                    "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                    "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "500"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            -webkit-tap-highlight-color: transparent;
+        }
+        .soft-shadow {
+            box-shadow: 0 4px 20px rgba(87, 0, 19, 0.05);
+        }
+        .active-tab-nav {
+            font-variation-settings: 'FILL' 1;
+        }
+        .bg-pattern {
+            background-color: #fcf9f4;
+            background-image: radial-gradient(#8c7071 0.5px, transparent 0.5px);
+            background-size: 20px 20px;
+            background-opacity: 0.05;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md selection:bg-secondary-fixed selection:text-on-secondary-fixed">
+<header class="bg-surface sticky top-0 z-40 flex justify-between items-center w-full px-margin-mobile py-4 border-b border-outline-variant/10">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 flex items-center justify-center">
+<img alt="Ya Mi Logo" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida/ADBb0ujC2CAEpx_-t6UgwRNhZ4eZGACVN98AsaIpSRReyojP7fDj3cszbFCuvRKACu4lsrQS82HpeW34oBRuT_tSxIJAa--aF2bj1iAW-Vta5PwBOAQYlUi6qal4lzsOPWrrlwkv2nwkiy-9gPNVeQSCsDZ_xsO8DbKhGe_lvunKhqb1iPo2vLRecsaR8LKsQXbfZQT9WKCEXYisO43PEXoaIMLqzF_Poi5VF1Vz2XRaD4AHprEa7LD7Pcx3-Q"/>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-md text-primary font-bold tracking-tight">Home Dashboard</h1>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer">notifications</span>
+<div class="w-9 h-9 rounded-full overflow-hidden border border-primary/20">
+<img alt="User Profile Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuApF3_qQNXeoUc6pzaWs6AkhWlcTCb0R8JFGI3hyPoDTr3NqoyOZuxGggXgoBqauXETcdPM2HK8YJBJSKmLlN8XwF0FIZtOg-K5pQKeJvK_YBNLQdzzyBV18dpTRTnjYwEOe9o80zPdZHf6UKNjVM0aWCaUoZsEnz5QcUT7H0cj_OqjnwcGcFIrP_l6ne4XXlzMh4Su1uayDiLN9EiwaYbCt8q1b_833rk76klNM2_KOdSRzYULcP5VePKx1dK6v-RiTRv5MKPf6Uw"/>
+</div>
+</div>
+</header>
+<main class="px-margin-mobile pb-32 pt-stack-md max-w-lg mx-auto">
+<!-- Dynamic Statistical Layout -->
+<section class="mb-stack-lg">
+<div class="grid grid-cols-2 gap-3">
+<div class="bg-primary p-4 rounded-2xl text-on-primary col-span-1 shadow-md">
+<p class="font-label-sm text-primary-fixed-dim/70 mb-1">Total Lent</p>
+<h2 class="font-headline-md text-2xl font-bold">$3.4K</h2>
+</div>
+<div class="bg-primary-container p-4 rounded-2xl text-on-primary col-span-1 shadow-md">
+<p class="font-label-sm text-primary-fixed-dim/70 mb-1">Total Repaid</p>
+<h2 class="font-headline-md text-2xl font-bold">$1,299</h2>
+</div>
+<div class="bg-ui-mustard p-4 rounded-2xl text-primary col-span-2 flex justify-between items-center shadow-md">
+<div>
+<p class="font-label-sm text-primary/60 mb-1">Active Loans</p>
+<h2 class="font-headline-md text-2xl font-bold">2</h2>
+</div>
+<div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">trending_up</span>
+</div>
+</div>
+</div>
+</section>
+<!-- My Borrowers Section -->
+<section class="mb-stack-lg">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-label-md text-lg text-on-surface font-bold">My Borrowers</h3>
+<button class="text-primary font-label-sm hover:underline decoration-ui-mustard">See All</button>
+</div>
+<!-- Search Bar -->
+<div class="relative mb-6">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-xl">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-xl py-3 pl-10 pr-4 text-body-sm focus:ring-1 focus:ring-primary/20" placeholder="Search borrowers" type="text"/>
+</div>
+<div class="space-y-3">
+<!-- Borrower Card 1 -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl flex items-center justify-between border border-outline-variant/10 shadow-sm">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-high">
+<img alt="Borrower" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaHtGCVW7ga6ZiRO-9FeR-M88TupRgkbK4Bsx8SSPL23EP7Gwx6unWi5SLaN9I9u8XMPaxz65eOI1LptcUXqwU5VoffsZuNWO-wbv0Hyi-jLXXvOMG8MnmXVfA01szeRSZ_Ab05G4V0LfzG7bjje_qEdUYni3Fu7xdfJrJyDPu80fWJCBVuX1dNkABCxJwvUMiZrFJpvd7-daWum0mDqTbIN-QcIjnMZsrO7IvvH9hc3Ns_966CYTMwwsBGxuk3Bv-Poap6cmOEmg"/>
+</div>
+<div>
+<h4 class="font-label-md text-on-surface">Adebayo</h4>
+<p class="text-[10px] text-on-surface-variant font-medium">$1200 • Oct 15</p>
+</div>
+</div>
+<span class="px-3 py-1 rounded-full text-[10px] font-bold bg-[#e8f5e9] text-[#2e7d32]">Active</span>
+</div>
+<!-- Borrower Card 2 -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl flex items-center justify-between border border-outline-variant/10 shadow-sm">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-high">
+<img alt="Borrower" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB05W6AuUJXh4t677PfLoXX2wilbnbzixF8THq0EzGPBFzzrSh4eLPX1zyZQAMgMEWw6icRF2nLwKo20Mm-VKk5KEEn7aE2CxWvf--ExCx_0J_uEIqtBOs5AzTuQH8YBnMyPZZjdm--4iIM3YCKr9y3ReVLi3JyceXddPcj7WgkpQsnkhdmS3Cx6bLJpmjJhLKn1trQArytHiypcc146EIz9M_twJNTE77akQF3tyOAAT3Vtoyq0QkTLCzZfbquMpFzcmOFUjhSQJQ"/>
+</div>
+<div>
+<h4 class="font-label-md text-on-surface">Musa</h4>
+<p class="text-[10px] text-on-surface-variant font-medium">$150 • 5m</p>
+</div>
+</div>
+<span class="px-3 py-1 rounded-full text-[10px] font-bold bg-[#e8f5e9] text-[#2e7d32]">Active</span>
+</div>
+<!-- Borrower Card 3 -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl flex items-center justify-between border border-outline-variant/10 shadow-sm">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-high">
+<img alt="Borrower" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6aUptppRcCMZddQSq0PlA6HJfgVKcKqBqnTzkNAGUx7LQ6VHFP1nGicqEJNvSRCo0V6KInaK6N4Qw-2MPmJw8p2IRc9XzHb0XBjFAOrbAltN7RvXdGPE8Py4TF7Ye2mmB149K-RosH9BDjlHbh09eXKl4A7k1uWiDjHiTtKkMT3-4D2RwDxEPd5xn3pG83h3Uk4Tnm-UQ6UYPyvWRB3KOm054SLAxsSl5lCPufeOwZB2loWxGId4zGUxt309YzIkw6_A8p4NHqv0"/>
+</div>
+<div>
+<h4 class="font-label-md text-on-surface">Rumansnrma</h4>
+<p class="text-[10px] text-on-surface-variant font-medium">$950 • 9m</p>
+</div>
+</div>
+<span class="px-3 py-1 rounded-full text-[10px] font-bold bg-[#ffebee] text-[#c62828]">Late</span>
+</div>
+<!-- Borrower Card 4 -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl flex items-center justify-between border border-outline-variant/10 shadow-sm">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-high flex items-center justify-center text-primary font-bold bg-primary-fixed">
+                        FR
+                    </div>
+<div>
+<h4 class="font-label-md text-on-surface">Funke Risem</h4>
+<p class="text-[10px] text-on-surface-variant font-medium">$100 • 25h 33m</p>
+</div>
+</div>
+<span class="px-3 py-1 rounded-full text-[10px] font-bold bg-[#fff3e0] text-[#e65100]">Repaid</span>
+</div>
+</div>
+</section>
+<!-- Call to Action Banner -->
+<section>
+<div class="bg-primary p-6 rounded-[2rem] relative overflow-hidden text-on-primary">
+<div class="relative z-10">
+<h3 class="font-headline-md text-xl mb-2">Create New Loan</h3>
+<p class="font-body-sm text-primary-fixed-dim/80 mb-5 max-w-[200px]">Empower someone today with a secure personal loan.</p>
+<button class="bg-ui-mustard text-primary px-6 py-2.5 rounded-full font-label-md shadow-md active:scale-95 transition-all">Get Started</button>
+</div>
+<div class="absolute -right-6 -bottom-6 w-32 h-32 bg-ui-mustard opacity-10 rounded-full"></div>
+<div class="absolute right-6 top-1/2 -translate-y-1/2 opacity-20">
+<span class="material-symbols-outlined text-[100px]">handshake</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed right-6 bottom-24 w-14 h-14 bg-primary text-on-primary rounded-2xl shadow-xl shadow-primary/30 flex items-center justify-center active:scale-90 transition-transform duration-150 z-50">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+<!-- Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-white border-t border-outline-variant/10 flex justify-around items-center px-4 py-3 pb-safe shadow-[0_-1px_10px_rgba(0,0,0,0.02)]">
+<a class="flex flex-col items-center justify-center gap-1 group" href="#">
+<div class="w-12 h-6 flex items-center justify-center rounded-full bg-primary text-on-primary group-hover:bg-primary/90 transition-colors">
+<span class="material-symbols-outlined text-xl active-tab-nav">home</span>
+</div>
+<span class="font-label-sm text-[10px] text-primary">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 group" href="#">
+<span class="material-symbols-outlined text-on-surface-variant/60 group-hover:text-primary transition-colors">grid_view</span>
+<span class="font-label-sm text-[10px] text-on-surface-variant/60">Manage</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 group" href="#">
+<span class="material-symbols-outlined text-on-surface-variant/60 group-hover:text-primary transition-colors">group</span>
+<span class="font-label-sm text-[10px] text-on-surface-variant/60">Borrowers</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 group" href="#">
+<span class="material-symbols-outlined text-on-surface-variant/60 group-hover:text-primary transition-colors">person</span>
+<span class="font-label-sm text-[10px] text-on-surface-variant/60">Profile</span>
+</a>
+</nav>
+</body></html>

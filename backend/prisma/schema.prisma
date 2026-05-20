@@ -1,0 +1,132 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String         @id @default(uuid())
+  fullname     String
+  email        String         @unique
+  phone        String         @unique
+  password     String
+  fcm_token    String?
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @updatedAt
+  borrowers    Borrower[]
+  loans        Loan[]
+  notifications Notification[]
+
+  @@map("users")
+}
+
+model Borrower {
+  id         String   @id @default(uuid())
+  user_id    String
+  fullname   String
+  phone      String?
+  address    String?
+  notes      String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  loans      Loan[]
+
+  @@map("borrowers")
+}
+
+enum DurationUnit {
+  months
+  weeks
+}
+
+enum LoanStatus {
+  active
+  paid
+  overdue
+}
+
+model Loan {
+  id                String       @id @default(uuid())
+  user_id           String
+  borrower_id       String
+  amount            Decimal      @db.Decimal(15, 2)
+  interest_rate     Decimal      @db.Decimal(5, 2)
+  duration          Int
+  duration_unit     DurationUnit @default(months)
+  monthly_payment   Decimal      @db.Decimal(15, 2)
+  total_repayment   Decimal      @db.Decimal(15, 2)
+  remaining_balance Decimal      @db.Decimal(15, 2)
+  currency          String       @default("XOF")
+  status            LoanStatus   @default(active)
+  start_date        DateTime
+  end_date          DateTime
+  notes             String?
+  created_at        DateTime     @default(now())
+  updated_at        DateTime     @updatedAt
+  user              User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  borrower          Borrower     @relation(fields: [borrower_id], references: [id])
+  payments          Payment[]
+  contract          Contract?
+  notifications     Notification[]
+
+  @@map("loans")
+}
+
+enum PaymentType {
+  full
+  partial
+  advance
+}
+
+model Payment {
+  id             String      @id @default(uuid())
+  loan_id        String
+  amount_paid    Decimal     @db.Decimal(15, 2)
+  payment_type   PaymentType @default(full)
+  payment_date   DateTime
+  payment_method String?
+  notes          String?
+  created_at     DateTime    @default(now())
+  loan           Loan        @relation(fields: [loan_id], references: [id], onDelete: Cascade)
+
+  @@map("payments")
+}
+
+model Contract {
+  id              String   @id @default(uuid())
+  loan_id         String   @unique
+  contract_number String   @unique
+  pdf_url         String?
+  qr_code         String?
+  signed          Boolean  @default(false)
+  created_at      DateTime @default(now())
+  loan            Loan     @relation(fields: [loan_id], references: [id], onDelete: Cascade)
+
+  @@map("contracts")
+}
+
+enum NotificationType {
+  reminder
+  overdue
+  payment
+  created
+}
+
+model Notification {
+  id         String           @id @default(uuid())
+  user_id    String
+  loan_id    String?
+  type       NotificationType
+  title      String
+  message    String
+  read       Boolean          @default(false)
+  sent_at    DateTime         @default(now())
+  user       User             @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  loan       Loan?            @relation(fields: [loan_id], references: [id], onDelete: SetNull)
+
+  @@map("notifications")
+}
