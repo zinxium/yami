@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Libre+Caslon+Text:wght@400;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .notification-card:active {
+            transform: scale(0.98);
+            transition: transform 0.1s ease;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline-variant": "#e0bfbf",
+                    "on-primary-fixed": "#40000b",
+                    "surface-container": "#f0ede9",
+                    "on-error-container": "#93000a",
+                    "on-secondary-fixed-variant": "#554500",
+                    "surface": "#fcf9f4",
+                    "on-primary-fixed-variant": "#8e0f28",
+                    "primary-fixed": "#ffdada",
+                    "error-container": "#ffdad6",
+                    "on-secondary": "#ffffff",
+                    "surface-bright": "#fcf9f4",
+                    "outline": "#8c7071",
+                    "tertiary": "#540518",
+                    "surface-container-high": "#ebe8e3",
+                    "background": "#fcf9f4",
+                    "tertiary-container": "#731e2c",
+                    "secondary-fixed": "#ffe179",
+                    "tertiary-fixed-dim": "#ffb2b8",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed-variant": "#7f2735",
+                    "on-surface-variant": "#584141",
+                    "on-surface": "#1c1c19",
+                    "surface-container-low": "#f6f3ee",
+                    "secondary-fixed-dim": "#e6c443",
+                    "primary": "#570013",
+                    "on-tertiary-fixed": "#40000e",
+                    "surface-variant": "#e5e2dd",
+                    "surface-container-highest": "#e5e2dd",
+                    "primary-fixed-dim": "#ffb3b5",
+                    "on-primary": "#ffffff",
+                    "on-background": "#1c1c19",
+                    "tertiary-fixed": "#ffdadb",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-container": "#f98691",
+                    "secondary-container": "#feda57",
+                    "primary-container": "#800020",
+                    "inverse-primary": "#ffb3b5",
+                    "surface-dim": "#dcdad5",
+                    "secondary": "#715c00",
+                    "on-secondary-fixed": "#231b00",
+                    "inverse-on-surface": "#f3f0eb",
+                    "surface-tint": "#af2b3e",
+                    "inverse-surface": "#31302d",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error": "#ffffff",
+                    "on-primary-container": "#ff828a",
+                    "on-secondary-container": "#745f00"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-lg": "40px",
+                    "gutter": "16px",
+                    "stack-md": "24px",
+                    "base": "8px",
+                    "margin-mobile": "24px",
+                    "stack-sm": "12px",
+                    "margin-desktop": "64px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Plus Jakarta Sans"],
+                    "body-md": ["Plus Jakarta Sans"],
+                    "display-lg": ["Libre Caslon Text"],
+                    "label-md": ["Plus Jakarta Sans"],
+                    "headline-md": ["Libre Caslon Text"],
+                    "body-sm": ["Plus Jakarta Sans"],
+                    "body-lg": ["Plus Jakarta Sans"],
+                    "headline-lg": ["Libre Caslon Text"],
+                    "headline-lg-mobile": ["Libre Caslon Text"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "500"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-surface-dim docked full-width top-0 z-40 sticky">
+<div class="flex justify-between items-center w-full px-margin-mobile py-base">
+<div class="flex items-center gap-4">
+<button class="hover:opacity-80 transition-opacity flex items-center justify-center p-2 rounded-full">
+<span class="material-symbols-outlined text-primary" data-icon="menu">menu</span>
+</button>
+<div class="flex items-center gap-3">
+<img alt="Ya Mi Logo" class="w-8 h-8 object-contain" data-alt="A stylized, minimalist elephant logo icon representing stability and wisdom. The logo is rendered in a deep burgundy color against a clean cream background, matching the brand's elegant and dignified African-inspired aesthetic. The lighting is soft and even, highlighting the clean geometric lines of the mark." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeTBpIXPAHoPoiKwQ6-IjGEKB6_NlF6O1KffXaoRrB4qfYplDYDDetaVJ0B_K15OkHi6p3O9dtyY8nB3WMbc1OdrZYX0rAtZyTv7Fn394luv3CDIH0CZjSJ0pfiuSuJA7PeE13Nt97Y1idGb5hR2meJJafOEhR8LAS7wSJ25JqDVbNLeH6zqoR0VtAz5-6CMdJzFs6Boo0GRhFUJWfNMh7hf9LoGl9QpxwLdt8spG-1eSvF7czL_s5wf0HExbh7WQtbRRml3mi1tA"/>
+<h1 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed font-bold tracking-tight">Ya Mi</h1>
+</div>
+</div>
+<div class="flex items-center">
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-fixed-dim hover:opacity-80 transition-opacity cursor-pointer">
+<img alt="User Profile" data-alt="A professional portrait of a West African entrepreneur smiling warmly. He is dressed in high-quality minimalist business attire. The background is a soft, out-of-focus modern office space with warm lighting that aligns with the cream and burgundy color palette of the app. The mood is confident and reliable." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB1bcZVB8tx-9ekOPkQCViG76fVixo2-mQpRNxX0Spum4OuB9C3BwrG90QSVwyG6-Ca-lcdwKPMkgv79Hzu9W_tBQgpToqwMfG0wHijvRjkO9tMMUUL2T2jZ-lKJXOeGycnsu0kJXG3OnWzIfw2sFaqRqP37ErZY47pe9usvDHKwMavKElt1mNeqJEk2BbzQ9a0rgLLOCFm2hjAuR8X2KBwM-eQmn2rZz734lcx9zue3pMJAxQCnEm-Y1v-4V7NqfzH_4NXoKXSTC0"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow px-margin-mobile pt-stack-md pb-32">
+<!-- Title Section -->
+<div class="mb-stack-lg flex justify-between items-end">
+<div>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface font-bold">Notifications</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Restez informé de vos activités financières</p>
+</div>
+<button class="font-label-md text-label-md text-primary px-3 py-2 rounded-full bg-primary-fixed/30 hover:bg-primary-fixed/50 transition-colors">
+                Tout marquer comme lu
+            </button>
+</div>
+<!-- Notifications List -->
+<div class="space-y-base">
+<!-- Alert / High Importance Notification -->
+<div class="notification-card bg-surface-container-lowest rounded-xl p-5 shadow-[0_4px_20px_rgba(77,0,19,0.05)] border-l-4 border-error flex gap-4 items-start cursor-pointer hover:shadow-md transition-shadow">
+<div class="bg-error-container p-3 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-error text-[24px]" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h3 class="font-label-md text-label-md text-on-surface">Urgent : Retard de paiement</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Il y a 2h</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface mt-1 leading-relaxed">Rappel : Le prêt de <span class="font-semibold">Rumansnrma</span> est en retard. Veuillez contacter l'emprunteur immédiatement.</p>
+<div class="mt-3 flex gap-2">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-label-sm font-label-sm">Action requise</span>
+</div>
+</div>
+</div>
+<!-- Standard Success Notification -->
+<div class="notification-card bg-surface-container-low rounded-xl p-5 flex gap-4 items-start cursor-pointer hover:bg-surface-container transition-colors relative group">
+<div class="bg-primary/10 p-3 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[24px]" data-icon="account_balance_wallet">account_balance_wallet</span>
+</div>
+<div class="flex-grow border-b border-outline-variant/30 pb-1 group-last:border-0">
+<div class="flex justify-between items-start">
+<h3 class="font-label-md text-label-md text-on-surface">Paiement reçu</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Il y a 5h</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 leading-relaxed">Paiement de <span class="font-bold text-primary">45,000 CFA</span> reçu de Musa. Votre solde a été mis à jour.</p>
+</div>
+<div class="absolute right-4 bottom-4 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+<!-- Informational Notification -->
+<div class="notification-card bg-surface-container-low rounded-xl p-5 flex gap-4 items-start cursor-pointer hover:bg-surface-container transition-colors group">
+<div class="bg-primary/10 p-3 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[24px]" data-icon="description">description</span>
+</div>
+<div class="flex-grow border-b border-outline-variant/30 pb-1 group-last:border-0">
+<div class="flex justify-between items-start">
+<h3 class="font-label-md text-label-md text-on-surface">Nouveau prêt</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Hier</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 leading-relaxed">Nouveau prêt créé pour <span class="font-semibold text-on-surface">Adebayo</span>. Les documents sont en cours de vérification.</p>
+</div>
+</div>
+<!-- Divider Label -->
+<div class="py-4 text-center">
+<span class="font-label-sm text-label-sm text-outline px-4 py-1 bg-surface-container rounded-full">Activités précédentes</span>
+</div>
+<!-- Older Notification -->
+<div class="notification-card bg-surface-container-low/50 rounded-xl p-5 flex gap-4 items-start cursor-pointer hover:bg-surface-container transition-colors opacity-80 group">
+<div class="bg-outline-variant p-3 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant text-[24px]" data-icon="person">person</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h3 class="font-label-md text-label-md text-on-surface">Profil mis à jour</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant">2 oct.</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 leading-relaxed">Vos informations de sécurité ont été mises à jour avec succès.</p>
+</div>
+</div>
+</div>
+<!-- Empty State Simulation (Hidden) -->
+<div class="hidden flex-col items-center justify-center py-20 text-center" id="empty-state">
+<span class="material-symbols-outlined text-[64px] text-outline-variant mb-4" data-icon="notifications_off">notifications_off</span>
+<h3 class="font-headline-md text-headline-md text-on-surface-variant">Aucune notification</h3>
+<p class="font-body-sm text-body-sm text-outline mt-2">Vous êtes à jour ! Revenez plus tard pour voir les nouvelles activités.</p>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full rounded-t-xl z-50 bg-surface-container dark:bg-surface-container-highest shadow-[0_-4px_20px_rgba(77,0,19,0.05)] border-t-0">
+<div class="flex justify-around items-center w-full px-gutter py-base pb-safe">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-variant transition-colors rounded-full px-4 py-1" href="#">
+<span class="material-symbols-outlined text-[24px]" data-icon="home">home</span>
+<span class="font-label-sm text-label-sm-mobile mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-variant transition-colors rounded-full px-4 py-1" href="#">
+<span class="material-symbols-outlined text-[24px]" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-label-sm text-label-sm-mobile mt-1">Loans</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary rounded-full px-4 py-1 scale-90 transition-all duration-150" href="#">
+<span class="material-symbols-outlined text-[24px]" data-icon="notifications" style="font-variation-settings: 'FILL' 1;">notifications</span>
+<span class="font-label-sm text-label-sm-mobile mt-1">Alerts</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-variant transition-colors rounded-full px-4 py-1" href="#">
+<span class="material-symbols-outlined text-[24px]" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm-mobile mt-1">Profile</span>
+</a>
+</div>
+</nav>
+<script>
+        // Simple micro-interaction for notification removal (demo purpose)
+        document.querySelectorAll('.notification-card').forEach(card => {
+            let startX;
+            card.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+            });
+            
+            card.addEventListener('touchend', (e) => {
+                const endX = e.changedTouches[0].clientX;
+                if (startX - endX > 100) { // Swipe left
+                    card.style.transform = 'translateX(-120%)';
+                    card.style.opacity = '0';
+                    card.style.transition = 'all 0.5s ease-in-out';
+                    setTimeout(() => {
+                        card.remove();
+                        checkEmpty();
+                    }, 500);
+                }
+            });
+        });
+
+        function checkEmpty() {
+            const list = document.querySelectorAll('.notification-card');
+            if (list.length === 0) {
+                document.getElementById('empty-state').classList.remove('hidden');
+            }
+        }
+    </script>
+</body></html>

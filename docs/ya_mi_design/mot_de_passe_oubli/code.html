@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Libre+Caslon+Text:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#e0bfbf",
+                        "on-primary-fixed": "#40000b",
+                        "surface-container": "#f0ede9",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#554500",
+                        "surface": "#fcf9f4",
+                        "on-primary-fixed-variant": "#8e0f28",
+                        "primary-fixed": "#ffdada",
+                        "error-container": "#ffdad6",
+                        "on-secondary": "#ffffff",
+                        "surface-bright": "#fcf9f4",
+                        "outline": "#8c7071",
+                        "tertiary": "#540518",
+                        "surface-container-high": "#ebe8e3",
+                        "background": "#fcf9f4",
+                        "tertiary-container": "#731e2c",
+                        "secondary-fixed": "#ffe179",
+                        "tertiary-fixed-dim": "#ffb2b8",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed-variant": "#7f2735",
+                        "on-surface-variant": "#584141",
+                        "on-surface": "#1c1c19",
+                        "surface-container-low": "#f6f3ee",
+                        "secondary-fixed-dim": "#e6c443",
+                        "primary": "#570013",
+                        "on-tertiary-fixed": "#40000e",
+                        "surface-variant": "#e5e2dd",
+                        "surface-container-highest": "#e5e2dd",
+                        "primary-fixed-dim": "#ffb3b5",
+                        "on-primary": "#ffffff",
+                        "on-background": "#1c1c19",
+                        "tertiary-fixed": "#ffdadb",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-container": "#f98691",
+                        "secondary-container": "#feda57",
+                        "primary-container": "#800020",
+                        "inverse-primary": "#ffb3b5",
+                        "surface-dim": "#dcdad5",
+                        "secondary": "#715c00",
+                        "on-secondary-fixed": "#231b00",
+                        "inverse-on-surface": "#f3f0eb",
+                        "surface-tint": "#af2b3e",
+                        "inverse-surface": "#31302d",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-primary-container": "#ff828a",
+                        "on-secondary-container": "#745f00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-lg": "40px",
+                        "gutter": "16px",
+                        "stack-md": "24px",
+                        "base": "8px",
+                        "margin-mobile": "24px",
+                        "stack-sm": "12px",
+                        "margin-desktop": "64px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "display-lg": ["Libre Caslon Text"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "headline-md": ["Libre Caslon Text"],
+                        "body-sm": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Libre Caslon Text"],
+                        "headline-lg-mobile": ["Libre Caslon Text"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", {"lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #fcf9f4; /* Theme surface color */
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .btn-active-state:active {
+            transform: scale(0.95);
+            transition: transform 0.2s;
+        }
+
+        .input-focus-ring:focus-within {
+            border-color: #570013; /* Primary */
+            box-shadow: 0 0 0 1px #570013;
+        }
+
+        /* Subtle Background Pattern */
+        .bg-pattern {
+            background-image: radial-gradient(#e5e2dd 0.5px, transparent 0.5px);
+            background-size: 24px 24px;
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface selection:bg-secondary-container">
+<!-- Back Navigation Shell -->
+<nav class="fixed top-0 left-0 w-full z-50 flex items-center px-margin-mobile py-stack-md">
+<button class="flex items-center justify-center w-10 h-10 rounded-full bg-surface shadow-[0_4px_20px_rgba(77,0,19,0.05)] text-primary btn-active-state" onclick="history.back()">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+</nav>
+<main class="min-h-screen flex flex-col items-center justify-center px-margin-mobile relative bg-pattern">
+<div class="w-full max-w-md bg-surface-container-lowest rounded-xl p-8 shadow-[0_12px_40px_rgba(77,0,19,0.03)] border border-surface-variant/30">
+<!-- Logo Section -->
+<div class="flex flex-col items-center mb-stack-lg">
+<div class="w-20 h-20 mb-stack-sm rounded-xl overflow-hidden bg-white shadow-sm flex items-center justify-center">
+<img alt="Ya Mi Elephant Logo" class="w-16 h-16 object-contain" src="https://lh3.googleusercontent.com/aida/ADBb0uh53Bawq1lNI3ruE3jzlIgqRB957Cn1p5eAe3edneNrsX6zFwQ76bfZauQEGNekSoS2O3zdsNlHH-pcFd4YiAFbU5iaKUCFPagNINBQimYHQOlNDxTViV5liDUjdEIA6QLo1N_UWFtz6ivRjSyxRUUXfZmdq0zub-gYXWxU5Vovt57-DXxT3TzJjSCEU38TsG6V4WRwRSN1p3weHDYIBUFKTJgmm86j2qf0oFyWnAeKprSDgcq_EGEMpQ"/>
+</div>
+<h1 class="font-headline-md text-headline-md text-primary tracking-tight">Ya Mi</h1>
+</div>
+<!-- Content Section -->
+<div class="text-center mb-stack-md">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-2">Mot de passe oublié</h2>
+<p class="font-body-md text-on-surface-variant px-2">
+                    Entrez votre email pour recevoir un lien de réinitialisation
+                </p>
+</div>
+<!-- Form -->
+<form class="space-y-stack-md" id="forgotPasswordForm" onsubmit="return handleReset(event)">
+<div class="space-y-2">
+<label class="font-label-md text-label-md text-on-surface-variant block ml-1" for="email">
+                        Adresse Email
+                    </label>
+<div class="relative group input-focus-ring rounded-lg border border-outline-variant bg-surface transition-all duration-200">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline" data-icon="mail">mail</span>
+</div>
+<input class="block w-full pl-12 pr-4 py-4 bg-transparent border-none focus:ring-0 font-body-md text-on-surface placeholder:text-outline/50" id="email" name="email" placeholder="nom@exemple.com" required="" type="email"/>
+</div>
+</div>
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md py-4 rounded-lg shadow-lg hover:opacity-90 active:scale-[0.98] transition-all duration-200 btn-active-state flex items-center justify-center gap-2" type="submit">
+                    Envoyer le lien
+                    <span class="material-symbols-outlined text-[18px]" data-icon="send">send</span>
+</button>
+</form>
+<!-- Success Feedback (Hidden by default) -->
+<div class="hidden mt-stack-md p-4 bg-secondary-container/30 border border-secondary/20 rounded-lg text-center animate-in fade-in slide-in-from-top-4 duration-500" id="successMessage">
+<span class="material-symbols-outlined text-secondary text-4xl mb-2" data-icon="check_circle">check_circle</span>
+<p class="font-body-sm text-on-secondary-container">Lien envoyé ! Veuillez vérifier votre boîte de réception.</p>
+</div>
+<!-- Footer Link -->
+<div class="mt-stack-lg text-center">
+<p class="font-body-sm text-on-surface-variant">
+                    Vous vous en souvenez ? 
+                    <a class="text-primary font-label-md hover:underline decoration-2 underline-offset-4" href="#">Connectez-vous</a>
+</p>
+</div>
+</div>
+<!-- Support Info -->
+<div class="mt-stack-lg flex items-center gap-2 text-outline">
+<span class="material-symbols-outlined text-[16px]" data-icon="support_agent">support_agent</span>
+<span class="font-label-sm text-label-sm">Besoin d'aide ? Contactez le support</span>
+</div>
+</main>
+<script>
+        function handleReset(event) {
+            event.preventDefault();
+            const form = document.getElementById('forgotPasswordForm');
+            const success = document.getElementById('successMessage');
+            const button = form.querySelector('button');
+            const buttonText = button.innerHTML;
+
+            // Simple micro-interaction
+            button.disabled = true;
+            button.innerHTML = '<span class="material-symbols-outlined animate-spin" data-icon="progress_activity">progress_activity</span>';
+
+            setTimeout(() => {
+                form.classList.add('opacity-40', 'pointer-events-none');
+                success.classList.remove('hidden');
+                button.innerHTML = buttonText;
+                button.disabled = false;
+            }, 1500);
+
+            return false;
+        }
+
+        // Mouse move parallax effect for the background (subtle)
+        document.addEventListener('mousemove', (e) => {
+            const moveX = (e.clientX - window.innerWidth / 2) * 0.005;
+            const moveY = (e.clientY - window.innerHeight / 2) * 0.005;
+            document.body.style.backgroundPosition = `${moveX}px ${moveY}px`;
+        });
+    </script>
+</body></html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Détails du Prêt - Ya Mi</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&amp;family=Work+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#3c3234",
+                        "primary-fixed": "#ffdadb",
+                        "surface-container-lowest": "#140c0e",
+                        "inverse-primary": "#b22644",
+                        "secondary": "#e6c443",
+                        "surface-container-high": "#31282a",
+                        "surface-container-highest": "#3c3234",
+                        "surface-bright": "#413739",
+                        "tertiary-fixed-dim": "#dac0c5",
+                        "on-secondary-container": "#332900",
+                        "tertiary": "#dac0c5",
+                        "surface-container": "#261d1f",
+                        "on-tertiary-fixed-variant": "#544246",
+                        "secondary-fixed": "#ffe179",
+                        "error-container": "#93000a",
+                        "on-tertiary-fixed": "#26181b",
+                        "on-error": "#690005",
+                        "on-surface": "#efdee1",
+                        "on-primary-fixed-variant": "#90042e",
+                        "primary-fixed-dim": "#ffb2b9",
+                        "on-tertiary-container": "#dfc5ca",
+                        "inverse-on-surface": "#382e30",
+                        "on-primary": "#67001e",
+                        "secondary-container": "#ac8e01",
+                        "on-error-container": "#ffdad6",
+                        "surface-dim": "#191113",
+                        "surface": "#191113",
+                        "primary": "#ffb2b9",
+                        "outline": "#a7898b",
+                        "error": "#ffb4ab",
+                        "on-tertiary": "#3c2c30",
+                        "tertiary-fixed": "#f7dce1",
+                        "on-secondary-fixed": "#231b00",
+                        "outline-variant": "#594142",
+                        "on-secondary": "#3b2f00",
+                        "background": "#191113",
+                        "inverse-surface": "#efdee1",
+                        "surface-tint": "#ffb2b9",
+                        "on-background": "#efdee1",
+                        "tertiary-container": "#645156",
+                        "surface-container-low": "#22191b",
+                        "on-primary-fixed": "#40000f",
+                        "on-secondary-fixed-variant": "#554500",
+                        "primary-container": "#a61c3c",
+                        "secondary-fixed-dim": "#e6c443",
+                        "on-surface-variant": "#e0bec0",
+                        "on-primary-container": "#ffb9bf"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "container-max": "1200px",
+                        "unit": "8px",
+                        "margin-desktop": "64px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Work Sans"],
+                        "headline-lg": ["Libre Caslon Text"],
+                        "label-sm": ["Work Sans"],
+                        "body-md": ["Work Sans"],
+                        "headline-md": ["Libre Caslon Text"],
+                        "headline-lg-mobile": ["Libre Caslon Text"],
+                        "headline-xl": ["Libre Caslon Text"],
+                        "body-lg": ["Work Sans"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                        "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #191113;
+            color: #efdee1;
+            font-family: 'Work Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .caslon { font-family: 'Libre Caslon Text', serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(45, 30, 34, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(74, 53, 58, 0.5);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-32">
+<!-- Top App Bar -->
+<header class="bg-surface sticky top-0 z-50 flex justify-between items-center px-margin-mobile w-full h-16">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-primary hover:bg-surface-container-high p-2 rounded-full transition-colors active:scale-95">arrow_back</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Ya Mi</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A professional portrait of a distinguished Black male executive with graying temples, wearing a bespoke navy suit. The lighting is dramatic and warm, set against a dark, minimalist architectural background. The overall aesthetic is one of wealth, authority, and quiet confidence, perfectly aligned with a luxury burgundy and charcoal finance app theme." src="https://lh3.googleusercontent.com/aida-public/AB6AXuADGeycPEcYAwVD1-IP8qwtlz_e3egQLAvkuslFl24_haeGkK-GwYssTjLtWzz9Ij5-MC0febgT5Cv3dHSw3id4gaCNrScGNR3UWompunBJ1HizgEbVW5Z_ew6VN7xxupo0uE8nzwxukN-9ah73RA3XnpWym92yNcrLlj7sNJiV1Bp-Lsc_ucCRocE1mNwkP0TkJX1F9NG8PV6gb4ZwHbEihpAv7XT9NoZBPc1z0NCMgrMF2ZsJgnaNOnihw5s0mUtO8Psp0qEkGE0"/>
+</div>
+</div>
+</header>
+<main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop mt-8 space-y-gutter">
+<!-- Hero Section: Borrower Identity -->
+<section class="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-surface-variant pb-8">
+<div class="space-y-2">
+<p class="font-label-md text-label-md text-secondary uppercase tracking-widest">Détails du Prêt Actif</p>
+<h2 class="font-headline-xl text-headline-xl caslon">Adebayo Olatunji</h2>
+<div class="flex items-center gap-3">
+<span class="bg-secondary text-on-secondary-fixed px-3 py-1 rounded-full font-label-sm text-label-sm">STATUT ÉLITE</span>
+<span class="text-on-surface-variant font-label-md text-label-md">ID: #YM-2024-8842</span>
+</div>
+</div>
+<div class="text-right">
+<p class="font-label-md text-label-md text-on-surface-variant">Montant Total du Prêt</p>
+<p class="font-headline-lg text-headline-lg text-primary caslon">45,000,000 CFA</p>
+</div>
+</section>
+<!-- Bento Grid Layout for Stats -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Repayment Progress Card (Mustard Accents) -->
+<div class="md:col-span-2 glass-card rounded-xl p-8 flex flex-col justify-between">
+<div>
+<h3 class="font-headline-md text-headline-md caslon mb-6">Progression du Remboursement</h3>
+<div class="flex justify-between items-end mb-2">
+<span class="font-label-md text-label-md text-on-surface">65% Remboursé</span>
+<span class="font-body-md text-body-md text-on-surface-variant">29,250,000 CFA / 45,000,000 CFA</span>
+</div>
+<!-- Custom Mustard Progress Bar -->
+<div class="w-full h-3 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[65%] shadow-[0_0_15px_rgba(230,196,67,0.3)] transition-all duration-1000 ease-out" id="progressBar"></div>
+</div>
+</div>
+<div class="mt-8 grid grid-cols-2 gap-4">
+<div class="p-4 bg-surface-container-low rounded-lg">
+<p class="font-label-sm text-label-sm text-on-surface-variant">Prochain Échéance</p>
+<p class="font-headline-md text-headline-md caslon text-secondary">15 Octobre</p>
+</div>
+<div class="p-4 bg-surface-container-low rounded-lg">
+<p class="font-label-sm text-label-sm text-on-surface-variant">Montant Échéance</p>
+<p class="font-headline-md text-headline-md caslon text-secondary">1,250,000 CFA</p>
+</div>
+</div>
+</div>
+<!-- Loan Metadata Card -->
+<div class="glass-card rounded-xl p-8 space-y-6">
+<h3 class="font-headline-md text-headline-md caslon border-b border-outline-variant pb-4">Spécifications</h3>
+<div class="space-y-4">
+<div class="flex justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant">Taux d'Intérêt</span>
+<span class="font-label-md text-label-md text-on-surface">4.2% Annuel</span>
+</div>
+<div class="flex justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant">Durée</span>
+<span class="font-label-md text-label-md text-on-surface">36 Mois</span>
+</div>
+<div class="flex justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant">Date d'Octroi</span>
+<span class="font-label-md text-label-md text-on-surface">12 Jan 2024</span>
+</div>
+<div class="flex justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant">Type</span>
+<span class="font-label-md text-label-md text-on-surface">Investissement Immobilier</span>
+</div>
+</div>
+<div class="pt-4">
+<button class="w-full flex items-center justify-center gap-2 font-label-md text-label-md text-secondary border border-secondary hover:bg-secondary hover:text-on-secondary py-3 rounded-lg transition-all">
+<span class="material-symbols-outlined text-[18px]">description</span>
+                        Télécharger le Contrat
+                    </button>
+</div>
+</div>
+<!-- Transaction History (Asymmetric/Modern List) -->
+<div class="md:col-span-3 glass-card rounded-xl p-8">
+<div class="flex justify-between items-center mb-8">
+<h3 class="font-headline-md text-headline-md caslon">Historique des Paiements</h3>
+<button class="text-primary font-label-md text-label-md hover:underline">Voir tout</button>
+</div>
+<div class="space-y-4">
+<!-- Transaction Row -->
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-high rounded-xl transition-all cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center text-secondary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Paiement Septembre</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">15 Sep 2024 • Prélèvement automatique</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-label-md text-label-md text-secondary font-bold">+1,250,000 CFA</p>
+<span class="bg-surface-container text-[10px] px-2 py-0.5 rounded uppercase tracking-tighter text-on-surface-variant">Succès</span>
+</div>
+</div>
+<!-- Transaction Row -->
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-high rounded-xl transition-all cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center text-secondary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Paiement Août</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">15 Aoû 2024 • Virement manuel</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-label-md text-label-md text-secondary font-bold">+1,250,000 CFA</p>
+<span class="bg-surface-container text-[10px] px-2 py-0.5 rounded uppercase tracking-tighter text-on-surface-variant">Succès</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Buttons Section -->
+<div class="flex flex-col md:flex-row gap-4 pt-8">
+<button class="flex-1 bg-primary-container text-on-primary-container font-label-md text-label-md py-4 rounded-xl flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-lg">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+                Effectuer un Remboursement Anticipé
+            </button>
+<button class="flex-1 bg-surface-container-high text-on-surface font-label-md text-label-md py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-surface-bright active:scale-95 transition-all border border-outline-variant">
+<span class="material-symbols-outlined">support_agent</span>
+                Contacter un Conseiller Privé
+            </button>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center h-20 px-2 pb-safe bg-surface-container-low shadow-lg z-50">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-1 opacity-80 scale-95 transition-all" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+<span class="font-label-sm text-label-sm">Loans</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-label-sm text-label-sm">Pay</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction for progress bar on load
+        window.addEventListener('load', () => {
+            const bar = document.getElementById('progressBar');
+            bar.style.width = '0%';
+            setTimeout(() => {
+                bar.style.width = '65%';
+            }, 300);
+        });
+
+        // Hover effect for cards
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+    </script>
+</body></html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ya Mi - Contrat de Prêt</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:wght@400;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "outline-variant": "#e0bfbf",
+                "on-primary-fixed": "#40000b",
+                "surface-container": "#f0ede9",
+                "on-error-container": "#93000a",
+                "on-secondary-fixed-variant": "#554500",
+                "surface": "#fcf9f4",
+                "on-primary-fixed-variant": "#8e0f28",
+                "primary-fixed": "#ffdada",
+                "error-container": "#ffdad6",
+                "on-secondary": "#ffffff",
+                "surface-bright": "#fcf9f4",
+                "outline": "#8c7071",
+                "tertiary": "#540518",
+                "surface-container-high": "#ebe8e3",
+                "background": "#fcf9f4",
+                "tertiary-container": "#731e2c",
+                "secondary-fixed": "#ffe179",
+                "tertiary-fixed-dim": "#ffb2b8",
+                "error": "#ba1a1a",
+                "on-tertiary-fixed-variant": "#7f2735",
+                "on-surface-variant": "#584141",
+                "on-surface": "#1c1c19",
+                "surface-container-low": "#f6f3ee",
+                "secondary-fixed-dim": "#e6c443",
+                "primary": "#570013",
+                "on-tertiary-fixed": "#40000e",
+                "surface-variant": "#e5e2dd",
+                "surface-container-highest": "#e5e2dd",
+                "primary-fixed-dim": "#ffb3b5",
+                "on-primary": "#ffffff",
+                "on-background": "#1c1c19",
+                "tertiary-fixed": "#ffdadb",
+                "on-tertiary": "#ffffff",
+                "on-tertiary-container": "#f98691",
+                "secondary-container": "#feda57",
+                "primary-container": "#800020",
+                "inverse-primary": "#ffb3b5",
+                "surface-dim": "#dcdad5",
+                "secondary": "#715c00",
+                "on-secondary-fixed": "#231b00",
+                "inverse-on-surface": "#f3f0eb",
+                "surface-tint": "#af2b3e",
+                "inverse-surface": "#31302d",
+                "surface-container-lowest": "#ffffff",
+                "on-error": "#ffffff",
+                "on-primary-container": "#ff828a",
+                "on-secondary-container": "#745f00"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+            },
+            "spacing": {
+                "stack-lg": "40px",
+                "gutter": "16px",
+                "stack-md": "24px",
+                "base": "8px",
+                "margin-mobile": "24px",
+                "stack-sm": "12px",
+                "margin-desktop": "64px"
+            },
+            "fontFamily": {
+                "label-sm": ["Plus Jakarta Sans"],
+                "body-md": ["Plus Jakarta Sans"],
+                "display-lg": ["Libre Caslon Text"],
+                "label-md": ["Plus Jakarta Sans"],
+                "headline-md": ["Libre Caslon Text"],
+                "body-sm": ["Plus Jakarta Sans"],
+                "body-lg": ["Plus Jakarta Sans"],
+                "headline-lg": ["Libre Caslon Text"],
+                "headline-lg-mobile": ["Libre Caslon Text"]
+            },
+            "fontSize": {
+                "label-sm": ["12px", {"lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "500"}],
+                "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        display: inline-block;
+        line-height: 1;
+      }
+      body {
+        background-color: #fcf9f4; /* Using cream background specifically */
+      }
+      .paper-texture {
+        background-image: radial-gradient(#8c707110 1px, transparent 0);
+        background-size: 24px 24px;
+      }
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 4px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #8c707150;
+        border-radius: 10px;
+      }
+    </style>
+</head>
+<body class="antialiased text-on-surface">
+<!-- Top App Bar -->
+<header class="bg-surface sticky top-0 z-50 flex justify-between items-center w-full px-margin-mobile py-base">
+<div class="flex items-center gap-4">
+<button class="hover:opacity-80 transition-opacity active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md-mobile text-on-surface font-bold">Contrat de Prêt</h1>
+</div>
+<img alt="Ya Mi Logo" class="h-10 w-10 object-contain" src="https://lh3.googleusercontent.com/aida/ADBb0uh53Bawq1lNI3ruE3jzlIgqRB957Cn1p5eAe3edneNrsX6zFwQ76bfZauQEGNekSoS2O3zdsNlHH-pcFd4YiAFbU5iaKUCFPagNINBQimYHQOlNDxTViV5liDUjdEIA6QLo1N_UWFtz6ivRjSyxRUUXfZmdq0zub-gYXWxU5Vovt57-DXxT3TzJjSCEU38TsG6V4WRwRSN1p3weHDYIBUFKTJgmm86j2qf0oFyWnAeKprSDgcq_EGEMpQ"/>
+</header>
+<main class="max-w-4xl mx-auto px-margin-mobile py-stack-md pb-32">
+<!-- Contract Paper -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_10px_40px_rgba(77,0,19,0.08)] overflow-hidden relative paper-texture">
+<!-- Watermark Logo -->
+<div class="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none">
+<img alt="" class="w-96 grayscale" src="https://lh3.googleusercontent.com/aida/ADBb0uh53Bawq1lNI3ruE3jzlIgqRB957Cn1p5eAe3edneNrsX6zFwQ76bfZauQEGNekSoS2O3zdsNlHH-pcFd4YiAFbU5iaKUCFPagNINBQimYHQOlNDxTViV5liDUjdEIA6QLo1N_UWFtz6ivRjSyxRUUXfZmdq0zub-gYXWxU5Vovt57-DXxT3TzJjSCEU38TsG6V4WRwRSN1p3weHDYIBUFKTJgmm86j2qf0oFyWnAeKprSDgcq_EGEMpQ"/>
+</div>
+<div class="relative p-6 md:p-12 space-y-stack-lg">
+<!-- Header Info -->
+<div class="flex flex-col md:flex-row justify-between items-start border-b border-outline-variant pb-stack-md gap-gutter">
+<div class="space-y-2">
+<p class="font-label-md text-label-md text-primary">RÉFÉRENCE DU CONTRAT</p>
+<p class="font-body-md text-body-md font-bold">YM-2023-8849-AF</p>
+</div>
+<div class="text-right space-y-2">
+<p class="font-label-md text-label-md text-on-surface-variant">DATE D'ÉMISSION</p>
+<p class="font-body-md text-body-md">24 Octobre 2023</p>
+</div>
+</div>
+<!-- Parties Section -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-stack-md">
+<div class="space-y-base">
+<h2 class="font-headline-md text-headline-md-mobile text-primary">Le Prêteur</h2>
+<div class="bg-surface-container-low p-base rounded-lg border-l-4 border-primary">
+<p class="font-label-md text-label-md font-bold">Ya Mi Fintech S.A.</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Siège Social: Avenue de l'Indépendance</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Immatriculation: RC-2022-B102</p>
+</div>
+</div>
+<div class="space-y-base">
+<h2 class="font-headline-md text-headline-md-mobile text-primary">L'Emprunteur</h2>
+<div class="bg-surface-container-low p-base rounded-lg border-l-4 border-secondary">
+<p class="font-label-md text-label-md font-bold">M. Jean-Baptiste Kouassi</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">ID: 1029384756</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Résidence: Cocody, Abidjan</p>
+</div>
+</div>
+</div>
+<!-- Financial Details -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<div class="p-base bg-surface border border-outline-variant rounded-lg text-center">
+<p class="font-label-sm text-label-sm text-on-surface-variant">Montant du Principal</p>
+<p class="font-headline-md text-headline-md text-primary">500,000 FCFA</p>
+</div>
+<div class="p-base bg-surface border border-outline-variant rounded-lg text-center">
+<p class="font-label-sm text-label-sm text-on-surface-variant">Taux d'Intérêt Annuel</p>
+<p class="font-headline-md text-headline-md text-primary">12.5%</p>
+</div>
+<div class="p-base bg-surface border border-outline-variant rounded-lg text-center">
+<p class="font-label-sm text-label-sm text-on-surface-variant">Durée du Prêt</p>
+<p class="font-headline-md text-headline-md text-primary">12 Mois</p>
+</div>
+</div>
+<!-- Repayment Schedule -->
+<section class="space-y-base">
+<h2 class="font-headline-md text-headline-md-mobile text-primary border-b border-outline-variant pb-2">Échéancier de Remboursement</h2>
+<div class="overflow-x-auto">
+<table class="w-full text-left font-body-sm">
+<thead>
+<tr class="text-on-surface-variant border-b border-surface-variant">
+<th class="py-2 font-label-md">Date</th>
+<th class="py-2 font-label-md">Principal</th>
+<th class="py-2 font-label-md">Intérêts</th>
+<th class="py-2 font-label-md text-right">Total Mensuel</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-variant">
+<tr>
+<td class="py-3">30 Nov 2023</td>
+<td class="py-3">41,666 FCFA</td>
+<td class="py-3">5,208 FCFA</td>
+<td class="py-3 text-right font-bold">46,874 FCFA</td>
+</tr>
+<tr>
+<td class="py-3">30 Déc 2023</td>
+<td class="py-3">41,666 FCFA</td>
+<td class="py-3">5,208 FCFA</td>
+<td class="py-3 text-right font-bold">46,874 FCFA</td>
+</tr>
+<tr>
+<td class="py-3">30 Jan 2024</td>
+<td class="py-3">41,666 FCFA</td>
+<td class="py-3">5,208 FCFA</td>
+<td class="py-3 text-right font-bold">46,874 FCFA</td>
+</tr>
+</tbody>
+</table>
+<div class="flex justify-center py-4">
+<button class="text-primary font-label-md flex items-center gap-1 hover:underline">
+                                Voir tout l'échéancier <span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Terms & Conditions -->
+<section class="space-y-base">
+<h2 class="font-headline-md text-headline-md-mobile text-primary border-b border-outline-variant pb-2">Termes et Conditions</h2>
+<div class="font-body-sm text-on-surface-variant leading-relaxed max-h-48 overflow-y-auto custom-scrollbar pr-4 italic">
+<p class="mb-4">1. <strong>Engagement de remboursement :</strong> L'emprunteur s'engage irrévocablement à rembourser le montant total du prêt, incluant les intérêts et frais, selon l'échéancier défini ci-dessus.</p>
+<p class="mb-4">2. <strong>Retards de paiement :</strong> Tout retard de paiement de plus de 48 heures entraînera une pénalité forfaitaire de 2% du montant de l'échéance due, en plus des intérêts de retard légaux en vigueur.</p>
+<p class="mb-4">3. <strong>Remboursement anticipé :</strong> L'emprunteur a le droit de rembourser par anticipation tout ou partie de son crédit sans frais de pénalité supplémentaires.</p>
+<p class="mb-4">4. <strong>Confidentialité :</strong> Ya Mi Fintech S.A. s'engage à protéger les données personnelles de l'emprunteur conformément à la loi sur la protection des données numériques.</p>
+<p>5. <strong>Juridiction :</strong> En cas de litige, les tribunaux d'Abidjan seront seuls compétents pour statuer sur l'interprétation ou l'exécution du présent contrat.</p>
+</div>
+</section>
+<!-- Signature Section -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-stack-lg pt-stack-md border-t border-outline-variant">
+<div class="space-y-4">
+<p class="font-label-md text-on-surface-variant">Signature du Prêteur (Ya Mi)</p>
+<div class="h-32 bg-surface-container-low rounded border-2 border-dashed border-outline-variant flex flex-col items-center justify-center relative overflow-hidden group">
+<img alt="Ya Mi Seal" class="h-16 opacity-30 grayscale absolute transition-transform group-hover:scale-110" src="https://lh3.googleusercontent.com/aida/ADBb0uh53Bawq1lNI3ruE3jzlIgqRB957Cn1p5eAe3edneNrsX6zFwQ76bfZauQEGNekSoS2O3zdsNlHH-pcFd4YiAFbU5iaKUCFPagNINBQimYHQOlNDxTViV5liDUjdEIA6QLo1N_UWFtz6ivRjSyxRUUXfZmdq0zub-gYXWxU5Vovt57-DXxT3TzJjSCEU38TsG6V4WRwRSN1p3weHDYIBUFKTJgmm86j2qf0oFyWnAeKprSDgcq_EGEMpQ"/>
+<p class="font-label-sm text-primary z-10 font-bold uppercase tracking-widest">Approuvé par Système</p>
+<p class="font-body-sm text-[10px] text-on-surface-variant z-10">Signé numériquement le 24/10/2023</p>
+</div>
+</div>
+<div class="space-y-4">
+<p class="font-label-md text-on-surface-variant">Signature de l'Emprunteur</p>
+<div class="h-32 bg-surface-container-low rounded border-2 border-primary flex flex-col items-center justify-center cursor-pointer hover:bg-surface-container transition-colors relative">
+<span class="material-symbols-outlined text-4xl text-primary opacity-20">edit</span>
+<p class="font-body-md text-primary italic font-serif text-2xl mt-[-10px]">J.B. Kouassi</p>
+<p class="font-body-sm text-[10px] text-on-surface-variant absolute bottom-2">Signé via vérification biométrique</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Floating Area -->
+<div class="fixed bottom-0 left-0 right-0 bg-surface/80 backdrop-blur-md border-t border-outline-variant p-gutter md:p-stack-md flex flex-col md:flex-row gap-gutter justify-center items-center z-50">
+<button class="w-full md:w-auto px-10 py-4 bg-primary text-on-primary rounded-full font-label-md flex items-center justify-center gap-2 hover:bg-primary-container transition-all shadow-lg active:scale-95">
+<span class="material-symbols-outlined">download</span>
+                Télécharger le PDF
+            </button>
+<button class="w-full md:w-auto px-10 py-4 border-2 border-secondary text-secondary rounded-full font-label-md flex items-center justify-center gap-2 hover:bg-secondary-container transition-all active:scale-95">
+<span class="material-symbols-outlined">share</span>
+                Partager via WhatsApp
+            </button>
+</div>
+</main>
+<!-- Success Feedback Overlay (Hidden) -->
+<div class="fixed top-24 left-1/2 -translate-x-1/2 bg-on-surface text-surface px-6 py-3 rounded-full font-label-md shadow-2xl opacity-0 transition-opacity pointer-events-none flex items-center gap-3" id="toast">
+<span class="material-symbols-outlined text-secondary">check_circle</span>
+        Document enregistré avec succès
+    </div>
+<script>
+        // Simple micro-interactions
+        const toast = document.getElementById('toast');
+        const showToast = () => {
+            toast.style.opacity = '1';
+            setTimeout(() => { toast.style.opacity = '0'; }, 3000);
+        };
+
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if(btn.innerText.includes('Télécharger')) {
+                    showToast();
+                }
+            });
+        });
+
+        // Soft reveal animation on scroll
+        const observerOptions = {
+            threshold: 0.1
+        };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100');
+                    entry.target.classList.remove('translate-y-4');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section, .grid').forEach(el => {
+            el.classList.add('transition-all', 'duration-700', 'translate-y-4', 'opacity-0');
+            observer.observe(el);
+        });
+    </script>
+</body></html>

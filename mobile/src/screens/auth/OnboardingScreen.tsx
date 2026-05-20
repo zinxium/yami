@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { Button, Card } from '../../components/common';
+import { Button, Card, Logo } from '../../components/common';
 import type { OnboardingProps } from '../../navigation/types';
 
 export function OnboardingScreen({ navigation }: OnboardingProps) {
@@ -16,9 +16,7 @@ export function OnboardingScreen({ navigation }: OnboardingProps) {
     >
       {/* Logo */}
       <View className="items-center mb-4">
-        <View className="w-16 h-16 rounded-full bg-burgundy items-center justify-center">
-          <Text className="text-white text-[28px] font-bold">Y</Text>
-        </View>
+        <Logo size="medium" />
       </View>
       <Text className="text-center text-burgundy text-[20px] font-bold mb-10">
         Ya Mi
@@ -62,8 +60,8 @@ export function OnboardingScreen({ navigation }: OnboardingProps) {
       {/* CTA */}
       <View className="px-6 mb-4">
         <Button
-          title="Get Started"
-          onPress={() => navigation.replace('Main')}
+          title="Créer un compte"
+          onPress={() => navigation.navigate('Signup')}
           variant="primary"
           fullWidth
         />
@@ -71,10 +69,10 @@ export function OnboardingScreen({ navigation }: OnboardingProps) {
 
       {/* Login link */}
       <TouchableOpacity
-        onPress={() => navigation.replace('Main')}
+        onPress={() => navigation.navigate('Login')}
         className="items-center mb-8"
       >
-        <Text className="text-[#888888] text-[14px]">I already have an account</Text>
+        <Text className="text-[#888888] text-[14px]">J'ai déjà un compte</Text>
       </TouchableOpacity>
 
       {/* Footer */}
