@@ -2,7 +2,8 @@
 backend/node_modules
 mobile/node_modules
 node_modules/
-
+backend/.env
+mobile/.env
 # Environment variables and secrets
 .env
 .env.local

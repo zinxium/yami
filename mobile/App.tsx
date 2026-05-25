@@ -1,5 +1,5 @@
 import './global.css';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -16,6 +16,9 @@ import {
   PlusJakartaSans_700Bold,
 } from '@expo-google-fonts/plus-jakarta-sans';
 import { RootNavigator } from './src/navigation/RootNavigator';
+import { OfflineBanner } from './src/components/common';
+import { useNetworkStore } from './src/store/network.store';
+import { syncAll } from './src/services/sync.service';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -27,6 +30,25 @@ export default function App() {
     'PlusJakartaSans-Medium': PlusJakartaSans_500Medium,
     'PlusJakartaSans-Bold': PlusJakartaSans_700Bold,
   });
+
+  // Initialize network listener
+  const initNetwork = useNetworkStore((s) => s.init);
+  useEffect(() => {
+    const unsubscribe = initNetwork();
+    return unsubscribe;
+  }, []);
+
+  // Sync when coming back online
+  const isConnected = useNetworkStore((s) => s.isConnected);
+  const wasOffline = useRef(false);
+  useEffect(() => {
+    if (!isConnected) {
+      wasOffline.current = true;
+    } else if (wasOffline.current) {
+      wasOffline.current = false;
+      syncAll();
+    }
+  }, [isConnected]);
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
@@ -41,6 +63,7 @@ export default function App() {
       <View className="flex-1" onLayout={onLayoutRootView}>
         <NavigationContainer>
           <StatusBar style="dark" />
+          <OfflineBanner />
           <RootNavigator />
         </NavigationContainer>
       </View>

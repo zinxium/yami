@@ -9,6 +9,9 @@ import { useAuthStore } from '../../store/auth.store';
 import { formatCurrency } from '../../utils/format';
 import type { Loan } from '../../types';
 import type { EditLoanProps } from '../../navigation/types';
+import { useNetworkStore } from '../../store/network.store';
+import { useMutationQueueStore } from '../../store/mutationQueue.store';
+import { useCacheStore } from '../../store/cache.store';
 
 export function EditLoanScreen({ route, navigation }: EditLoanProps) {
   const insets = useSafeAreaInsets();
@@ -44,6 +47,10 @@ export function EditLoanScreen({ route, navigation }: EditLoanProps) {
     return { interest, total, monthly, progressPercent };
   }, [amount, interestRate, duration, loan]);
 
+  const isConnected = useNetworkStore((s) => s.isConnected);
+  const addMutation = useMutationQueueStore((s) => s.addMutation);
+  const updateCachedLoan = useCacheStore((s) => s.updateLoan);
+
   const handleSubmit = async () => {
     setLoading(true);
     try {
@@ -51,10 +58,19 @@ export function EditLoanScreen({ route, navigation }: EditLoanProps) {
       if (amount) data.amount = parseFloat(amount);
       if (interestRate) data.interest_rate = parseFloat(interestRate);
       if (duration) data.duration = parseInt(duration, 10);
-      await loansApi.update(loanId, data);
-      Alert.alert('Modifié', 'Le prêt a été mis à jour.', [
-        { text: 'OK', onPress: () => navigation.goBack() },
-      ]);
+
+      if (isConnected) {
+        await loansApi.update(loanId, data);
+        Alert.alert('Modifié', 'Le prêt a été mis à jour.', [
+          { text: 'OK', onPress: () => navigation.goBack() },
+        ]);
+      } else {
+        addMutation('UPDATE_LOAN', { id: loanId, ...data });
+        updateCachedLoan(loanId, data);
+        Alert.alert('Sauvegardé localement', 'La modification sera synchronisée dès la reconnexion.', [
+          { text: 'OK', onPress: () => navigation.goBack() },
+        ]);
+      }
     } catch (e: unknown) {
       Alert.alert('Erreur', e instanceof Error ? e.message : 'Erreur inconnue');
     } finally {

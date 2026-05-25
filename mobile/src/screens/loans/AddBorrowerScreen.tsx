@@ -5,6 +5,9 @@ import { ScreenHeader, Button, Logo } from '../../components/common';
 import { useTheme } from '../../hooks/useTheme';
 import { borrowersApi } from '../../api/borrowers.api';
 import type { AddBorrowerProps } from '../../navigation/types';
+import { useNetworkStore } from '../../store/network.store';
+import { useMutationQueueStore } from '../../store/mutationQueue.store';
+import { useCacheStore } from '../../store/cache.store';
 
 export function AddBorrowerScreen({ navigation }: AddBorrowerProps) {
   const insets = useSafeAreaInsets();
@@ -15,22 +18,43 @@ export function AddBorrowerScreen({ navigation }: AddBorrowerProps) {
   const [notes, setNotes] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const isConnected = useNetworkStore((s) => s.isConnected);
+  const addMutation = useMutationQueueStore((s) => s.addMutation);
+  const addCachedBorrower = useCacheStore((s) => s.addBorrower);
+
   const handleSubmit = async () => {
     if (!fullname.trim()) {
       Alert.alert('Erreur', 'Le nom est requis.');
       return;
     }
+    const data = {
+      fullname: fullname.trim(),
+      phone: phone.trim() || undefined,
+      address: address.trim() || undefined,
+      notes: notes.trim() || undefined,
+    };
     setLoading(true);
     try {
-      await borrowersApi.create({
-        fullname: fullname.trim(),
-        phone: phone.trim() || undefined,
-        address: address.trim() || undefined,
-        notes: notes.trim() || undefined,
-      });
-      Alert.alert('Emprunteur ajouté', `${fullname} a été ajouté.`, [
-        { text: 'OK', onPress: () => navigation.goBack() },
-      ]);
+      if (isConnected) {
+        await borrowersApi.create(data);
+        Alert.alert('Emprunteur ajouté', `${fullname} a été ajouté.`, [
+          { text: 'OK', onPress: () => navigation.goBack() },
+        ]);
+      } else {
+        const tempId = addMutation('CREATE_BORROWER', { ...data, tempId: `temp_b_${Date.now()}` });
+        addCachedBorrower({
+          id: tempId,
+          user_id: '',
+          fullname: data.fullname,
+          phone: data.phone,
+          address: data.address,
+          notes: data.notes,
+          created_at: new Date().toISOString(),
+        });
+        Alert.alert('Sauvegardé localement', `${fullname} sera synchronisé dès la reconnexion.`, [
+          { text: 'OK', onPress: () => navigation.goBack() },
+        ]);
+      }
     } catch (e: unknown) {
       Alert.alert('Erreur', e instanceof Error ? e.message : 'Erreur inconnue');
     } finally {

@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import * as SecureStore from 'expo-secure-store';
 import { api } from '../api/client';
 import { User } from '../types';
+import { useCacheStore } from './cache.store';
+import { useMutationQueueStore } from './mutationQueue.store';
 
 interface AuthState {
   user: User | null;
@@ -41,9 +43,16 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   logout: async () => {
-    await api.post('/api/auth/logout', {});
+    try {
+      await api.post('/api/auth/logout', {});
+    } catch {
+      // Ignore network errors on logout
+    }
     await SecureStore.deleteItemAsync('access_token');
     await SecureStore.deleteItemAsync('refresh_token');
+    // Clear offline data
+    useCacheStore.getState().clearCache();
+    useMutationQueueStore.getState().clearQueue();
     set({ user: null, accessToken: null, isAuthenticated: false });
   },
 
@@ -54,7 +63,6 @@ export const useAuthStore = create<AuthState>((set) => ({
         set({ isLoading: false });
         return;
       }
-      // Validate token by fetching user profile — on utilise le refresh si besoin
       const refreshToken = await SecureStore.getItemAsync('refresh_token');
       if (refreshToken) {
         try {
@@ -62,9 +70,16 @@ export const useAuthStore = create<AuthState>((set) => ({
           await SecureStore.setItemAsync('access_token', res.accessToken);
           set({ accessToken: res.accessToken, isAuthenticated: true, isLoading: false });
         } catch {
-          await SecureStore.deleteItemAsync('access_token');
-          await SecureStore.deleteItemAsync('refresh_token');
-          set({ isLoading: false });
+          // Offline or token expired — if we have a cached token, stay authenticated
+          // so the user can use the app in offline mode
+          const cachedLoans = useCacheStore.getState().loans;
+          if (cachedLoans.length > 0) {
+            set({ accessToken: token, isAuthenticated: true, isLoading: false });
+          } else {
+            await SecureStore.deleteItemAsync('access_token');
+            await SecureStore.deleteItemAsync('refresh_token');
+            set({ isLoading: false });
+          }
         }
       } else {
         set({ accessToken: token, isAuthenticated: true, isLoading: false });

@@ -7,6 +7,8 @@ import { useAuthStore } from '../../store/auth.store';
 import { useTheme } from '../../hooks/useTheme';
 import { borrowersApi } from '../../api/borrowers.api';
 import type { EditBorrowerProps } from '../../navigation/types';
+import { useNetworkStore } from '../../store/network.store';
+import { useMutationQueueStore } from '../../store/mutationQueue.store';
 
 const RELATIONS = ['Ami(e)', 'Famille', 'Collègue', 'Voisin(e)', 'Autre'];
 
@@ -22,21 +24,32 @@ export function EditBorrowerScreen({ route, navigation }: EditBorrowerProps) {
   const [notes, setNotes] = useState(borrower.notes || '');
   const [loading, setLoading] = useState(false);
 
+  const isConnected = useNetworkStore((s) => s.isConnected);
+  const addMutation = useMutationQueueStore((s) => s.addMutation);
+
   const handleSubmit = async () => {
     if (!fullname.trim()) {
       Alert.alert('Erreur', 'Le nom est requis.');
       return;
     }
+    const data = {
+      fullname: fullname.trim(),
+      phone: phone.trim() || undefined,
+      notes: notes.trim() || undefined,
+    };
     setLoading(true);
     try {
-      await borrowersApi.update(borrower.id, {
-        fullname: fullname.trim(),
-        phone: phone.trim() || undefined,
-        notes: notes.trim() || undefined,
-      });
-      Alert.alert('Modifié', `${fullname} a été mis à jour.`, [
-        { text: 'OK', onPress: () => navigation.goBack() },
-      ]);
+      if (isConnected) {
+        await borrowersApi.update(borrower.id, data);
+        Alert.alert('Modifié', `${fullname} a été mis à jour.`, [
+          { text: 'OK', onPress: () => navigation.goBack() },
+        ]);
+      } else {
+        addMutation('UPDATE_BORROWER', { id: borrower.id, ...data });
+        Alert.alert('Sauvegardé localement', `${fullname} sera synchronisé dès la reconnexion.`, [
+          { text: 'OK', onPress: () => navigation.goBack() },
+        ]);
+      }
     } catch (e: unknown) {
       Alert.alert('Erreur', e instanceof Error ? e.message : 'Erreur inconnue');
     } finally {

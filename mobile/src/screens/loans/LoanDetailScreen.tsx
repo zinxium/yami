@@ -12,7 +12,7 @@ import { Colors } from '../../constants/colors';
 import type { LoanDetailProps } from '../../navigation/types';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../../navigation/types';
-import type { Loan, Payment, ScheduleItem } from '../../types';
+import type { Loan, Payment } from '../../types';
 
 export function LoanDetailScreen({ route, navigation }: LoanDetailProps) {
   const insets = useSafeAreaInsets();
@@ -20,7 +20,7 @@ export function LoanDetailScreen({ route, navigation }: LoanDetailProps) {
   const { colors } = useTheme();
   const { loanId } = route.params;
   const [loan, setLoan] = useState<Loan | null>(null);
-  const [schedule, setSchedule] = useState<ScheduleItem[]>([]);
+  const [schedule, setSchedule] = useState<{ period: number; due_date: string; amount: number; status: string }[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
   const [showSchedule, setShowSchedule] = useState(false);

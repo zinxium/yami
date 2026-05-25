@@ -10,6 +10,9 @@ import { useAuthStore } from '../../store/auth.store';
 import { formatCurrency, formatDate } from '../../utils/format';
 import type { Loan } from '../../types';
 import type { AddPaymentProps } from '../../navigation/types';
+import { useNetworkStore } from '../../store/network.store';
+import { useMutationQueueStore } from '../../store/mutationQueue.store';
+import { useCacheStore } from '../../store/cache.store';
 
 const PAYMENT_METHODS = ['Virement Bancaire', 'MTN MoMo', 'Orange Money', 'Cash', 'Autre'];
 
@@ -30,25 +33,54 @@ export function AddPaymentScreen({ route, navigation }: AddPaymentProps) {
     loansApi.getById(loanId).then(setLoan).catch(() => {});
   }, [loanId]);
 
+  const isConnected = useNetworkStore((s) => s.isConnected);
+  const addMutation = useMutationQueueStore((s) => s.addMutation);
+  const { addPayment: addCachedPayment, updateLoan } = useCacheStore();
+
   const handleSubmit = async () => {
     const parsedAmount = parseFloat(amount);
     if (!parsedAmount || parsedAmount <= 0) {
       Alert.alert('Erreur', 'Le montant doit être supérieur à 0.');
       return;
     }
+    const paymentData = {
+      loan_id: loanId,
+      amount_paid: parsedAmount,
+      payment_type: parsedAmount >= Number(loan?.remaining_balance || 0) ? 'full' : 'partial',
+      payment_date: new Date(date).toISOString(),
+      payment_method: paymentMethod,
+      notes: notes || undefined,
+    };
     setLoading(true);
     try {
-      await paymentsApi.create({
-        loan_id: loanId,
-        amount_paid: parsedAmount,
-        payment_type: parsedAmount >= Number(loan?.remaining_balance || 0) ? 'full' : 'partial',
-        payment_date: new Date(date).toISOString(),
-        payment_method: paymentMethod,
-        notes: notes || undefined,
-      });
-      Alert.alert('Paiement enregistré', 'Le paiement a été ajouté avec succès.', [
-        { text: 'OK', onPress: () => navigation.goBack() },
-      ]);
+      if (isConnected) {
+        await paymentsApi.create(paymentData);
+        Alert.alert('Paiement enregistré', 'Le paiement a été ajouté avec succès.', [
+          { text: 'OK', onPress: () => navigation.goBack() },
+        ]);
+      } else {
+        const tempId = addMutation('CREATE_PAYMENT', paymentData);
+        addCachedPayment(loanId, {
+          id: tempId,
+          loan_id: loanId,
+          amount_paid: parsedAmount,
+          payment_type: paymentData.payment_type as 'full' | 'partial',
+          payment_date: paymentData.payment_date,
+          payment_method: paymentMethod,
+          notes: notes || undefined,
+        });
+        // Update cached loan balance
+        if (loan) {
+          const newBalance = Math.max(0, Number(loan.remaining_balance) - parsedAmount);
+          updateLoan(loanId, {
+            remaining_balance: newBalance,
+            status: newBalance <= 0 ? 'paid' : loan.status,
+          });
+        }
+        Alert.alert('Sauvegardé localement', 'Le paiement sera synchronisé dès la reconnexion.', [
+          { text: 'OK', onPress: () => navigation.goBack() },
+        ]);
+      }
     } catch (e: unknown) {
       Alert.alert('Erreur', e instanceof Error ? e.message : 'Erreur inconnue');
     } finally {

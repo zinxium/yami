@@ -1,12 +1,12 @@
 import React from 'react';
-import { View, Text, Alert, Switch, ScrollView } from 'react-native';
+import { View, Text, Alert, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { documentDirectory, downloadAsync } from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
 import { useAuthStore } from '../../store/auth.store';
 import { useTheme } from '../../hooks/useTheme';
-import { Avatar, Button, Card } from '../../components/common';
+import { Avatar, Button, Card, ThemedSwitch } from '../../components/common';
 import { getInitials, formatPhone } from '../../utils/format';
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:4000';
@@ -40,7 +40,8 @@ export function ProfileScreen() {
     ]);
   };
 
-  return (style={{ flex: 1, backgroundColor: colors.background }}>
+  return (
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: insets.bottom + 20 }}>
         {/* Profile Header */}
         <View style={{ alignItems: 'center', paddingTop: insets.top + 32, paddingBottom: 24 }}>
@@ -72,7 +73,7 @@ export function ProfileScreen() {
 
         {/* Settings */}
         <View style={{ paddingHorizontal: 20, gap: 12 }}>
-          <Card style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Card className="flex-row items-center">
             <Ionicons name="document-text-outline" size={20} color={colors.primary} />
             <Text style={{ color: colors.textPrimary, fontSize: 15, marginLeft: 12, flex: 1 }}>
               Exporter mes données
@@ -80,7 +81,7 @@ export function ProfileScreen() {
             <Button title="Excel" onPress={handleExportExcel} variant="outline" />
           </Card>
 
-          <Card style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 12 }}>
+          <Card className="flex-row items-center justify-between py-3">
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Ionicons
                 name={isDarkMode ? 'moon-outline' : 'sunny-outline'}
@@ -91,17 +92,19 @@ export function ProfileScreen() {
                 {isDarkMode ? 'Mode sombre' : 'Mode clair'}
               </Text>
             </View>
-          <ThemedSwitch
-            value={isDarkMode}
-            onValueChange={toggleDarkMode}
-            primaryColor={colors.primary}
-            secondaryColor={colors.borderLight}
+            <ThemedSwitch
+              value={isDarkMode}
+              onValueChange={toggleDarkMode}
+              primaryColor={colors.primary}
+              secondaryColor={colors.borderLight}
+            />
+          </Card>
+        </View>
 
         <View style={{ paddingHorizontal: 20, marginTop: 32 }}>
           <Button title="Se déconnecter" onPress={handleLogout} variant="outline" fullWidth icon="log-out-outline" />
         </View>
-      </Scroll<Button title="Se déconnecter" onPress={handleLogout} variant="outline" fullWidth icon="log-out-outline" />
-      </View>
+      </ScrollView>
     </View>
   );
 }

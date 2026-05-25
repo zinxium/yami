@@ -6,8 +6,11 @@ import { useTheme } from '../../hooks/useTheme';
 import { formatCurrency } from '../../utils/format';
 import { loansApi } from '../../api/loans.api';
 import { borrowersApi } from '../../api/borrowers.api';
-import { Borrower } from '../../types';
+import { Borrower, Loan } from '../../types';
 import type { CreateLoanProps } from '../../navigation/types';
+import { useNetworkStore } from '../../store/network.store';
+import { useMutationQueueStore } from '../../store/mutationQueue.store';
+import { useCacheStore } from '../../store/cache.store';
 
 interface LoanFormData {
   borrowerName: string;
@@ -46,30 +49,89 @@ export function CreateLoanScreen({ navigation }: CreateLoanProps) {
     return { interest, totalRepayment, monthlyPayment };
   }, [watchedAmount, watchedRate, watchedDuration]);
 
+  const isConnected = useNetworkStore((s) => s.isConnected);
+  const addMutation = useMutationQueueStore((s) => s.addMutation);
+  const { addLoan, addBorrower: addCachedBorrower } = useCacheStore();
+
   const onSubmit = async (data: LoanFormData) => {
     setLoading(true);
     try {
-      let borrowerId = selectedBorrower?.id;
+      if (isConnected) {
+        let borrowerId = selectedBorrower?.id;
+        if (!borrowerId) {
+          const newBorrower = await borrowersApi.create({ fullname: data.borrowerName.trim() });
+          borrowerId = newBorrower.id;
+        }
+        await loansApi.create({
+          borrower_id: borrowerId,
+          amount: parseFloat(data.amount),
+          interest_rate: parseFloat(data.interestRate),
+          duration: parseInt(data.duration, 10),
+          duration_unit: 'months',
+          start_date: new Date().toISOString(),
+          notes: data.notes || undefined,
+        });
+        Alert.alert('Prêt créé !', 'Le prêt a été enregistré avec succès.', [
+          { text: 'OK', onPress: () => navigation.goBack() },
+        ]);
+      } else {
+        // Mode offline: queue mutations
+        let borrowerId = selectedBorrower?.id;
+        if (!borrowerId) {
+          const tempBorrowerId = addMutation('CREATE_BORROWER', {
+            fullname: data.borrowerName.trim(),
+            tempId: `temp_b_${Date.now()}`,
+          });
+          borrowerId = tempBorrowerId;
+          addCachedBorrower({
+            id: tempBorrowerId,
+            user_id: '',
+            fullname: data.borrowerName.trim(),
+            created_at: new Date().toISOString(),
+          });
+        }
 
-      // Créer l'emprunteur s'il n'existe pas
-      if (!borrowerId) {
-        const newBorrower = await borrowersApi.create({ fullname: data.borrowerName.trim() });
-        borrowerId = newBorrower.id;
+        const amount = parseFloat(data.amount);
+        const rate = parseFloat(data.interestRate);
+        const duration = parseInt(data.duration, 10);
+        const total = amount + amount * (rate / 100) * duration;
+        const monthly = total / duration;
+        const tempLoanId = addMutation('CREATE_LOAN', {
+          borrower_id: borrowerId,
+          amount,
+          interest_rate: rate,
+          duration,
+          duration_unit: 'months',
+          start_date: new Date().toISOString(),
+          notes: data.notes || undefined,
+          tempId: `temp_l_${Date.now()}`,
+        });
+
+        // Add optimistic loan to cache
+        addLoan({
+          id: tempLoanId,
+          user_id: '',
+          borrower_id: borrowerId,
+          borrower: { id: borrowerId, user_id: '', fullname: data.borrowerName.trim(), created_at: '' },
+          amount,
+          interest_rate: rate,
+          duration,
+          duration_unit: 'months',
+          monthly_payment: monthly,
+          total_repayment: total,
+          remaining_balance: total,
+          currency: 'FCFA',
+          status: 'active',
+          start_date: new Date().toISOString(),
+          end_date: '',
+          notes: data.notes || undefined,
+          created_at: new Date().toISOString(),
+        } as Loan);
+
+        Alert.alert('Sauvegardé localement', 'Le prêt sera synchronisé dès la reconnexion.', [
+          { text: 'OK', onPress: () => navigation.goBack() },
+        ]);
       }
-
-      await loansApi.create({
-        borrower_id: borrowerId,
-        amount: parseFloat(data.amount),
-        interest_rate: parseFloat(data.interestRate),
-        duration: parseInt(data.duration, 10),
-        duration_unit: 'months',
-        start_date: new Date().toISOString(),
-        notes: data.notes || undefined,
-      });
-
-      Alert.alert('Prêt créé !', 'Le prêt a été enregistré avec succès.', [
-        { text: 'OK', onPress: () => navigation.goBack() },
-      ]);
     } catch (e: unknown) {
       Alert.alert('Erreur', e instanceof Error ? e.message : 'Erreur inconnue');
     } finally {

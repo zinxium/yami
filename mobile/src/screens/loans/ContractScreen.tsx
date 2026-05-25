@@ -9,7 +9,7 @@ import { api } from '../../api/client';
 import { loansApi } from '../../api/loans.api';
 import { useTheme } from '../../hooks/useTheme';
 import { formatCurrency, formatDate } from '../../utils/format';
-import type { Loan, ScheduleItem } from '../../types';
+import type { Loan } from '../../types';
 import type { ContractProps } from '../../navigation/types';
 
 export function ContractScreen({ route, navigation }: ContractProps) {
@@ -17,7 +17,7 @@ export function ContractScreen({ route, navigation }: ContractProps) {
   const { loanId } = route.params;
   const { colors } = useTheme();
   const [loan, setLoan] = useState<Loan | null>(null);
-  const [schedule, setSchedule] = useState<ScheduleItem[]>([]);
+  const [schedule, setSchedule] = useState<{ period: number; due_date: string; amount: number; status: string }[]>([]);
   const [contract, setContract] = useState<{ pdf_url?: string; contract_number?: string } | null>(null);
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
