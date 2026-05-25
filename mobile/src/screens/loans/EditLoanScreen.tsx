@@ -8,8 +8,9 @@ import { loansApi } from '../../api/loans.api';
 import { useAuthStore } from '../../store/auth.store';
 import { formatCurrency } from '../../utils/format';
 import type { Loan } from '../../types';
+import type { EditLoanProps } from '../../navigation/types';
 
-export function EditLoanScreen({ route, navigation }: any) {
+export function EditLoanScreen({ route, navigation }: EditLoanProps) {
   const insets = useSafeAreaInsets();
   const user = useAuthStore(s => s.user);
   const { colors } = useTheme();
@@ -46,7 +47,7 @@ export function EditLoanScreen({ route, navigation }: any) {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      const data: any = {};
+      const data: { amount?: number; interest_rate?: number; duration?: number } = {};
       if (amount) data.amount = parseFloat(amount);
       if (interestRate) data.interest_rate = parseFloat(interestRate);
       if (duration) data.duration = parseInt(duration, 10);
@@ -54,8 +55,8 @@ export function EditLoanScreen({ route, navigation }: any) {
       Alert.alert('Modifié', 'Le prêt a été mis à jour.', [
         { text: 'OK', onPress: () => navigation.goBack() },
       ]);
-    } catch (e: any) {
-      Alert.alert('Erreur', e.message);
+    } catch (e: unknown) {
+      Alert.alert('Erreur', e instanceof Error ? e.message : 'Erreur inconnue');
     } finally {
       setLoading(false);
     }

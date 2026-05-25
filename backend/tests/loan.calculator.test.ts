@@ -1,4 +1,4 @@
-import { calculateLoan, generateContractNumber } from './loan.calculator';
+import { calculateLoan, generateContractNumber } from '../src/utils/loan.calculator';
 
 describe('calculateLoan', () => {
   it('calcule correctement 50 000 FCFA à 5% sur 6 mois', () => {

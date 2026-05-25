@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
 import * as authService from './auth.service';
+import { getErrorStatus, getErrorMessage } from '../../utils/error';
 
 export async function register(req: Request, res: Response): Promise<void> {
   try {
     const result = await authService.register(req.body);
     res.status(201).json(result);
-  } catch (error: any) {
-    const status = error.status || 500;
-    res.status(status).json({ error: error.message || 'Erreur serveur.' });
+  } catch (error: unknown) {
+    res.status(getErrorStatus(error)).json({ error: getErrorMessage(error) });
   }
 }
 
@@ -15,9 +15,8 @@ export async function login(req: Request, res: Response): Promise<void> {
   try {
     const result = await authService.login(req.body);
     res.json(result);
-  } catch (error: any) {
-    const status = error.status || 500;
-    res.status(status).json({ error: error.message || 'Erreur serveur.' });
+  } catch (error: unknown) {
+    res.status(getErrorStatus(error)).json({ error: getErrorMessage(error) });
   }
 }
 
@@ -30,9 +29,8 @@ export async function refresh(req: Request, res: Response): Promise<void> {
     }
     const result = await authService.refresh(refreshToken);
     res.json(result);
-  } catch (error: any) {
-    const status = error.status || 500;
-    res.status(status).json({ error: error.message || 'Erreur serveur.' });
+  } catch (error: unknown) {
+    res.status(getErrorStatus(error)).json({ error: getErrorMessage(error) });
   }
 }
 
@@ -45,8 +43,7 @@ export async function forgotPassword(req: Request, res: Response): Promise<void>
   try {
     const result = await authService.forgotPassword(req.body.email);
     res.json(result);
-  } catch (error: any) {
-    const status = error.status || 500;
-    res.status(status).json({ error: error.message || 'Erreur serveur.' });
+  } catch (error: unknown) {
+    res.status(getErrorStatus(error)).json({ error: getErrorMessage(error) });
   }
 }

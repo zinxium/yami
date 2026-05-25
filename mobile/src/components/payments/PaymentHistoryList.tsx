@@ -36,8 +36,8 @@ export function PaymentHistoryList({ payments, onRefresh }: PaymentHistoryListPr
           try {
             await paymentsApi.delete(payment.id);
             onRefresh();
-          } catch (e: any) {
-            Alert.alert('Erreur', e.message);
+          } catch (e: unknown) {
+            Alert.alert('Erreur', e instanceof Error ? e.message : 'Erreur inconnue');
           }
         },
       },

@@ -10,15 +10,17 @@ import { formatCurrency, formatDate } from '../../utils/format';
 import { shareTicket } from '../../services/sharing.service';
 import { Colors } from '../../constants/colors';
 import type { LoanDetailProps } from '../../navigation/types';
-import type { Loan, Payment } from '../../types';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../../navigation/types';
+import type { Loan, Payment, ScheduleItem } from '../../types';
 
 export function LoanDetailScreen({ route, navigation }: LoanDetailProps) {
   const insets = useSafeAreaInsets();
-  const rootNav = useNavigation<any>();
+  const rootNav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { colors } = useTheme();
   const { loanId } = route.params;
   const [loan, setLoan] = useState<Loan | null>(null);
-  const [schedule, setSchedule] = useState<any[]>([]);
+  const [schedule, setSchedule] = useState<ScheduleItem[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
   const [showSchedule, setShowSchedule] = useState(false);
@@ -35,8 +37,8 @@ export function LoanDetailScreen({ route, navigation }: LoanDetailProps) {
       setLoan(loanData);
       setSchedule(scheduleData);
       setPayments(paymentsData);
-    } catch (e: any) {
-      Alert.alert('Erreur', e.message);
+    } catch (e: unknown) {
+      Alert.alert('Erreur', e instanceof Error ? e.message : 'Erreur inconnue');
     } finally {
       setLoading(false);
     }
@@ -85,8 +87,8 @@ export function LoanDetailScreen({ route, navigation }: LoanDetailProps) {
     try {
       const { ticket } = await loansApi.getTicket(loanId);
       await shareTicket(ticket, loan.borrower?.phone);
-    } catch (e: any) {
-      Alert.alert('Erreur', e.message);
+    } catch (e: unknown) {
+      Alert.alert('Erreur', e instanceof Error ? e.message : 'Erreur inconnue');
     }
   };
 

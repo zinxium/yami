@@ -1,68 +1,152 @@
-import request from 'supertest';
-import app from '../src/index';
-import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 
-const prisma = new PrismaClient();
+// Mock Prisma
+jest.mock('../src/config/prisma', () => ({
+  prisma: {
+    user: {
+      findUnique: jest.fn(),
+      create: jest.fn(),
+    },
+  },
+}));
+
+import { prisma } from '../src/config/prisma';
+import * as authService from '../src/modules/auth/auth.service';
+
+const mockUser = {
+  id: 'user-123',
+  fullname: 'Test User',
+  email: 'test@example.com',
+  phone: '+22507000000',
+  password: '', // Will be set in beforeAll
+  created_at: new Date(),
+};
 
 beforeAll(async () => {
-  // Nettoyer la base de données avant les tests
-  await prisma.user.deleteMany();
+  mockUser.password = await bcrypt.hash('password123', 12);
 });
 
-afterAll(async () => {
-  // Fermer la connexion Prisma après les tests
-  await prisma.$disconnect();
+beforeEach(() => {
+  jest.clearAllMocks();
 });
 
-describe('Auth Routes', () => {
-  test('POST /api/auth/signup - Inscription réussie', async () => {
-    const response = await request(app)
-      .post('/api/auth/signup')
-      .send({
+describe('Auth Service - register', () => {
+  it('inscription réussie', async () => {
+    (prisma.user.findUnique as jest.Mock).mockResolvedValue(null);
+    (prisma.user.create as jest.Mock).mockResolvedValue({
+      id: mockUser.id,
+      fullname: mockUser.fullname,
+      email: mockUser.email,
+      phone: mockUser.phone,
+      created_at: mockUser.created_at,
+    });
+
+    const result = await authService.register({
+      fullname: 'Test User',
+      email: 'test@example.com',
+      phone: '+22507000000',
+      password: 'password123',
+    });
+
+    expect(result.user.email).toBe('test@example.com');
+    expect(result.accessToken).toBeDefined();
+    expect(result.refreshToken).toBeDefined();
+  });
+
+  it('échec - email déjà utilisé', async () => {
+    (prisma.user.findUnique as jest.Mock).mockResolvedValueOnce(mockUser);
+
+    await expect(
+      authService.register({
         fullname: 'Test User',
         email: 'test@example.com',
+        phone: '+22507000001',
         password: 'password123',
-      });
-
-    expect(response.status).toBe(201);
-    expect(response.body).toHaveProperty('token');
-    expect(response.body.user).toHaveProperty('email', 'test@example.com');
+      }),
+    ).rejects.toEqual({ status: 409, message: 'Cet email est déjà utilisé.' });
   });
 
-  test('POST /api/auth/login - Connexion réussie', async () => {
-    const response = await request(app)
-      .post('/api/auth/login')
-      .send({
-        email: 'test@example.com',
+  it('échec - téléphone déjà utilisé', async () => {
+    (prisma.user.findUnique as jest.Mock)
+      .mockResolvedValueOnce(null) // email check
+      .mockResolvedValueOnce(mockUser); // phone check
+
+    await expect(
+      authService.register({
+        fullname: 'Test User',
+        email: 'new@example.com',
+        phone: '+22507000000',
         password: 'password123',
-      });
+      }),
+    ).rejects.toEqual({ status: 409, message: 'Ce numéro de téléphone est déjà utilisé.' });
+  });
+});
 
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty('token');
-    expect(response.body.user).toHaveProperty('email', 'test@example.com');
+describe('Auth Service - login', () => {
+  it('connexion réussie', async () => {
+    (prisma.user.findUnique as jest.Mock).mockResolvedValue(mockUser);
+
+    const result = await authService.login({
+      email: 'test@example.com',
+      password: 'password123',
+    });
+
+    expect(result.user.email).toBe('test@example.com');
+    expect(result.accessToken).toBeDefined();
+    expect(result.refreshToken).toBeDefined();
+    // Le mot de passe ne doit pas être retourné
+    expect((result.user as Record<string, unknown>).password).toBeUndefined();
   });
 
-  test('POST /api/auth/login - Échec de connexion (mauvais mot de passe)', async () => {
-    const response = await request(app)
-      .post('/api/auth/login')
-      .send({
-        email: 'test@example.com',
-        password: 'wrongpassword',
-      });
+  it('échec - utilisateur non trouvé', async () => {
+    (prisma.user.findUnique as jest.Mock).mockResolvedValue(null);
 
-    expect(response.status).toBe(401);
-    expect(response.body).toHaveProperty('error', 'Mot de passe incorrect.');
-  });
-
-  test('POST /api/auth/login - Échec de connexion (utilisateur non trouvé)', async () => {
-    const response = await request(app)
-      .post('/api/auth/login')
-      .send({
+    await expect(
+      authService.login({
         email: 'nonexistent@example.com',
         password: 'password123',
-      });
+      }),
+    ).rejects.toEqual({ status: 401, message: 'Email ou mot de passe incorrect.' });
+  });
 
-    expect(response.status).toBe(404);
-    expect(response.body).toHaveProperty('error', 'Utilisateur non trouvé.');
+  it('échec - mauvais mot de passe', async () => {
+    (prisma.user.findUnique as jest.Mock).mockResolvedValue(mockUser);
+
+    await expect(
+      authService.login({
+        email: 'test@example.com',
+        password: 'wrongpassword',
+      }),
+    ).rejects.toEqual({ status: 401, message: 'Email ou mot de passe incorrect.' });
+  });
+});
+
+describe('Auth Service - refresh', () => {
+  it('refresh avec token valide', async () => {
+    // D'abord se connecter pour avoir un refreshToken
+    (prisma.user.findUnique as jest.Mock).mockResolvedValue(mockUser);
+    const loginResult = await authService.login({
+      email: 'test@example.com',
+      password: 'password123',
+    });
+
+    (prisma.user.findUnique as jest.Mock).mockResolvedValue(mockUser);
+    const refreshResult = await authService.refresh(loginResult.refreshToken);
+
+    expect(refreshResult.accessToken).toBeDefined();
+  });
+
+  it('échec - token invalide', async () => {
+    await expect(authService.refresh('invalid-token')).rejects.toEqual({
+      status: 401,
+      message: 'Refresh token invalide ou expiré.',
+    });
+  });
+});
+
+describe('Auth Service - forgotPassword', () => {
+  it('retourne un message générique', async () => {
+    const result = await authService.forgotPassword('test@example.com');
+    expect(result.message).toContain('lien de réinitialisation');
   });
 });

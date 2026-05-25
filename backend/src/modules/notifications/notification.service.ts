@@ -48,7 +48,14 @@ export async function markAsRead(userId: string, notifId: string) {
   });
 }
 
-export async function sendLoanCreated(userId: string, loan: any) {
+interface LoanForNotification {
+  id: string;
+  amount: number | string;
+  currency: string;
+  borrower?: { fullname: string } | null;
+}
+
+export async function sendLoanCreated(userId: string, loan: LoanForNotification) {
   const borrowerName = loan.borrower?.fullname || 'un emprunteur';
   const amount = Number(loan.amount).toLocaleString('fr-FR');
   return send(
@@ -60,7 +67,7 @@ export async function sendLoanCreated(userId: string, loan: any) {
   );
 }
 
-export async function sendPaymentConfirmed(userId: string, loan: any, amountPaid: number) {
+export async function sendPaymentConfirmed(userId: string, loan: LoanForNotification, amountPaid: number) {
   const borrowerName = loan.borrower?.fullname || 'un emprunteur';
   const fmt = amountPaid.toLocaleString('fr-FR');
   return send(
@@ -72,7 +79,7 @@ export async function sendPaymentConfirmed(userId: string, loan: any, amountPaid
   );
 }
 
-export async function sendReminder(userId: string, loan: any, daysLeft: number) {
+export async function sendReminder(userId: string, loan: LoanForNotification, daysLeft: number) {
   const borrowerName = loan.borrower?.fullname || 'un emprunteur';
   return send(
     userId,
@@ -83,7 +90,7 @@ export async function sendReminder(userId: string, loan: any, daysLeft: number) 
   );
 }
 
-export async function sendOverdue(userId: string, loan: any) {
+export async function sendOverdue(userId: string, loan: LoanForNotification) {
   const borrowerName = loan.borrower?.fullname || 'un emprunteur';
   return send(
     userId,

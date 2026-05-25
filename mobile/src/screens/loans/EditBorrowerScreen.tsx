@@ -37,8 +37,8 @@ export function EditBorrowerScreen({ route, navigation }: EditBorrowerProps) {
       Alert.alert('Modifié', `${fullname} a été mis à jour.`, [
         { text: 'OK', onPress: () => navigation.goBack() },
       ]);
-    } catch (e: any) {
-      Alert.alert('Erreur', e.message);
+    } catch (e: unknown) {
+      Alert.alert('Erreur', e instanceof Error ? e.message : 'Erreur inconnue');
     } finally {
       setLoading(false);
     }
@@ -52,8 +52,8 @@ export function EditBorrowerScreen({ route, navigation }: EditBorrowerProps) {
           try {
             await borrowersApi.delete(borrower.id);
             navigation.goBack();
-          } catch (e: any) {
-            Alert.alert('Erreur', e.message);
+          } catch (e: unknown) {
+            Alert.alert('Erreur', e instanceof Error ? e.message : 'Erreur inconnue');
           }
         },
       },

@@ -23,8 +23,8 @@ export function LoginScreen({ navigation }: LoginProps) {
     setError('');
     try {
       await login(email.trim(), password);
-    } catch (e: any) {
-      setError(e.message || 'Erreur de connexion.');
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'Erreur de connexion.');
     } finally {
       setLoading(false);
     }

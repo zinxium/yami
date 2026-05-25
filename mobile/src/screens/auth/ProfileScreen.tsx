@@ -28,8 +28,8 @@ export function ProfileScreen() {
       } else {
         Alert.alert('Exporté', 'Fichier téléchargé.');
       }
-    } catch (e: any) {
-      Alert.alert('Erreur', e.message);
+    } catch (e: unknown) {
+      Alert.alert('Erreur', e instanceof Error ? e.message : 'Erreur inconnue');
     }
   };
 

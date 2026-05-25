@@ -39,7 +39,7 @@ export async function create(userId: string, data: CreatePaymentInput) {
 
   // Mettre à jour le solde restant
   const newBalance = Number(loan.remaining_balance) - data.amount_paid;
-  const updateData: any = {
+  const updateData: { remaining_balance: number; status?: string } = {
     remaining_balance: Math.max(0, newBalance),
   };
 

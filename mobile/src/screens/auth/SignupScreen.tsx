@@ -34,8 +34,8 @@ export function SignupScreen({ navigation }: SignupProps) {
     setError('');
     try {
       await register({ fullname: fullname.trim(), email: email.trim(), phone: phone.trim(), password });
-    } catch (e: any) {
-      setError(e.message || 'Erreur lors de l\'inscription.');
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'Erreur lors de l\'inscription.');
     } finally {
       setLoading(false);
     }

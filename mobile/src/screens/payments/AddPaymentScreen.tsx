@@ -9,10 +9,11 @@ import { useTheme } from '../../hooks/useTheme';
 import { useAuthStore } from '../../store/auth.store';
 import { formatCurrency, formatDate } from '../../utils/format';
 import type { Loan } from '../../types';
+import type { AddPaymentProps } from '../../navigation/types';
 
 const PAYMENT_METHODS = ['Virement Bancaire', 'MTN MoMo', 'Orange Money', 'Cash', 'Autre'];
 
-export function AddPaymentScreen({ route, navigation }: any) {
+export function AddPaymentScreen({ route, navigation }: AddPaymentProps) {
   const insets = useSafeAreaInsets();
   const user = useAuthStore(s => s.user);
   const { colors } = useTheme();
@@ -48,8 +49,8 @@ export function AddPaymentScreen({ route, navigation }: any) {
       Alert.alert('Paiement enregistré', 'Le paiement a été ajouté avec succès.', [
         { text: 'OK', onPress: () => navigation.goBack() },
       ]);
-    } catch (e: any) {
-      Alert.alert('Erreur', e.message);
+    } catch (e: unknown) {
+      Alert.alert('Erreur', e instanceof Error ? e.message : 'Erreur inconnue');
     } finally {
       setLoading(false);
     }

@@ -59,3 +59,10 @@ export interface ApiError {
   error: string;
   details?: Record<string, string[]>;
 }
+
+export interface ScheduleItem {
+  period: number;
+  due_date: string;
+  amount: number;
+  status: 'paid' | 'overdue' | 'upcoming';
+}

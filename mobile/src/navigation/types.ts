@@ -48,4 +48,6 @@ export type LoanDetailProps = NativeStackScreenProps<HomeStackParamList, 'LoanDe
 export type AddPaymentProps = NativeStackScreenProps<RootStackParamList, 'AddPayment'>;
 export type ContractProps = NativeStackScreenProps<RootStackParamList, 'Contract'>;
 export type EditBorrowerProps = NativeStackScreenProps<RootStackParamList, 'EditBorrower'>;
+export type ForgotPasswordProps = NativeStackScreenProps<RootStackParamList, 'ForgotPassword'>;
+export type AddBorrowerProps = NativeStackScreenProps<RootStackParamList, 'AddBorrower'>;
 export type EditLoanProps = NativeStackScreenProps<RootStackParamList, 'EditLoan'>;

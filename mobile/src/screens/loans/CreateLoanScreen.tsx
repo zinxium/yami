@@ -70,8 +70,8 @@ export function CreateLoanScreen({ navigation }: CreateLoanProps) {
       Alert.alert('Prêt créé !', 'Le prêt a été enregistré avec succès.', [
         { text: 'OK', onPress: () => navigation.goBack() },
       ]);
-    } catch (e: any) {
-      Alert.alert('Erreur', e.message);
+    } catch (e: unknown) {
+      Alert.alert('Erreur', e instanceof Error ? e.message : 'Erreur inconnue');
     } finally {
       setLoading(false);
     }

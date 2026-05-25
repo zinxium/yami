@@ -2,6 +2,8 @@ import React, { useCallback, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, RefreshControl, Alert } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../../navigation/types';
 import { Ionicons } from '@expo/vector-icons';
 import { Avatar, Card, EmptyState, LoadingSpinner, ScreenHeader, Logo } from '../../components/common';
 import { useBorrowers } from '../../hooks/useLoans';
@@ -10,7 +12,7 @@ import { borrowersApi } from '../../api/borrowers.api';
 
 export function BorrowersScreen() {
   const insets = useSafeAreaInsets();
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { borrowers, loading, refetch } = useBorrowers();
   const { colors } = useTheme();
   const [refreshing, setRefreshing] = useState(false);
@@ -27,8 +29,8 @@ export function BorrowersScreen() {
           try {
             await borrowersApi.delete(id);
             refetch();
-          } catch (e: any) {
-            Alert.alert('Erreur', e.message);
+          } catch (e: unknown) {
+            Alert.alert('Erreur', e instanceof Error ? e.message : 'Erreur inconnue');
           }
         }
       },

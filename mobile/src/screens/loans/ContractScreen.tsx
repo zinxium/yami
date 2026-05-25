@@ -9,14 +9,15 @@ import { api } from '../../api/client';
 import { loansApi } from '../../api/loans.api';
 import { useTheme } from '../../hooks/useTheme';
 import { formatCurrency, formatDate } from '../../utils/format';
-import type { Loan } from '../../types';
+import type { Loan, ScheduleItem } from '../../types';
+import type { ContractProps } from '../../navigation/types';
 
-export function ContractScreen({ route, navigation }: any) {
+export function ContractScreen({ route, navigation }: ContractProps) {
   const insets = useSafeAreaInsets();
   const { loanId } = route.params;
   const { colors } = useTheme();
   const [loan, setLoan] = useState<Loan | null>(null);
-  const [schedule, setSchedule] = useState<any[]>([]);
+  const [schedule, setSchedule] = useState<ScheduleItem[]>([]);
   const [contract, setContract] = useState<{ pdf_url?: string; contract_number?: string } | null>(null);
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
@@ -38,8 +39,8 @@ export function ContractScreen({ route, navigation }: any) {
     try {
       const result = await api.post<{ pdf_url: string; contract_number: string }>('/api/contracts/generate', { loan_id: loanId });
       setContract(result);
-    } catch (e: any) {
-      Alert.alert('Erreur', e.message);
+    } catch (e: unknown) {
+      Alert.alert('Erreur', e instanceof Error ? e.message : 'Erreur inconnue');
     }
     setLoading(false);
   };
@@ -52,8 +53,8 @@ export function ContractScreen({ route, navigation }: any) {
       if (await Sharing.isAvailableAsync()) {
         await Sharing.shareAsync(uri);
       }
-    } catch (e: any) {
-      Alert.alert('Erreur', e.message);
+    } catch (e: unknown) {
+      Alert.alert('Erreur', e instanceof Error ? e.message : 'Erreur inconnue');
     }
   };
 

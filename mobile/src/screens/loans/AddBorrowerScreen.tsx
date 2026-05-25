@@ -4,8 +4,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ScreenHeader, Button, Logo } from '../../components/common';
 import { useTheme } from '../../hooks/useTheme';
 import { borrowersApi } from '../../api/borrowers.api';
+import type { AddBorrowerProps } from '../../navigation/types';
 
-export function AddBorrowerScreen({ navigation }: any) {
+export function AddBorrowerScreen({ navigation }: AddBorrowerProps) {
   const insets = useSafeAreaInsets();
   const { colors } = useTheme();
   const [fullname, setFullname] = useState('');
@@ -30,8 +31,8 @@ export function AddBorrowerScreen({ navigation }: any) {
       Alert.alert('Emprunteur ajouté', `${fullname} a été ajouté.`, [
         { text: 'OK', onPress: () => navigation.goBack() },
       ]);
-    } catch (e: any) {
-      Alert.alert('Erreur', e.message);
+    } catch (e: unknown) {
+      Alert.alert('Erreur', e instanceof Error ? e.message : 'Erreur inconnue');
     } finally {
       setLoading(false);
     }

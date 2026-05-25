@@ -1,10 +1,10 @@
 import { prisma } from '../../config/prisma';
 import { calculateLoan, generateContractNumber } from '../../utils/loan.calculator';
 import { CreateLoanInput, UpdateLoanInput } from './loan.schema';
-import { DurationUnit, LoanStatus } from '@prisma/client';
+import { DurationUnit, LoanStatus, Prisma } from '@prisma/client';
 
 export async function getAll(userId: string, filters?: { status?: string; search?: string }) {
-  const where: any = { user_id: userId };
+  const where: Prisma.LoanWhereInput = { user_id: userId };
 
   if (filters?.status && ['active', 'paid', 'overdue'].includes(filters.status)) {
     where.status = filters.status as LoanStatus;
@@ -76,7 +76,7 @@ export async function update(userId: string, loanId: string, data: UpdateLoanInp
     throw { status: 404, message: 'Prêt introuvable.' };
   }
 
-  const updateData: any = { ...data };
+  const updateData: Prisma.LoanUpdateInput = { ...data };
 
   // Recalculer si montant, taux ou durée changent
   const needsRecalc = data.amount || data.interest_rate || data.duration || data.duration_unit || data.start_date;
@@ -125,7 +125,15 @@ export async function markAsPaid(userId: string, loanId: string) {
   });
 }
 
-export function getSchedule(loan: any) {
+interface LoanForSchedule {
+  monthly_payment: number | string;
+  start_date: Date | string;
+  duration: number;
+  duration_unit: string;
+  status: string;
+}
+
+export function getSchedule(loan: LoanForSchedule) {
   const schedule = [];
   const periodPayment = Number(loan.monthly_payment);
   const startDate = new Date(loan.start_date);
@@ -150,7 +158,20 @@ export function getSchedule(loan: any) {
   return schedule;
 }
 
-export function generateTicket(loan: any) {
+interface LoanForTicket {
+  amount: number | string;
+  total_repayment: number | string;
+  monthly_payment: number | string;
+  interest_rate: number | string;
+  start_date: Date | string;
+  end_date: Date | string;
+  duration: number;
+  duration_unit: string;
+  currency: string;
+  borrower?: { fullname: string } | null;
+}
+
+export function generateTicket(loan: LoanForTicket) {
   const borrowerName = loan.borrower?.fullname || 'N/A';
   const amount = Number(loan.amount).toLocaleString('fr-FR');
   const total = Number(loan.total_repayment).toLocaleString('fr-FR');

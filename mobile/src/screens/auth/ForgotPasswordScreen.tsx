@@ -4,8 +4,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { Button } from '../../components/common';
 import { api } from '../../api/client';
+import type { ForgotPasswordProps } from '../../navigation/types';
 
-export function ForgotPasswordScreen({ navigation }: any) {
+export function ForgotPasswordScreen({ navigation }: ForgotPasswordProps) {
   const insets = useSafeAreaInsets();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);

@@ -14,8 +14,8 @@ export function useLoans(filters?: { status?: string; search?: string }) {
     try {
       const data = await loansApi.getAll(filters);
       setLoans(data);
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'Erreur inconnue');
     } finally {
       setLoading(false);
     }
@@ -38,8 +38,8 @@ export function useLoan(loanId: string) {
     try {
       const data = await loansApi.getById(loanId);
       setLoan(data);
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'Erreur inconnue');
     } finally {
       setLoading(false);
     }
@@ -62,8 +62,8 @@ export function useBorrowers() {
     try {
       const data = await borrowersApi.getAll();
       setBorrowers(data);
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'Erreur inconnue');
     } finally {
       setLoading(false);
     }
