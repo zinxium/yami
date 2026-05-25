@@ -2,6 +2,7 @@ import { prisma } from '../../config/prisma';
 import { calculateLoan, generateContractNumber } from '../../utils/loan.calculator';
 import { CreateLoanInput, UpdateLoanInput } from './loan.schema';
 import { DurationUnit, LoanStatus, Prisma } from '@prisma/client';
+import type { Decimal } from '@prisma/client/runtime/library';
 
 export async function getAll(userId: string, filters?: { status?: string; search?: string }) {
   const where: Prisma.LoanWhereInput = { user_id: userId };
@@ -126,7 +127,7 @@ export async function markAsPaid(userId: string, loanId: string) {
 }
 
 interface LoanForSchedule {
-  monthly_payment: number | string;
+  monthly_payment: number | string | Decimal;
   start_date: Date | string;
   duration: number;
   duration_unit: string;
@@ -159,10 +160,10 @@ export function getSchedule(loan: LoanForSchedule) {
 }
 
 interface LoanForTicket {
-  amount: number | string;
-  total_repayment: number | string;
-  monthly_payment: number | string;
-  interest_rate: number | string;
+  amount: number | string | Decimal;
+  total_repayment: number | string | Decimal;
+  monthly_payment: number | string | Decimal;
+  interest_rate: number | string | Decimal;
   start_date: Date | string;
   end_date: Date | string;
   duration: number;

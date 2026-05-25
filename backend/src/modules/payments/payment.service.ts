@@ -1,4 +1,5 @@
 import { prisma } from '../../config/prisma';
+import { LoanStatus } from '@prisma/client';
 import { CreatePaymentInput } from './payment.schema';
 
 export async function getByLoan(userId: string, loanId: string) {
@@ -39,7 +40,7 @@ export async function create(userId: string, data: CreatePaymentInput) {
 
   // Mettre à jour le solde restant
   const newBalance = Number(loan.remaining_balance) - data.amount_paid;
-  const updateData: { remaining_balance: number; status?: string } = {
+  const updateData: { remaining_balance: number; status?: LoanStatus } = {
     remaining_balance: Math.max(0, newBalance),
   };
 

@@ -1,6 +1,7 @@
 import { prisma } from '../../config/prisma';
 import { sendPushNotification } from '../../config/firebase';
 import { NotificationType } from '@prisma/client';
+import type { Decimal } from '@prisma/client/runtime/library';
 
 export async function send(
   userId: string,
@@ -50,7 +51,7 @@ export async function markAsRead(userId: string, notifId: string) {
 
 interface LoanForNotification {
   id: string;
-  amount: number | string;
+  amount: number | string | Decimal;
   currency: string;
   borrower?: { fullname: string } | null;
 }
