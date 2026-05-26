@@ -17,6 +17,9 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
+// --- Trust proxy (Railway, Render, etc.) ---
+app.set('trust proxy', 1);
+
 // --- Securite ---
 app.use(helmet({
   contentSecurityPolicy: false,
