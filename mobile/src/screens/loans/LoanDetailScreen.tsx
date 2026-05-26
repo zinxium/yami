@@ -21,7 +21,7 @@ import type { Loan, Payment } from '../../types';
 export function LoanDetailScreen({ route, navigation }: LoanDetailProps) {
   const insets = useSafeAreaInsets();
   const rootNav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const { colors } = useTheme();
+  const { colors, isDarkMode } = useTheme();
   const user = useAuthStore((s) => s.user);
   const { loanId } = route.params;
   const [loan, setLoan] = useState<Loan | null>(null);
@@ -66,8 +66,17 @@ export function LoanDetailScreen({ route, navigation }: LoanDetailProps) {
     ? Math.round(((Number(loan.total_repayment) - Number(loan.remaining_balance)) / Number(loan.total_repayment)) * 100)
     : 0;
 
+  // Glass card style for dark mode
+  const glassCardStyle = {
+    backgroundColor: isDarkMode ? `${colors.surface}CC` : colors.surface,
+    borderWidth: 1,
+    borderColor: isDarkMode ? colors.border : colors.borderLight,
+    borderRadius: 16,
+    padding: 16,
+  };
+
   const handleMarkPaid = () => {
-    Alert.alert('Confirmer', 'Marquer ce prêt comme remboursé ?', [
+    Alert.alert('Confirmer', 'Marquer ce pr\u00eat comme rembours\u00e9 ?', [
       { text: 'Annuler', style: 'cancel' },
       {
         text: 'Confirmer', onPress: async () => {
@@ -79,7 +88,7 @@ export function LoanDetailScreen({ route, navigation }: LoanDetailProps) {
   };
 
   const handleDelete = () => {
-    Alert.alert('Supprimer', 'Supprimer ce prêt définitivement ?', [
+    Alert.alert('Supprimer', 'Supprimer ce pr\u00eat d\u00e9finitivement ?', [
       { text: 'Annuler', style: 'cancel' },
       {
         text: 'Supprimer', style: 'destructive', onPress: async () => {
@@ -91,7 +100,7 @@ export function LoanDetailScreen({ route, navigation }: LoanDetailProps) {
   };
 
   const getTicketData = (): TicketData => ({
-    lenderName: user?.fullname || 'Prêteur',
+    lenderName: user?.fullname || 'Pr\u00eateur',
     borrowerName,
     borrowerPhone: loan.borrower?.phone,
     amount: Number(loan.amount),
@@ -136,7 +145,12 @@ export function LoanDetailScreen({ route, navigation }: LoanDetailProps) {
 
   return (
     <View className="flex-1" style={{ backgroundColor: colors.background }}>
-      <ScreenHeader title="" showBack onBack={() => navigation.goBack()} rightElement={<Avatar name={borrowerName} size="sm" />} />
+      <ScreenHeader
+        title="Ya Mi"
+        showBack
+        onBack={() => navigation.goBack()}
+        rightElement={<Avatar name={borrowerName} size="sm" />}
+      />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: insets.bottom + 32 }}>
         {/* Status + nom */}
@@ -149,126 +163,289 @@ export function LoanDetailScreen({ route, navigation }: LoanDetailProps) {
         <Text className="text-center text-[36px] font-bold mb-1" style={{ color: colors.textPrimary }}>
           {formatCurrency(Number(loan.total_repayment))}
         </Text>
-        <Text className="text-center text-[13px] mb-5" style={{ color: colors.textSecondary }}>Total à rembourser</Text>
+        <Text className="text-center text-[13px] mb-5" style={{ color: colors.textSecondary }}>Total a rembourser</Text>
 
-        {/* Info chips */}
-        <View className="flex-row justify-center gap-2 px-4 mb-5">
-          <View className="border rounded-full px-4 py-2 items-center" style={{ borderColor: colors.borderLight }}>
-            <Text className="text-[10px] uppercase tracking-[1px]" style={{ color: colors.textMuted }}>Taux</Text>
-            <Text className="text-[14px] font-bold" style={{ color: colors.textPrimary }}>{Number(loan.interest_rate)}%</Text>
-          </View>
-          <View className="border rounded-full px-4 py-2 items-center" style={{ borderColor: colors.borderLight }}>
-            <Text className="text-[10px] uppercase tracking-[1px]" style={{ color: colors.textMuted }}>Durée</Text>
-            <Text className="text-[14px] font-bold" style={{ color: colors.textPrimary }}>{loan.duration} {loan.duration_unit === 'months' ? 'mois' : 'sem.'}</Text>
-          </View>
-          <View className="border rounded-full px-4 py-2 items-center" style={{ borderColor: colors.borderLight }}>
-            <Text className="text-[10px] uppercase tracking-[1px]" style={{ color: colors.textMuted }}>Mensualité</Text>
-            <Text className="text-[14px] font-bold" style={{ color: colors.textPrimary }}>{formatCurrency(Number(loan.monthly_payment))}</Text>
-          </View>
-        </View>
-
-        {/* Barre de progression */}
+        {/* Barre de progression - glass card */}
         <View className="mx-5 mb-5">
-          <Card>
+          <View style={glassCardStyle}>
             <View className="flex-row items-center justify-between mb-2">
               <Text className="text-[13px]" style={{ color: colors.textSecondary }}>Remboursement</Text>
-              <Text className="text-[14px] font-bold" style={{ color: colors.primary }}>{progressPercent}%</Text>
+              <Text className="text-[14px] font-bold" style={{ color: colors.secondary }}>{progressPercent}%</Text>
             </View>
-            <View className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: colors.borderLight }}>
-              <View className="h-full rounded-full" style={{ width: `${progressPercent}%`, backgroundColor: colors.primary }} />
+            <View className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: isDarkMode ? colors.borderLight : colors.borderLight }}>
+              <View className="h-full rounded-full" style={{ width: `${progressPercent}%`, backgroundColor: colors.secondary }} />
             </View>
             <Text className="text-[12px] mt-2" style={{ color: colors.textSecondary }}>
               Reste : {formatCurrency(Number(loan.remaining_balance))}
             </Text>
-          </Card>
+          </View>
+        </View>
+
+        {/* Specifications card */}
+        <View className="mx-5 mb-5">
+          <Text className="text-[16px] font-bold mb-3" style={{ color: colors.textPrimary }}>
+            Sp{'\u00e9'}cifications
+          </Text>
+          <View style={glassCardStyle}>
+            {/* Taux */}
+            <View className="flex-row items-center justify-between py-3" style={{ borderBottomWidth: 1, borderBottomColor: isDarkMode ? colors.borderLight : colors.borderLight }}>
+              <View className="flex-row items-center">
+                <View style={{ width: 36, height: 36, borderRadius: 10, backgroundColor: isDarkMode ? `${colors.secondary}1A` : `${colors.secondary}15`, justifyContent: 'center', alignItems: 'center', marginRight: 12 }}>
+                  <Ionicons name="trending-up-outline" size={18} color={colors.secondary} />
+                </View>
+                <Text className="text-[14px]" style={{ color: colors.textSecondary }}>Taux</Text>
+              </View>
+              <Text className="text-[14px] font-bold" style={{ color: colors.textPrimary }}>{Number(loan.interest_rate)}%</Text>
+            </View>
+            {/* Duree */}
+            <View className="flex-row items-center justify-between py-3" style={{ borderBottomWidth: 1, borderBottomColor: isDarkMode ? colors.borderLight : colors.borderLight }}>
+              <View className="flex-row items-center">
+                <View style={{ width: 36, height: 36, borderRadius: 10, backgroundColor: isDarkMode ? `${colors.secondary}1A` : `${colors.secondary}15`, justifyContent: 'center', alignItems: 'center', marginRight: 12 }}>
+                  <Ionicons name="time-outline" size={18} color={colors.secondary} />
+                </View>
+                <Text className="text-[14px]" style={{ color: colors.textSecondary }}>Dur{'\u00e9'}e</Text>
+              </View>
+              <Text className="text-[14px] font-bold" style={{ color: colors.textPrimary }}>{loan.duration} {loan.duration_unit === 'months' ? 'mois' : 'sem.'}</Text>
+            </View>
+            {/* Date d'Octroi */}
+            <View className="flex-row items-center justify-between py-3" style={{ borderBottomWidth: 1, borderBottomColor: isDarkMode ? colors.borderLight : colors.borderLight }}>
+              <View className="flex-row items-center">
+                <View style={{ width: 36, height: 36, borderRadius: 10, backgroundColor: isDarkMode ? `${colors.secondary}1A` : `${colors.secondary}15`, justifyContent: 'center', alignItems: 'center', marginRight: 12 }}>
+                  <Ionicons name="calendar-outline" size={18} color={colors.secondary} />
+                </View>
+                <Text className="text-[14px]" style={{ color: colors.textSecondary }}>Date d'Octroi</Text>
+              </View>
+              <Text className="text-[14px] font-bold" style={{ color: colors.textPrimary }}>{formatDate(loan.start_date)}</Text>
+            </View>
+            {/* Mensualite */}
+            <View className="flex-row items-center justify-between py-3">
+              <View className="flex-row items-center">
+                <View style={{ width: 36, height: 36, borderRadius: 10, backgroundColor: isDarkMode ? `${colors.secondary}1A` : `${colors.secondary}15`, justifyContent: 'center', alignItems: 'center', marginRight: 12 }}>
+                  <Ionicons name="cash-outline" size={18} color={colors.secondary} />
+                </View>
+                <Text className="text-[14px]" style={{ color: colors.textSecondary }}>Mensualit{'\u00e9'}</Text>
+              </View>
+              <Text className="text-[14px] font-bold" style={{ color: colors.textPrimary }}>{formatCurrency(Number(loan.monthly_payment))}</Text>
+            </View>
+          </View>
         </View>
 
         {loan.notes ? (
           <View className="mx-5 mb-5">
-            <Card>
+            <View style={glassCardStyle}>
               <Text className="text-[12px] mb-1" style={{ color: colors.textSecondary }}>Notes</Text>
               <Text className="text-[14px]" style={{ color: colors.textPrimary }}>{loan.notes}</Text>
-            </Card>
+            </View>
           </View>
         ) : null}
 
-        {/* Actions rapides */}
-        <View className="px-5 mb-4 gap-3">
-          <Button title="Partager le ticket" onPress={() => setShowTicketChoice(true)} variant="secondary" fullWidth icon="share-outline" />
-          <View className="flex-row gap-3">
-            <View className="flex-1">
-              <Button title="Contrat PDF" onPress={() => rootNav.navigate('Contract', { loanId })} variant="outline" fullWidth icon="document-text-outline" />
-            </View>
-            <View className="flex-1">
-              <Button title="Paiement" onPress={() => rootNav.navigate('AddPayment', { loanId })} variant="primary" fullWidth icon="card-outline" />
-            </View>
-          </View>
-          {loan.status !== 'paid' && (
-            <Button title="Marquer remboursé" onPress={handleMarkPaid} variant="outline" fullWidth icon="checkmark-circle-outline" />
+        {/* Historique des Paiements */}
+        <View className="mx-5 mb-5">
+          <TouchableOpacity onPress={() => setShowPayments(!showPayments)} className="flex-row items-center justify-between mb-3">
+            <Text className="text-[16px] font-bold" style={{ color: colors.textPrimary }}>
+              Historique des Paiements
+            </Text>
+            <Ionicons name={showPayments ? 'chevron-up' : 'chevron-down'} size={20} color={colors.textSecondary} />
+          </TouchableOpacity>
+          {showPayments && (
+            payments.length === 0 ? (
+              <Text className="text-[13px]" style={{ color: colors.textSecondary }}>Aucun paiement enregistr{'\u00e9'}.</Text>
+            ) : (
+              <View style={{ ...glassCardStyle, padding: 0, overflow: 'hidden' }}>
+                {payments.map((p, i) => (
+                  <View
+                    key={p.id}
+                    className="flex-row items-center px-4 py-3"
+                    style={i < payments.length - 1 ? { borderBottomWidth: 1, borderBottomColor: isDarkMode ? colors.borderLight : colors.borderLight } : undefined}
+                  >
+                    {/* Payment icon in secondary circle */}
+                    <View style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: 20,
+                      backgroundColor: `${colors.secondary}1A`,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginRight: 12,
+                    }}>
+                      <Ionicons name="arrow-up-outline" size={18} color={colors.secondary} />
+                    </View>
+                    {/* Payment info */}
+                    <View className="flex-1">
+                      <Text className="text-[14px] font-semibold" style={{ color: colors.textPrimary }}>Paiement</Text>
+                      <Text className="text-[12px] mt-0.5" style={{ color: colors.textMuted }}>{formatDate(p.payment_date)}</Text>
+                    </View>
+                    {/* Amount + badge */}
+                    <View className="items-end">
+                      <Text className="text-[14px] font-bold" style={{ color: colors.secondary }}>
+                        {formatCurrency(p.amount_paid)}
+                      </Text>
+                      <View style={{
+                        backgroundColor: `${colors.success}20`,
+                        borderRadius: 8,
+                        paddingHorizontal: 8,
+                        paddingVertical: 2,
+                        marginTop: 4,
+                      }}>
+                        <Text style={{ fontSize: 10, fontWeight: '600', color: colors.success }}>Succ{'\u00e8'}s</Text>
+                      </View>
+                    </View>
+                  </View>
+                ))}
+              </View>
+            )
           )}
-          <Button title="Modifier le prêt" onPress={() => rootNav.navigate('EditLoan', { loanId })} variant="outline" fullWidth icon="create-outline" />
         </View>
 
-        {/* Accordéon Échéancier */}
-        <View className="px-5 mb-4">
-          <TouchableOpacity onPress={() => setShowSchedule(!showSchedule)} className="flex-row items-center justify-between mb-2">
-            <Text className="text-[16px] font-bold" style={{ color: colors.primary }}>Échéancier</Text>
-            <Ionicons name={showSchedule ? 'chevron-up' : 'chevron-down'} size={20} color={colors.primary} />
+        {/* Echeancier accordion */}
+        <View className="mx-5 mb-5">
+          <TouchableOpacity onPress={() => setShowSchedule(!showSchedule)} className="flex-row items-center justify-between mb-3">
+            <Text className="text-[16px] font-bold" style={{ color: colors.textPrimary }}>
+              {'\u00c9'}ch{'\u00e9'}ancier
+            </Text>
+            <Ionicons name={showSchedule ? 'chevron-up' : 'chevron-down'} size={20} color={colors.textSecondary} />
           </TouchableOpacity>
           {showSchedule && (
-            <Card className="p-0 overflow-hidden">
+            <View style={{ ...glassCardStyle, padding: 0, overflow: 'hidden' }}>
               {schedule.map((item, i) => (
                 <View
                   key={i}
-                  className={`flex-row items-center px-4 py-3 ${i < schedule.length - 1 ? 'border-b' : ''}`}
-                  style={i < schedule.length - 1 ? { borderBottomColor: colors.borderLight } : undefined}
+                  className="flex-row items-center px-4 py-3"
+                  style={i < schedule.length - 1 ? { borderBottomWidth: 1, borderBottomColor: isDarkMode ? colors.borderLight : colors.borderLight } : undefined}
                 >
                   <Text className="text-[13px] w-10" style={{ color: colors.textMuted }}>{item.period}</Text>
-                  <View className={`w-2 h-2 rounded-full mx-3 ${item.status === 'paid' ? 'bg-green-500' : item.status === 'overdue' ? 'bg-red-500' : ''}`} style={item.status !== 'paid' && item.status !== 'overdue' ? { backgroundColor: colors.primary } : undefined} />
+                  <View
+                    className="w-2 h-2 rounded-full mx-3"
+                    style={{
+                      backgroundColor: item.status === 'paid'
+                        ? colors.success
+                        : item.status === 'overdue'
+                          ? colors.danger
+                          : colors.secondary,
+                    }}
+                  />
                   <Text className="text-[14px] flex-1" style={{ color: colors.textPrimary }}>{formatDate(item.due_date)}</Text>
                   <Text className="text-[14px] font-bold" style={{ color: colors.textPrimary }}>{formatCurrency(item.amount)}</Text>
                 </View>
               ))}
-            </Card>
+            </View>
           )}
         </View>
 
-        {/* Accordéon Paiements */}
-        <View className="px-5 mb-4">
-          <TouchableOpacity onPress={() => setShowPayments(!showPayments)} className="flex-row items-center justify-between mb-2">
-            <Text className="text-[16px] font-bold" style={{ color: colors.primary }}>Historique paiements ({payments.length})</Text>
-            <Ionicons name={showPayments ? 'chevron-up' : 'chevron-down'} size={20} color={colors.primary} />
+        {/* Action buttons */}
+        <View className="px-5 mb-4 gap-3">
+          {/* Primary action: Paiement */}
+          <TouchableOpacity
+            onPress={() => rootNav.navigate('AddPayment', { loanId })}
+            activeOpacity={0.8}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: isDarkMode ? '#a61c3c' : colors.primary,
+              borderRadius: 14,
+              paddingVertical: 15,
+              gap: 8,
+            }}
+          >
+            <Ionicons name="card-outline" size={20} color={isDarkMode ? '#ffb9bf' : '#fff'} />
+            <Text style={{ fontSize: 15, fontWeight: '700', color: isDarkMode ? '#ffb9bf' : '#fff' }}>
+              Enregistrer un Paiement
+            </Text>
           </TouchableOpacity>
-          {showPayments && (
-            payments.length === 0 ? (
-              <Text className="text-[13px]" style={{ color: colors.textSecondary }}>Aucun paiement enregistré.</Text>
-            ) : (
-              <Card className="p-0 overflow-hidden">
-                {payments.map((p, i) => (
-                  <View
-                    key={p.id}
-                    className={`flex-row items-center px-4 py-3 ${i < payments.length - 1 ? 'border-b' : ''}`}
-                    style={i < payments.length - 1 ? { borderBottomColor: colors.borderLight } : undefined}
-                  >
-                    <Ionicons name="checkmark-circle" size={16} color={colors.success} />
-                    <Text className="text-[14px] flex-1 ml-2" style={{ color: colors.textPrimary }}>{formatDate(p.payment_date)}</Text>
-                    <Text className="text-[14px] font-bold" style={{ color: colors.textPrimary }}>{formatCurrency(p.amount_paid)}</Text>
-                  </View>
-                ))}
-              </Card>
-            )
+
+          {/* Secondary actions row */}
+          <View className="flex-row gap-3">
+            <TouchableOpacity
+              onPress={() => setShowTicketChoice(true)}
+              activeOpacity={0.8}
+              className="flex-1"
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: isDarkMode ? colors.surfaceHigh : colors.surface,
+                borderRadius: 14,
+                paddingVertical: 13,
+                borderWidth: isDarkMode ? 1 : 1,
+                borderColor: isDarkMode ? colors.border : colors.borderLight,
+                gap: 6,
+              }}
+            >
+              <Ionicons name="share-outline" size={18} color={colors.textPrimary} />
+              <Text style={{ fontSize: 14, fontWeight: '600', color: colors.textPrimary }}>Partager</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => rootNav.navigate('Contract', { loanId })}
+              activeOpacity={0.8}
+              className="flex-1"
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: isDarkMode ? colors.surfaceHigh : colors.surface,
+                borderRadius: 14,
+                paddingVertical: 13,
+                borderWidth: 1,
+                borderColor: isDarkMode ? colors.border : colors.borderLight,
+                gap: 6,
+              }}
+            >
+              <Ionicons name="document-text-outline" size={18} color={colors.textPrimary} />
+              <Text style={{ fontSize: 14, fontWeight: '600', color: colors.textPrimary }}>Contrat</Text>
+            </TouchableOpacity>
+          </View>
+
+          {loan.status !== 'paid' && (
+            <TouchableOpacity
+              onPress={handleMarkPaid}
+              activeOpacity={0.8}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: isDarkMode ? colors.surfaceHigh : colors.surface,
+                borderRadius: 14,
+                paddingVertical: 13,
+                borderWidth: 1,
+                borderColor: isDarkMode ? colors.border : colors.borderLight,
+                gap: 8,
+              }}
+            >
+              <Ionicons name="checkmark-circle-outline" size={20} color={colors.success} />
+              <Text style={{ fontSize: 14, fontWeight: '600', color: colors.textPrimary }}>Marquer rembours{'\u00e9'}</Text>
+            </TouchableOpacity>
           )}
+
+          <TouchableOpacity
+            onPress={() => rootNav.navigate('EditLoan', { loanId })}
+            activeOpacity={0.8}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: isDarkMode ? colors.surfaceHigh : colors.surface,
+              borderRadius: 14,
+              paddingVertical: 13,
+              borderWidth: 1,
+              borderColor: isDarkMode ? colors.border : colors.borderLight,
+              gap: 8,
+            }}
+          >
+            <Ionicons name="create-outline" size={20} color={colors.textPrimary} />
+            <Text style={{ fontSize: 14, fontWeight: '600', color: colors.textPrimary }}>Modifier le pr{'\u00ea'}t</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Supprimer */}
         <View className="px-5 mt-2">
           <TouchableOpacity onPress={handleDelete} className="items-center py-3">
-            <Text className="text-[14px] font-bold" style={{ color: colors.danger }}>Supprimer ce prêt</Text>
+            <Text className="text-[14px] font-bold" style={{ color: colors.danger }}>Supprimer ce pr{'\u00ea'}t</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
 
-      {/* ViewShot caché pour capture PNG */}
+      {/* ViewShot cache pour capture PNG */}
       <View style={{ position: 'absolute', left: -9999 }}>
         <ViewShot ref={viewShotRef} options={{ format: 'png', quality: 1 }}>
           <TicketView data={getTicketData()} />
@@ -284,12 +461,15 @@ export function LoanDetailScreen({ route, navigation }: LoanDetailProps) {
         >
           <View
             style={{
-              backgroundColor: colors.surface,
+              backgroundColor: isDarkMode ? `${colors.surface}F2` : colors.surface,
               borderTopLeftRadius: 20,
               borderTopRightRadius: 20,
               paddingHorizontal: 20,
               paddingTop: 20,
               paddingBottom: insets.bottom + 20,
+              borderWidth: isDarkMode ? 1 : 0,
+              borderBottomWidth: 0,
+              borderColor: colors.border,
             }}
           >
             <Text style={{ fontSize: 18, fontWeight: '700', color: colors.textPrimary, textAlign: 'center', marginBottom: 4 }}>
@@ -310,15 +490,15 @@ export function LoanDetailScreen({ route, navigation }: LoanDetailProps) {
                 padding: 16,
                 marginBottom: 10,
                 borderWidth: 1,
-                borderColor: colors.borderLight,
+                borderColor: isDarkMode ? colors.border : colors.borderLight,
               }}
             >
-              <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: '#4D001315', justifyContent: 'center', alignItems: 'center' }}>
-                <Ionicons name="image-outline" size={22} color={colors.primary} />
+              <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: `${colors.secondary}1A`, justifyContent: 'center', alignItems: 'center' }}>
+                <Ionicons name="image-outline" size={22} color={colors.secondary} />
               </View>
               <View style={{ marginLeft: 14, flex: 1 }}>
                 <Text style={{ fontSize: 15, fontWeight: '600', color: colors.textPrimary }}>Image PNG</Text>
-                <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 2 }}>Idéal pour WhatsApp, Telegram</Text>
+                <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 2 }}>Id{'\u00e9'}al pour WhatsApp, Telegram</Text>
               </View>
               <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
             </TouchableOpacity>
@@ -333,15 +513,15 @@ export function LoanDetailScreen({ route, navigation }: LoanDetailProps) {
                 borderRadius: 12,
                 padding: 16,
                 borderWidth: 1,
-                borderColor: colors.borderLight,
+                borderColor: isDarkMode ? colors.border : colors.borderLight,
               }}
             >
-              <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: '#80002015', justifyContent: 'center', alignItems: 'center' }}>
+              <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: `${colors.primary}20`, justifyContent: 'center', alignItems: 'center' }}>
                 <Ionicons name="document-text-outline" size={22} color={colors.primary} />
               </View>
               <View style={{ marginLeft: 14, flex: 1 }}>
                 <Text style={{ fontSize: 15, fontWeight: '600', color: colors.textPrimary }}>Document PDF</Text>
-                <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 2 }}>Idéal pour archivage, email</Text>
+                <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 2 }}>Id{'\u00e9'}al pour archivage, email</Text>
               </View>
               <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
             </TouchableOpacity>

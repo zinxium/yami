@@ -36,7 +36,7 @@ export const Colors = {
     surfaceHigh: '#FFFFFF',
   },
 
-  // Dark Mode
+  // Dark Mode (Elysian Noir — based on design mockups)
   dark: {
     primary:    '#ffb2b9',
     secondary:  '#e6c443',
@@ -51,6 +51,10 @@ export const Colors = {
     primaryLight:   '#a61c3c80',
     secondaryLight: '#ac8e0140',
     tertiaryLight:  '#6451561a',
+    // Containers (Material 3)
+    primaryContainer: '#a61c3c',
+    onPrimaryContainer: '#ffb9bf',
+    surfaceContainerLow: '#22191b',
 
     // Statuts
     success: '#4CAF50',
