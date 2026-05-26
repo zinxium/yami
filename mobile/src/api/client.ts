@@ -1,6 +1,10 @@
 import * as SecureStore from 'expo-secure-store';
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:4000';
+const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://yami-production.up.railway.app';
+
+if (!__DEV__ && !API_URL.startsWith('https://')) {
+  throw new Error('Production API URL must use HTTPS');
+}
 
 async function getToken(): Promise<string | null> {
   return await SecureStore.getItemAsync('access_token');
@@ -27,8 +31,11 @@ async function request<T>(
   });
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Erreur reseau');
+    const error = await response.json().catch(() => ({}));
+    const message = typeof error.error === 'string' && error.error.length < 200
+      ? error.error
+      : 'Erreur réseau';
+    throw new Error(message);
   }
 
   return response.json();

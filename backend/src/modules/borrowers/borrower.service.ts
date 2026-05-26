@@ -46,5 +46,9 @@ export async function remove(userId: string, borrowerId: string) {
   if (!borrower) {
     throw { status: 404, message: 'Emprunteur introuvable.' };
   }
+  const loansCount = await prisma.loan.count({ where: { borrower_id: borrowerId } });
+  if (loansCount > 0) {
+    throw { status: 400, message: 'Impossible de supprimer un emprunteur avec des prêts actifs.' };
+  }
   return prisma.borrower.delete({ where: { id: borrowerId } });
 }

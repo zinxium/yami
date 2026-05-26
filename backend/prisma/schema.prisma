@@ -35,6 +35,7 @@ model Borrower {
   user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
   loans      Loan[]
 
+  @@index([user_id])
   @@map("borrowers")
 }
 
@@ -73,6 +74,9 @@ model Loan {
   contract          Contract?
   notifications     Notification[]
 
+  @@index([user_id])
+  @@index([borrower_id])
+  @@index([status])
   @@map("loans")
 }
 
@@ -93,6 +97,7 @@ model Payment {
   created_at     DateTime    @default(now())
   loan           Loan        @relation(fields: [loan_id], references: [id], onDelete: Cascade)
 
+  @@index([loan_id])
   @@map("payments")
 }
 
@@ -128,5 +133,6 @@ model Notification {
   user       User             @relation(fields: [user_id], references: [id], onDelete: Cascade)
   loan       Loan?            @relation(fields: [loan_id], references: [id], onDelete: SetNull)
 
+  @@index([user_id])
   @@map("notifications")
 }

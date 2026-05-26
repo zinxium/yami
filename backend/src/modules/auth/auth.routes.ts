@@ -8,8 +8,8 @@ const router = Router();
 
 router.post('/register', authLimiter, validate(registerSchema), authController.register);
 router.post('/login', authLimiter, validate(loginSchema), authController.login);
-router.post('/refresh', authController.refresh);
+router.post('/refresh', authLimiter, authController.refresh);
 router.post('/logout', authController.logout);
-router.post('/forgot-password', validate(forgotPasswordSchema), authController.forgotPassword);
+router.post('/forgot-password', authLimiter, validate(forgotPasswordSchema), authController.forgotPassword);
 
 export default router;

@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/yami_logo.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": false,
+    "newArchEnabled": true,
     "splash": {
       "image": "./assets/yami_logo.png",
       "resizeMode": "contain",
@@ -22,14 +22,15 @@
         "backgroundColor": "#800020"
       },
       "package": "com.yami.app",
-      "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "blockedPermissions": ["android.permission.READ_PHONE_STATE"],
+      "usesCleartextTraffic": false
     },
     "web": {
       "favicon": "./assets/yami_logo.png"
     },
     "plugins": [
-      "expo-localization"
+      "expo-localization",
+      "expo-secure-store"
     ],
     "extra": {
       "eas": {

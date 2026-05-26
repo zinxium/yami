@@ -7,7 +7,7 @@ import { getSchedule } from '../loans/loan.service';
 export async function generate(userId: string, loanId: string) {
   const loan = await prisma.loan.findFirst({
     where: { id: loanId, user_id: userId },
-    include: { borrower: true, user: true },
+    include: { borrower: true, user: { select: { fullname: true, phone: true } } },
   });
   if (!loan) {
     throw { status: 404, message: 'Prêt introuvable.' };

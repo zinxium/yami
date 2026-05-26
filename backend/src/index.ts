@@ -18,9 +18,14 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 // --- Securite ---
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
+}));
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:8081',
+  origin: process.env.NODE_ENV === 'production'
+    ? process.env.FRONTEND_URL
+    : (process.env.FRONTEND_URL || 'http://localhost:8081'),
   credentials: true,
 }));
 
@@ -28,17 +33,12 @@ app.use(cors({
 app.use(globalLimiter);
 
 // --- Body parser ---
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: '100kb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // --- Routes ---
 app.get('/health', (_req, res) => {
-  res.json({
-    status: 'ok',
-    app: 'Ya Mi API',
-    version: '1.0.0',
-    timestamp: new Date().toISOString(),
-  });
+  res.json({ status: 'ok' });
 });
 
 app.use('/api/auth', authRoutes);

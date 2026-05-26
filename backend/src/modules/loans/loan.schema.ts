@@ -2,21 +2,26 @@ import { z } from 'zod';
 
 export const createLoanSchema = z.object({
   borrower_id: z.string().uuid('ID emprunteur invalide.'),
-  amount: z.number().positive('Le montant doit être supérieur à 0.'),
+  amount: z.number().positive('Le montant doit être supérieur à 0.').max(999999999),
   interest_rate: z.number().min(0).max(100, 'Le taux doit être entre 0 et 100.'),
-  duration: z.number().int().positive('La durée doit être supérieure à 0.'),
+  duration: z.number().int().positive('La durée doit être supérieure à 0.').max(360),
   duration_unit: z.enum(['months', 'weeks']),
-  start_date: z.string().transform((val) => new Date(val)),
-  notes: z.string().optional(),
+  start_date: z.string()
+    .refine((val) => !isNaN(Date.parse(val)), 'Date invalide.')
+    .transform((val) => new Date(val)),
+  notes: z.string().max(2000).optional(),
 });
 
 export const updateLoanSchema = z.object({
-  amount: z.number().positive('Le montant doit être supérieur à 0.').optional(),
+  amount: z.number().positive('Le montant doit être supérieur à 0.').max(999999999).optional(),
   interest_rate: z.number().min(0).max(100).optional(),
-  duration: z.number().int().positive().optional(),
+  duration: z.number().int().positive().max(360).optional(),
   duration_unit: z.enum(['months', 'weeks']).optional(),
-  start_date: z.string().transform((val) => new Date(val)).optional(),
-  notes: z.string().optional(),
+  start_date: z.string()
+    .refine((val) => !isNaN(Date.parse(val)), 'Date invalide.')
+    .transform((val) => new Date(val))
+    .optional(),
+  notes: z.string().max(2000).optional(),
 });
 
 export const updateStatusSchema = z.object({

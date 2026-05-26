@@ -11,7 +11,7 @@ import { Avatar, Button, Card, ThemedSwitch } from '../../components/common';
 import { getInitials, formatPhone } from '../../utils/format';
 import i18n from '../../i18n';
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:4000';
+const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://yami-production.up.railway.app';
 
 export function ProfileScreen() {
   const { t } = useTranslation();

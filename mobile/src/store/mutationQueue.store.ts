@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { secureStorage } from '../utils/secureStorage';
 
 export type MutationType =
   | 'CREATE_LOAN'
@@ -66,7 +66,7 @@ export const useMutationQueueStore = create<MutationQueueState>()(
     }),
     {
       name: 'yami-mutation-queue',
-      storage: createJSONStorage(() => AsyncStorage),
+      storage: createJSONStorage(() => secureStorage),
     },
   ),
 );

@@ -68,16 +68,22 @@ export const useAuthStore = create<AuthState>((set) => ({
         try {
           const res = await api.post<{ accessToken: string }>('/api/auth/refresh', { refreshToken });
           await SecureStore.setItemAsync('access_token', res.accessToken);
+          await SecureStore.setItemAsync('last_refresh_at', String(Date.now()));
           set({ accessToken: res.accessToken, isAuthenticated: true, isLoading: false });
         } catch {
-          // Offline or token expired — if we have a cached token, stay authenticated
-          // so the user can use the app in offline mode
+          // Offline or token expired — allow offline mode with time limit
           const cachedLoans = useCacheStore.getState().loans;
-          if (cachedLoans.length > 0) {
+          const lastRefresh = await SecureStore.getItemAsync('last_refresh_at');
+          const MAX_OFFLINE_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+          const isStale = lastRefresh && (Date.now() - Number(lastRefresh)) > MAX_OFFLINE_MS;
+
+          if (cachedLoans.length > 0 && !isStale) {
             set({ accessToken: token, isAuthenticated: true, isLoading: false });
           } else {
             await SecureStore.deleteItemAsync('access_token');
             await SecureStore.deleteItemAsync('refresh_token');
+            await SecureStore.deleteItemAsync('last_refresh_at');
+            useCacheStore.getState().clearCache();
             set({ isLoading: false });
           }
         }

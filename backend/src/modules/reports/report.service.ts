@@ -109,6 +109,13 @@ export async function generateExcel(userId: string): Promise<ExcelJS.Buffer> {
   return workbook.xlsx.writeBuffer();
 }
 
+function csvEscape(val: string): string {
+  if (/[,"\n\r]/.test(val) || /^[=+\-@\t\r]/.test(val)) {
+    return '"' + val.replace(/"/g, '""') + '"';
+  }
+  return val;
+}
+
 export async function generateCSV(userId: string): Promise<string> {
   const loans = await prisma.loan.findMany({
     where: { user_id: userId },
@@ -123,15 +130,15 @@ export async function generateCSV(userId: string): Promise<string> {
     const amount = Number(loan.amount);
     const total = Number(loan.total_repayment);
     lines.push([
-      loan.borrower.fullname,
+      csvEscape(loan.borrower.fullname),
       amount,
       Number(loan.interest_rate),
-      `${loan.duration} ${loan.duration_unit === 'months' ? 'mois' : 'semaines'}`,
+      csvEscape(`${loan.duration} ${loan.duration_unit === 'months' ? 'mois' : 'semaines'}`),
       total - amount,
       Number(loan.monthly_payment),
       total,
       Number(loan.remaining_balance),
-      loan.status,
+      csvEscape(loan.status),
       loan.start_date.toLocaleDateString('fr-FR'),
       loan.end_date.toLocaleDateString('fr-FR'),
     ].join(','));

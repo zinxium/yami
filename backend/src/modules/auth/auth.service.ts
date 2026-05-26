@@ -4,8 +4,10 @@ import { prisma } from '../../config/prisma';
 import { RegisterInput, LoginInput } from './auth.schema';
 import { AuthPayload } from '../../types';
 
-const JWT_SECRET = process.env.JWT_SECRET!;
-const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET!;
+if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET environment variable is required');
+if (!process.env.JWT_REFRESH_SECRET) throw new Error('JWT_REFRESH_SECRET environment variable is required');
+const JWT_SECRET: string = process.env.JWT_SECRET;
+const JWT_REFRESH_SECRET: string = process.env.JWT_REFRESH_SECRET;
 const ACCESS_TOKEN_EXPIRY = '15m';
 const REFRESH_TOKEN_EXPIRY = '7d';
 
@@ -61,13 +63,13 @@ export async function login(data: LoginInput) {
   const accessToken = generateAccessToken(payload);
   const refreshToken = generateRefreshToken(payload);
 
-  const { password: _, ...userWithoutPassword } = user;
-  return { user: userWithoutPassword, accessToken, refreshToken };
+  const { password: _, fcm_token: __, ...safeUser } = user;
+  return { user: safeUser, accessToken, refreshToken };
 }
 
 export async function refresh(refreshToken: string) {
   try {
-    const decoded = jwt.verify(refreshToken, JWT_REFRESH_SECRET) as AuthPayload;
+    const decoded = jwt.verify(refreshToken, JWT_REFRESH_SECRET) as unknown as AuthPayload;
     const user = await prisma.user.findUnique({ where: { id: decoded.userId } });
     if (!user) {
       throw { status: 401, message: 'Utilisateur introuvable.' };

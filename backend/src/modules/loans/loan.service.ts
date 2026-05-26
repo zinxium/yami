@@ -89,9 +89,14 @@ export async function update(userId: string, loanId: string, data: UpdateLoanInp
       durationUnit: (data.duration_unit ?? loan.duration_unit) as DurationUnit,
       startDate: data.start_date ?? loan.start_date,
     });
+    const totalPaid = await prisma.payment.aggregate({
+      where: { loan_id: loanId },
+      _sum: { amount_paid: true },
+    });
+    const alreadyPaid = Number(totalPaid._sum.amount_paid || 0);
     updateData.monthly_payment = calc.periodPayment;
     updateData.total_repayment = calc.totalRepayment;
-    updateData.remaining_balance = calc.totalRepayment;
+    updateData.remaining_balance = Math.max(0, calc.totalRepayment - alreadyPaid);
     updateData.end_date = calc.endDate;
   }
 

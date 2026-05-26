@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { secureStorage } from '../utils/secureStorage';
 import type { Loan, Borrower, Payment, ScheduleItem } from '../types';
 
 interface CacheState {
@@ -76,7 +76,7 @@ export const useCacheStore = create<CacheState>()(
     }),
     {
       name: 'yami-cache',
-      storage: createJSONStorage(() => AsyncStorage),
+      storage: createJSONStorage(() => secureStorage),
     },
   ),
 );
