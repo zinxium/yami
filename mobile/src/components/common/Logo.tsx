@@ -16,7 +16,7 @@ export function Logo({ size = 'medium', style, ...props }: LogoProps) {
 
   return (
     <Image
-      source={require('../../assets/yami_logo.png')}
+      source={require('../../../assets/yami_logo.png')}
       style={[dimensions, { resizeMode: 'contain' }, style]}
       {...props}
     />

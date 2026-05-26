@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { ScreenHeader, Button, Logo } from '../../components/common';
 import { useTheme } from '../../hooks/useTheme';
 import { borrowersApi } from '../../api/borrowers.api';
@@ -10,6 +11,7 @@ import { useMutationQueueStore } from '../../store/mutationQueue.store';
 import { useCacheStore } from '../../store/cache.store';
 
 export function AddBorrowerScreen({ navigation }: AddBorrowerProps) {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const { colors } = useTheme();
   const [fullname, setFullname] = useState('');
@@ -24,7 +26,7 @@ export function AddBorrowerScreen({ navigation }: AddBorrowerProps) {
 
   const handleSubmit = async () => {
     if (!fullname.trim()) {
-      Alert.alert('Erreur', 'Le nom est requis.');
+      Alert.alert(t('common.error'), t('addBorrower.nameRequired'));
       return;
     }
     const data = {
@@ -37,7 +39,7 @@ export function AddBorrowerScreen({ navigation }: AddBorrowerProps) {
     try {
       if (isConnected) {
         await borrowersApi.create(data);
-        Alert.alert('Emprunteur ajouté', `${fullname} a été ajouté.`, [
+        Alert.alert(t('addBorrower.successTitle'), t('addBorrower.successMessage', { name: fullname }), [
           { text: 'OK', onPress: () => navigation.goBack() },
         ]);
       } else {
@@ -51,12 +53,12 @@ export function AddBorrowerScreen({ navigation }: AddBorrowerProps) {
           notes: data.notes,
           created_at: new Date().toISOString(),
         });
-        Alert.alert('Sauvegardé localement', `${fullname} sera synchronisé dès la reconnexion.`, [
+        Alert.alert(t('common.savedLocally'), t('addBorrower.offlineMessage', { name: fullname }), [
           { text: 'OK', onPress: () => navigation.goBack() },
         ]);
       }
     } catch (e: unknown) {
-      Alert.alert('Erreur', e instanceof Error ? e.message : 'Erreur inconnue');
+      Alert.alert(t('common.error'), e instanceof Error ? e.message : t('common.error'));
     } finally {
       setLoading(false);
     }
@@ -69,29 +71,29 @@ export function AddBorrowerScreen({ navigation }: AddBorrowerProps) {
       <View className="flex-row items-center gap-2 px-5" style={{ paddingTop: insets.top + 8 }}>
         <Ionicons name="arrow-back" size={22} color="#222222" onPress={() => navigation.goBack()} />
         <Logo size="small" />
-        <Text className="text-[18px] font-bold text-[#222222]">Nouvel emprunteur</Text>
+        <Text className="text-[18px] font-bold text-[#222222]">{t('addBorrower.title')}</Text>
       </View>
 
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} className="flex-1">
         <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: insets.bottom + 40 }} keyboardShouldPersistTaps="handled">
           <View className="mb-5">
-            <Text className="text-[#222222] text-[14px] font-bold mb-2">Nom complet *</Text>
-            <TextInput className={inputClass} placeholder="Nom complet" placeholderTextColor="#CFCFCF" value={fullname} onChangeText={setFullname} autoCapitalize="words" />
+            <Text className="text-[#222222] text-[14px] font-bold mb-2">{t('addBorrower.fullname')}</Text>
+            <TextInput className={inputClass} placeholder={t('addBorrower.fullname')} placeholderTextColor="#CFCFCF" value={fullname} onChangeText={setFullname} autoCapitalize="words" />
           </View>
           <View className="mb-5">
-            <Text className="text-[#222222] text-[14px] font-bold mb-2">Téléphone</Text>
+            <Text className="text-[#222222] text-[14px] font-bold mb-2">{t('addBorrower.phone')}</Text>
             <TextInput className={inputClass} placeholder="+225 07 00 00 00" placeholderTextColor="#CFCFCF" keyboardType="phone-pad" value={phone} onChangeText={setPhone} />
           </View>
           <View className="mb-5">
-            <Text className="text-[#222222] text-[14px] font-bold mb-2">Adresse</Text>
+            <Text className="text-[#222222] text-[14px] font-bold mb-2">{t('addBorrower.address')}</Text>
             <TextInput className={inputClass} placeholder="Ville, quartier" placeholderTextColor="#CFCFCF" value={address} onChangeText={setAddress} />
           </View>
           <View className="mb-6">
-            <Text className="text-[#222222] text-[14px] font-bold mb-2">Notes</Text>
+            <Text className="text-[#222222] text-[14px] font-bold mb-2">{t('addBorrower.notes')}</Text>
             <TextInput className={`${inputClass} min-h-[80px]`} placeholder="Notes..." placeholderTextColor="#CFCFCF" multiline value={notes} onChangeText={setNotes} textAlignVertical="top" />
           </View>
 
-          <Button title={loading ? 'Ajout...' : 'Ajouter l\'emprunteur'} onPress={handleSubmit} variant="primary" fullWidth disabled={loading} />
+          <Button title={loading ? t('addBorrower.adding') : t('addBorrower.submit')} onPress={handleSubmit} variant="primary" fullWidth disabled={loading} />
         </ScrollView>
       </KeyboardAvoidingView>
     </View>

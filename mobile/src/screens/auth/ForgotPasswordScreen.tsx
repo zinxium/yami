@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, KeyboardAvoidingView, Platform, ScrollView, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { Button } from '../../components/common';
 import { api } from '../../api/client';
 import type { ForgotPasswordProps } from '../../navigation/types';
 
 export function ForgotPasswordScreen({ navigation }: ForgotPasswordProps) {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
@@ -50,19 +52,19 @@ export function ForgotPasswordScreen({ navigation }: ForgotPasswordProps) {
 
             {/* Titre */}
             <Text className="text-center text-[#222222] text-[28px] font-bold leading-[34px] mb-3" style={{ fontFamily: 'LibreCaslon-Bold' }}>
-              Mot de passe{'\n'}oublié
+              {t('forgotPassword.title')}
             </Text>
             <Text className="text-center text-[#888888] text-[14px] mb-8 px-2">
-              Entrez votre email pour recevoir un lien de réinitialisation
+              {t('forgotPassword.subtitle')}
             </Text>
 
             {/* Input email avec icône */}
-            <Text className="text-[#222222] text-[14px] font-bold mb-2">Adresse Email</Text>
+            <Text className="text-[#222222] text-[14px] font-bold mb-2">{t('forgotPassword.emailLabel')}</Text>
             <View className="flex-row items-center bg-cream border border-[#E8E4DC] rounded-[12px] px-4 py-3.5 mb-6">
               <Ionicons name="mail-outline" size={18} color="#CFCFCF" />
               <TextInput
                 className="flex-1 ml-3 text-[15px] text-[#222222]"
-                placeholder="nom@exemple.com"
+                placeholder={t('forgotPassword.emailPlaceholder')}
                 placeholderTextColor="#CFCFCF"
                 keyboardType="email-address"
                 autoCapitalize="none"
@@ -79,7 +81,7 @@ export function ForgotPasswordScreen({ navigation }: ForgotPasswordProps) {
               activeOpacity={0.8}
             >
               <Text className="text-white text-[16px] font-bold mr-2">
-                {loading ? 'Envoi...' : 'Envoyer le lien'}
+                {loading ? t('forgotPassword.sending') : t('forgotPassword.sendLink')}
               </Text>
               {!loading && <Ionicons name="send" size={16} color="#FFFFFF" />}
             </TouchableOpacity>
@@ -87,7 +89,7 @@ export function ForgotPasswordScreen({ navigation }: ForgotPasswordProps) {
             {/* Lien connexion */}
             <TouchableOpacity onPress={() => navigation.goBack()} className="items-center mt-6">
               <Text className="text-[#888888] text-[14px]">
-                Vous vous en souvenez ? <Text className="text-burgundy font-bold">Connectez-vous</Text>
+                {t('forgotPassword.rememberPassword')} <Text className="text-burgundy font-bold">{t('forgotPassword.login')}</Text>
               </Text>
             </TouchableOpacity>
           </View>
@@ -97,18 +99,18 @@ export function ForgotPasswordScreen({ navigation }: ForgotPasswordProps) {
             <View className="w-20 h-20 rounded-full bg-[#2D6A4F]/10 items-center justify-center mb-4">
               <Ionicons name="mail-outline" size={40} color="#2D6A4F" />
             </View>
-            <Text className="text-[#222222] text-[22px] font-bold mb-2">Email envoyé !</Text>
+            <Text className="text-[#222222] text-[22px] font-bold mb-2">{t('forgotPassword.sentTitle')}</Text>
             <Text className="text-[#888888] text-[14px] text-center px-4 mb-8">
-              Si un compte existe avec cette adresse, vous recevrez un lien de réinitialisation.
+              {t('forgotPassword.sentMessage')}
             </Text>
-            <Button title="Retour à la connexion" onPress={() => navigation.goBack()} variant="primary" fullWidth />
+            <Button title={t('forgotPassword.backToLogin')} onPress={() => navigation.goBack()} variant="primary" fullWidth />
           </View>
         )}
 
         {/* Footer support */}
         <View className="flex-row items-center justify-center mt-8">
           <Ionicons name="headset-outline" size={16} color="#CFCFCF" />
-          <Text className="text-[#CFCFCF] text-[12px] ml-2">Besoin d'aide ? Contactez le support</Text>
+          <Text className="text-[#CFCFCF] text-[12px] ml-2">{t('forgotPassword.needHelp')}</Text>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

@@ -5,12 +5,14 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../../navigation/types';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { Avatar, Card, EmptyState, LoadingSpinner, ScreenHeader, Logo } from '../../components/common';
 import { useBorrowers } from '../../hooks/useLoans';
 import { useTheme } from '../../hooks/useTheme';
 import { borrowersApi } from '../../api/borrowers.api';
 
 export function BorrowersScreen() {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { borrowers, loading, refetch } = useBorrowers();
@@ -22,15 +24,15 @@ export function BorrowersScreen() {
   const onRefresh = async () => { setRefreshing(true); await refetch(); setRefreshing(false); };
 
   const handleDelete = (id: string, name: string) => {
-    Alert.alert('Supprimer', `Supprimer ${name} ?`, [
-      { text: 'Annuler', style: 'cancel' },
+    Alert.alert(t('common.delete'), `${t('common.delete')} ${name} ?`, [
+      { text: t('common.cancel'), style: 'cancel' },
       {
-        text: 'Supprimer', style: 'destructive', onPress: async () => {
+        text: t('common.delete'), style: 'destructive', onPress: async () => {
           try {
             await borrowersApi.delete(id);
             refetch();
           } catch (e: unknown) {
-            Alert.alert('Erreur', e instanceof Error ? e.message : 'Erreur inconnue');
+            Alert.alert(t('common.error'), e instanceof Error ? e.message : t('common.error'));
           }
         }
       },
@@ -46,7 +48,7 @@ export function BorrowersScreen() {
           <Ionicons name="arrow-back" size={22} color="#222222" />
         </TouchableOpacity>
         <Logo size="small" />
-        <Text className="text-[18px] font-bold text-[#222222]">Emprunteurs</Text>
+        <Text className="text-[18px] font-bold text-[#222222]">{t('borrowers.title')}</Text>
       </View>
 
       <FlatList
@@ -74,7 +76,7 @@ export function BorrowersScreen() {
           </Card>
         )}
         ListEmptyComponent={
-          <EmptyState icon="people-outline" title="Aucun emprunteur" message="Crée un prêt pour ajouter un emprunteur." />
+          <EmptyState icon="people-outline" title={t('borrowers.none')} message={t('borrowers.noneSubtitle')} />
         }
       />
 

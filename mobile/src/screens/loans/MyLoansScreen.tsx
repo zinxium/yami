@@ -3,20 +3,15 @@ import { View, Text, FlatList, TextInput, TouchableOpacity, RefreshControl } fro
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { EmptyState, LoadingSpinner, Logo } from '../../components/common';
 import { LoanCard } from '../../components/loans/LoanCard';
 import { useLoans } from '../../hooks/useLoans';
 import { useTheme } from '../../hooks/useTheme';
 import type { LoanStatus } from '../../types';
 
-const FILTERS: { key: string; label: string }[] = [
-  { key: 'all', label: 'Tous' },
-  { key: 'active', label: 'Actifs' },
-  { key: 'overdue', label: 'En retard' },
-  { key: 'paid', label: 'Remboursés' },
-];
-
 export function MyLoansScreen() {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<any>();
   const [filter, setFilter] = useState('all');
@@ -24,6 +19,13 @@ export function MyLoansScreen() {
   const { loans, loading, refetch } = useLoans();
   const { colors } = useTheme();
   const [refreshing, setRefreshing] = useState(false);
+
+  const FILTERS = [
+    { key: 'all', label: t('myLoans.all') },
+    { key: 'active', label: t('myLoans.active') },
+    { key: 'overdue', label: t('myLoans.overdue') },
+    { key: 'paid', label: t('myLoans.paid') },
+  ];
 
   useFocusEffect(useCallback(() => { refetch(); }, []));
 
@@ -42,7 +44,7 @@ export function MyLoansScreen() {
       <View className="px-5 pb-2" style={{ paddingTop: insets.top + 8 }}>
         <View className="flex-row items-center gap-2 mb-3">
           <Logo size="small" />
-          <Text className="text-[#222222] text-[20px] font-bold">Mes prêts</Text>
+          <Text className="text-[#222222] text-[20px] font-bold">{t('myLoans.title')}</Text>
         </View>
 
         {/* Search */}
@@ -50,7 +52,7 @@ export function MyLoansScreen() {
           <Ionicons name="search-outline" size={18} color="#CFCFCF" />
           <TextInput
             className="flex-1 ml-2 text-[14px] text-[#222222]"
-            placeholder="Rechercher un emprunteur"
+            placeholder={t('myLoans.search')}
             placeholderTextColor="#CFCFCF"
             value={search}
             onChangeText={setSearch}
@@ -86,9 +88,9 @@ export function MyLoansScreen() {
         ListEmptyComponent={
           <EmptyState
             icon="wallet-outline"
-            title="Aucun prêt"
-            message="Crée ton premier prêt pour commencer."
-            actionLabel="Nouveau prêt"
+            title={t('myLoans.noLoans')}
+            message={t('myLoans.noLoansSubtitle')}
+            actionLabel={t('myLoans.newLoan')}
             onAction={() => navigation.navigate('LoansTab', { screen: 'CreateLoan' })}
           />
         }

@@ -1,20 +1,20 @@
 import React, { useEffect } from 'react';
 import { View, Text, ActivityIndicator } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '../../store/auth.store';
 import { Logo } from '../../components/common';
-import { Colors } from '../../constants/colors';
 
 interface SplashScreenProps {
   onFinish: (isAuthenticated: boolean) => void;
 }
 
 export function SplashScreen({ onFinish }: SplashScreenProps) {
-  const { restoreSession, isAuthenticated } = useAuthStore();
+  const { t } = useTranslation();
+  const { restoreSession } = useAuthStore();
 
   useEffect(() => {
     const init = async () => {
       await restoreSession();
-      // Splash visible 2 secondes max
       setTimeout(() => {
         onFinish(useAuthStore.getState().isAuthenticated);
       }, 1500);
@@ -23,36 +23,15 @@ export function SplashScreen({ onFinish }: SplashScreenProps) {
   }, []);
 
   return (
-    <View
-      style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: Colors.neutral }}
-    >
-      {/* Logo */}
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FAF7F2' }}>
       <Logo size="large" style={{ marginBottom: 16 }} />
-
-      <Text
-        style={{
-          color: Colors.primary,
-          fontSize: 28,
-          fontWeight: 'bold',
-          fontFamily: 'LibreCaslon',
-          marginBottom: 8,
-        }}
-      >
+      <Text style={{ color: '#800020', fontSize: 28, fontWeight: 'bold', fontFamily: 'LibreCaslon-Bold', marginBottom: 8 }}>
         Ya Mi
       </Text>
-
-      <Text
-        style={{
-          color: Colors.textSecondary,
-          fontSize: 13,
-          fontFamily: 'PlusJakartaSans',
-          marginBottom: 32,
-        }}
-      >
-        Gestion de prêts personnels
+      <Text style={{ color: '#888888', fontSize: 13, fontFamily: 'PlusJakartaSans', marginBottom: 32 }}>
+        {t('splash.subtitle')}
       </Text>
-
-      <ActivityIndicator size="small" color={Colors.primary} />
+      <ActivityIndicator size="small" color="#800020" />
     </View>
   );
 }

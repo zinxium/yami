@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Alert, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { documentDirectory, downloadAsync } from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
@@ -8,10 +9,12 @@ import { useAuthStore } from '../../store/auth.store';
 import { useTheme } from '../../hooks/useTheme';
 import { Avatar, Button, Card, ThemedSwitch } from '../../components/common';
 import { getInitials, formatPhone } from '../../utils/format';
+import i18n from '../../i18n';
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:4000';
 
 export function ProfileScreen() {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const { user, logout } = useAuthStore();
   const { isDarkMode, toggleDarkMode, colors } = useTheme();
@@ -26,17 +29,17 @@ export function ProfileScreen() {
       if (await Sharing.isAvailableAsync()) {
         await Sharing.shareAsync(result.uri);
       } else {
-        Alert.alert('Exporté', 'Fichier téléchargé.');
+        Alert.alert(t('profile.exported'), t('profile.fileDownloaded'));
       }
     } catch (e: unknown) {
-      Alert.alert('Erreur', e instanceof Error ? e.message : 'Erreur inconnue');
+      Alert.alert(t('common.error'), e instanceof Error ? e.message : t('common.error'));
     }
   };
 
   const handleLogout = () => {
-    Alert.alert('Déconnexion', 'Te déconnecter ?', [
-      { text: 'Annuler', style: 'cancel' },
-      { text: 'Déconnexion', style: 'destructive', onPress: logout },
+    Alert.alert(t('profile.logoutConfirm'), t('profile.logoutMessage'), [
+      { text: t('common.cancel'), style: 'cancel' },
+      { text: t('profile.logoutConfirm'), style: 'destructive', onPress: logout },
     ]);
   };
 
@@ -76,9 +79,9 @@ export function ProfileScreen() {
           <Card className="flex-row items-center">
             <Ionicons name="document-text-outline" size={20} color={colors.primary} />
             <Text style={{ color: colors.textPrimary, fontSize: 15, marginLeft: 12, flex: 1 }}>
-              Exporter mes données
+              {t('profile.exportData')}
             </Text>
-            <Button title="Excel" onPress={handleExportExcel} variant="outline" />
+            <Button title={t('profile.excel')} onPress={handleExportExcel} variant="outline" />
           </Card>
 
           <Card className="flex-row items-center justify-between py-3">
@@ -89,7 +92,7 @@ export function ProfileScreen() {
                 color={colors.primary}
               />
               <Text style={{ color: colors.textPrimary, fontSize: 15, marginLeft: 12 }}>
-                {isDarkMode ? 'Mode sombre' : 'Mode clair'}
+                {isDarkMode ? t('profile.darkMode') : t('profile.lightMode')}
               </Text>
             </View>
             <ThemedSwitch
@@ -99,10 +102,25 @@ export function ProfileScreen() {
               secondaryColor={colors.borderLight}
             />
           </Card>
+
+          <Card className="flex-row items-center justify-between py-3">
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Ionicons name="language-outline" size={20} color={colors.primary} />
+              <Text style={{ color: colors.textPrimary, fontSize: 15, marginLeft: 12 }}>
+                {i18n.language === 'fr' ? 'Français' : 'English'}
+              </Text>
+            </View>
+            <ThemedSwitch
+              value={i18n.language === 'en'}
+              onValueChange={() => i18n.changeLanguage(i18n.language === 'fr' ? 'en' : 'fr')}
+              primaryColor={colors.primary}
+              secondaryColor={colors.borderLight}
+            />
+          </Card>
         </View>
 
         <View style={{ paddingHorizontal: 20, marginTop: 32 }}>
-          <Button title="Se déconnecter" onPress={handleLogout} variant="outline" fullWidth icon="log-out-outline" />
+          <Button title={t('profile.logout')} onPress={handleLogout} variant="outline" fullWidth icon="log-out-outline" />
         </View>
       </ScrollView>
     </View>

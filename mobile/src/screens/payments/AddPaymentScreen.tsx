@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, ScrollView, Alert, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { Card, Avatar, StatusBadge, Logo } from '../../components/common';
 import { loansApi } from '../../api/loans.api';
 import { paymentsApi } from '../../api/payments.api';
@@ -14,9 +15,8 @@ import { useNetworkStore } from '../../store/network.store';
 import { useMutationQueueStore } from '../../store/mutationQueue.store';
 import { useCacheStore } from '../../store/cache.store';
 
-const PAYMENT_METHODS = ['Virement Bancaire', 'MTN MoMo', 'Orange Money', 'Cash', 'Autre'];
-
 export function AddPaymentScreen({ route, navigation }: AddPaymentProps) {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const user = useAuthStore(s => s.user);
   const { colors } = useTheme();
@@ -24,7 +24,10 @@ export function AddPaymentScreen({ route, navigation }: AddPaymentProps) {
   const [loan, setLoan] = useState<Loan | null>(null);
   const [amount, setAmount] = useState('');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-  const [paymentMethod, setPaymentMethod] = useState('Virement Bancaire');
+
+  const PAYMENT_METHODS = [t('addPayment.methods.bankTransfer'), t('addPayment.methods.mtnMomo'), t('addPayment.methods.orangeMoney'), t('addPayment.methods.cash'), t('addPayment.methods.other')];
+
+  const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS[0]);
   const [showMethodPicker, setShowMethodPicker] = useState(false);
   const [notes, setNotes] = useState('');
   const [loading, setLoading] = useState(false);
@@ -40,7 +43,7 @@ export function AddPaymentScreen({ route, navigation }: AddPaymentProps) {
   const handleSubmit = async () => {
     const parsedAmount = parseFloat(amount);
     if (!parsedAmount || parsedAmount <= 0) {
-      Alert.alert('Erreur', 'Le montant doit être supérieur à 0.');
+      Alert.alert(t('common.error'), t('addPayment.amountError'));
       return;
     }
     const paymentData = {
@@ -55,7 +58,7 @@ export function AddPaymentScreen({ route, navigation }: AddPaymentProps) {
     try {
       if (isConnected) {
         await paymentsApi.create(paymentData);
-        Alert.alert('Paiement enregistré', 'Le paiement a été ajouté avec succès.', [
+        Alert.alert(t('addPayment.successTitle'), t('addPayment.successMessage'), [
           { text: 'OK', onPress: () => navigation.goBack() },
         ]);
       } else {
@@ -77,12 +80,12 @@ export function AddPaymentScreen({ route, navigation }: AddPaymentProps) {
             status: newBalance <= 0 ? 'paid' : loan.status,
           });
         }
-        Alert.alert('Sauvegardé localement', 'Le paiement sera synchronisé dès la reconnexion.', [
+        Alert.alert(t('common.savedLocally'), t('addPayment.offlineMessage'), [
           { text: 'OK', onPress: () => navigation.goBack() },
         ]);
       }
     } catch (e: unknown) {
-      Alert.alert('Erreur', e instanceof Error ? e.message : 'Erreur inconnue');
+      Alert.alert(t('common.error'), e instanceof Error ? e.message : t('common.error'));
     } finally {
       setLoading(false);
     }
@@ -99,7 +102,7 @@ export function AddPaymentScreen({ route, navigation }: AddPaymentProps) {
             <Ionicons name="arrow-back" size={22} color="#222222" />
           </TouchableOpacity>
           <Logo size="small" />
-          <Text className="text-[16px] font-bold text-[#222222]">Nouveau paiement</Text>
+          <Text className="text-[16px] font-bold text-[#222222]">{t('addPayment.title')}</Text>
         </View>
         <Avatar name={user?.fullname || 'U'} size="sm" />
       </View>
@@ -107,24 +110,24 @@ export function AddPaymentScreen({ route, navigation }: AddPaymentProps) {
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} className="flex-1">
         <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: insets.bottom + 80 }} keyboardShouldPersistTaps="handled">
           {/* Titre */}
-          <Text className="text-[#222222] text-[24px] font-bold mb-1" style={{ fontFamily: 'LibreCaslon-Bold' }}>Enregistrer un{'\n'}Paiement</Text>
-          <Text className="text-[#888888] text-[13px] mb-5">Effectuez votre remboursement en toute sécurité.</Text>
+          <Text className="text-[#222222] text-[24px] font-bold mb-1" style={{ fontFamily: 'LibreCaslon-Bold' }}>{t('addPayment.heading')}</Text>
+          <Text className="text-[#888888] text-[13px] mb-5">{t('addPayment.subtitle')}</Text>
 
           {/* Carte solde */}
           {loan && (
             <Card className="mb-6 bg-cream border border-[#E8E4DC]">
               <View className="flex-row items-center justify-between mb-2">
-                <Text className="text-[#888888] text-[12px]">Solde Total du Prêt</Text>
+                <Text className="text-[#888888] text-[12px]">{t('addPayment.loanBalance')}</Text>
                 <StatusBadge status={loan.status} />
               </View>
               <Text className="text-burgundy text-[28px] font-bold mb-3">{formatCurrency(Number(loan.remaining_balance))}</Text>
               <View className="flex-row gap-4">
                 <View>
-                  <Text className="text-[#888888] text-[11px]">Prochaine Échéance</Text>
+                  <Text className="text-[#888888] text-[11px]">{t('addPayment.nextDue')}</Text>
                   <Text className="text-[#222222] text-[14px] font-bold">{formatCurrency(Number(loan.monthly_payment))}</Text>
                 </View>
                 <View>
-                  <Text className="text-[#888888] text-[11px]">Date Limite</Text>
+                  <Text className="text-[#888888] text-[11px]">{t('addPayment.deadline')}</Text>
                   <Text className="text-[#222222] text-[14px] font-bold">{formatDate(loan.end_date)}</Text>
                 </View>
               </View>
@@ -133,7 +136,7 @@ export function AddPaymentScreen({ route, navigation }: AddPaymentProps) {
 
           {/* Montant */}
           <View className="mb-5">
-            <Text className="text-[#222222] text-[14px] font-bold mb-2">Montant du Paiement</Text>
+            <Text className="text-[#222222] text-[14px] font-bold mb-2">{t('addPayment.amount')}</Text>
             <View className="flex-row items-center">
               <TextInput
                 className={`${inputClass} flex-1`}
@@ -143,13 +146,13 @@ export function AddPaymentScreen({ route, navigation }: AddPaymentProps) {
                 value={amount}
                 onChangeText={setAmount}
               />
-              <Text className="text-[#888888] text-[14px] font-bold ml-3">FCFA</Text>
+              <Text className="text-[#888888] text-[14px] font-bold ml-3">{t('common.fcfa')}</Text>
             </View>
           </View>
 
           {/* Date */}
           <View className="mb-5">
-            <Text className="text-[#222222] text-[14px] font-bold mb-2">Date du Paiement</Text>
+            <Text className="text-[#222222] text-[14px] font-bold mb-2">{t('addPayment.date')}</Text>
             <View className="flex-row items-center">
               <TextInput
                 className={`${inputClass} flex-1`}
@@ -164,7 +167,7 @@ export function AddPaymentScreen({ route, navigation }: AddPaymentProps) {
 
           {/* Mode de paiement (dropdown) */}
           <View className="mb-5">
-            <Text className="text-[#222222] text-[14px] font-bold mb-2">Mode de Paiement</Text>
+            <Text className="text-[#222222] text-[14px] font-bold mb-2">{t('addPayment.method')}</Text>
             <TouchableOpacity
               onPress={() => setShowMethodPicker(!showMethodPicker)}
               className="flex-row items-center justify-between bg-white border border-[#E8E4DC] rounded-[12px] px-4 py-3.5"
@@ -189,10 +192,10 @@ export function AddPaymentScreen({ route, navigation }: AddPaymentProps) {
 
           {/* Notes */}
           <View className="mb-6">
-            <Text className="text-[#222222] text-[14px] font-bold mb-2">Note (Optionnel)</Text>
+            <Text className="text-[#222222] text-[14px] font-bold mb-2">{t('addPayment.notes')}</Text>
             <TextInput
               className={`${inputClass} min-h-[80px]`}
-              placeholder="Référence du virement ou commentaire..."
+              placeholder={t('addPayment.notesPlaceholder')}
               placeholderTextColor="#CFCFCF"
               multiline
               value={notes}
@@ -212,7 +215,7 @@ export function AddPaymentScreen({ route, navigation }: AddPaymentProps) {
           >
             <Ionicons name="lock-closed" size={16} color="#FFFFFF" />
             <Text className="text-white text-[16px] font-bold ml-2">
-              {loading ? 'Enregistrement...' : 'Confirmer le Paiement'}
+              {loading ? t('addPayment.submitting') : t('addPayment.submit')}
             </Text>
           </TouchableOpacity>
         </View>

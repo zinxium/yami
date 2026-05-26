@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '../../store/auth.store';
 import { Button, Logo } from '../../components/common';
 import { Colors } from '../../constants/colors';
 import type { SignupProps } from '../../navigation/types';
 
 export function SignupScreen({ navigation }: SignupProps) {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const register = useAuthStore((s) => s.register);
   const [fullname, setFullname] = useState('');
@@ -16,18 +19,20 @@ export function SignupScreen({ navigation }: SignupProps) {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const handleSignup = async () => {
     if (!fullname.trim() || !email.trim() || !phone.trim() || !password) {
-      setError('Remplis tous les champs.');
+      setError(t('signup.fillAllFields'));
       return;
     }
     if (password.length < 8) {
-      setError('Le mot de passe doit faire au moins 8 caractères.');
+      setError(t('signup.passwordTooShort'));
       return;
     }
     if (password !== confirmPassword) {
-      setError('Les mots de passe ne correspondent pas.');
+      setError(t('signup.passwordMismatch'));
       return;
     }
     setLoading(true);
@@ -35,7 +40,7 @@ export function SignupScreen({ navigation }: SignupProps) {
     try {
       await register({ fullname: fullname.trim(), email: email.trim(), phone: phone.trim(), password });
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Erreur lors de l\'inscription.');
+      setError(e instanceof Error ? e.message : t('signup.signupError'));
     } finally {
       setLoading(false);
     }
@@ -52,8 +57,8 @@ export function SignupScreen({ navigation }: SignupProps) {
         <View className="items-center mb-4">
           <Logo size="medium" />
         </View>
-        <Text className="text-center text-[#222222] text-[24px] font-bold mb-1">Créer mon compte</Text>
-        <Text className="text-center text-[#888888] text-[14px] mb-8">Rejoins Ya Mi pour gérer tes prêts.</Text>
+        <Text className="text-center text-[#222222] text-[24px] font-bold mb-1">{t('signup.title')}</Text>
+        <Text className="text-center text-[#888888] text-[14px] mb-8">{t('signup.subtitle')}</Text>
 
         {error ? (
           <View className="bg-red-50 border border-red-200 rounded-[10px] p-3 mb-4">
@@ -62,32 +67,42 @@ export function SignupScreen({ navigation }: SignupProps) {
         ) : null}
 
         <View className="mb-4">
-          <Text className="text-[#222222] text-[13px] font-bold mb-1.5">Nom complet</Text>
+          <Text className="text-[#222222] text-[13px] font-bold mb-1.5">{t('signup.fullname')}</Text>
           <TextInput className={inputClass} placeholder="Ton nom" placeholderTextColor="#CFCFCF" value={fullname} onChangeText={setFullname} autoCapitalize="words" />
         </View>
         <View className="mb-4">
-          <Text className="text-[#222222] text-[13px] font-bold mb-1.5">Email</Text>
+          <Text className="text-[#222222] text-[13px] font-bold mb-1.5">{t('login.email')}</Text>
           <TextInput className={inputClass} placeholder="ton@email.com" placeholderTextColor="#CFCFCF" keyboardType="email-address" autoCapitalize="none" value={email} onChangeText={setEmail} />
         </View>
         <View className="mb-4">
-          <Text className="text-[#222222] text-[13px] font-bold mb-1.5">Téléphone</Text>
+          <Text className="text-[#222222] text-[13px] font-bold mb-1.5">{t('signup.phone')}</Text>
           <TextInput className={inputClass} placeholder="+225 07 00 00 00" placeholderTextColor="#CFCFCF" keyboardType="phone-pad" value={phone} onChangeText={setPhone} />
         </View>
         <View className="mb-4">
-          <Text className="text-[#222222] text-[13px] font-bold mb-1.5">Mot de passe</Text>
-          <TextInput className={inputClass} placeholder="Min. 8 caractères" placeholderTextColor="#CFCFCF" secureTextEntry value={password} onChangeText={setPassword} />
+          <Text className="text-[#222222] text-[13px] font-bold mb-1.5">{t('signup.password')}</Text>
+          <View className="flex-row items-center">
+            <TextInput className={`${inputClass} flex-1 pr-12`} placeholder={t('signup.passwordHint')} placeholderTextColor="#CFCFCF" secureTextEntry={!showPassword} value={password} onChangeText={setPassword} />
+            <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: 12 }}>
+              <Ionicons name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={20} color="#CFCFCF" />
+            </TouchableOpacity>
+          </View>
         </View>
         <View className="mb-6">
-          <Text className="text-[#222222] text-[13px] font-bold mb-1.5">Confirmer</Text>
-          <TextInput className={inputClass} placeholder="Confirme ton mot de passe" placeholderTextColor="#CFCFCF" secureTextEntry value={confirmPassword} onChangeText={setConfirmPassword} />
+          <Text className="text-[#222222] text-[13px] font-bold mb-1.5">{t('signup.confirmPassword')}</Text>
+          <View className="flex-row items-center">
+            <TextInput className={`${inputClass} flex-1 pr-12`} placeholder={t('signup.confirmPasswordHint')} placeholderTextColor="#CFCFCF" secureTextEntry={!showConfirm} value={confirmPassword} onChangeText={setConfirmPassword} />
+            <TouchableOpacity onPress={() => setShowConfirm(!showConfirm)} style={{ position: 'absolute', right: 12 }}>
+              <Ionicons name={showConfirm ? 'eye-off-outline' : 'eye-outline'} size={20} color="#CFCFCF" />
+            </TouchableOpacity>
+          </View>
         </View>
 
-        <Button title={loading ? '' : 'Créer mon compte'} onPress={handleSignup} variant="primary" fullWidth disabled={loading} />
+        <Button title={loading ? '' : t('signup.title')} onPress={handleSignup} variant="primary" fullWidth disabled={loading} />
         {loading && <ActivityIndicator color={Colors.primary} className="mt-2" />}
 
         <TouchableOpacity onPress={() => navigation.navigate('Login')} className="items-center mt-5">
           <Text className="text-[#888888] text-[14px]">
-            Déjà un compte ? <Text className="text-burgundy font-bold">Se connecter</Text>
+            {t('signup.haveAccount')} <Text className="text-burgundy font-bold">{t('signup.login')}</Text>
           </Text>
         </TouchableOpacity>
       </ScrollView>

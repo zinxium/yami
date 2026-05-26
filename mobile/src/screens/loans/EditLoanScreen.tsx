@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { View, Text, TextInput, ScrollView, Alert, KeyboardAvoidingView, Platform, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { Avatar, Logo } from '../../components/common';
 import { useTheme } from '../../hooks/useTheme';
 import { loansApi } from '../../api/loans.api';
@@ -14,6 +15,7 @@ import { useMutationQueueStore } from '../../store/mutationQueue.store';
 import { useCacheStore } from '../../store/cache.store';
 
 export function EditLoanScreen({ route, navigation }: EditLoanProps) {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const user = useAuthStore(s => s.user);
   const { colors } = useTheme();
@@ -61,18 +63,18 @@ export function EditLoanScreen({ route, navigation }: EditLoanProps) {
 
       if (isConnected) {
         await loansApi.update(loanId, data);
-        Alert.alert('Modifié', 'Le prêt a été mis à jour.', [
+        Alert.alert(t('editLoan.successTitle'), t('editLoan.successMessage'), [
           { text: 'OK', onPress: () => navigation.goBack() },
         ]);
       } else {
         addMutation('UPDATE_LOAN', { id: loanId, ...data });
         updateCachedLoan(loanId, data);
-        Alert.alert('Sauvegardé localement', 'La modification sera synchronisée dès la reconnexion.', [
+        Alert.alert(t('common.savedLocally'), t('editLoan.offlineMessage'), [
           { text: 'OK', onPress: () => navigation.goBack() },
         ]);
       }
     } catch (e: unknown) {
-      Alert.alert('Erreur', e instanceof Error ? e.message : 'Erreur inconnue');
+      Alert.alert(t('common.error'), e instanceof Error ? e.message : t('common.error'));
     } finally {
       setLoading(false);
     }
@@ -108,12 +110,12 @@ export function EditLoanScreen({ route, navigation }: EditLoanProps) {
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} className="flex-1">
         <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: insets.bottom + 40 }} keyboardShouldPersistTaps="handled">
           {/* Titre */}
-          <Text className="text-[#222222] text-[24px] font-bold mb-1" style={{ fontFamily: 'LibreCaslon-Bold' }}>Modifier le Prêt</Text>
-          <Text className="text-[#888888] text-[13px] mb-6">Ajustez les paramètres du contrat de prêt pour {borrowerName}.</Text>
+          <Text className="text-[#222222] text-[24px] font-bold mb-1" style={{ fontFamily: 'LibreCaslon-Bold' }}>{t('editLoan.title')}</Text>
+          <Text className="text-[#888888] text-[13px] mb-6">{t('editLoan.subtitle', { name: borrowerName })}</Text>
 
           {/* Emprunteur (disabled) */}
           <View className="mb-5">
-            <Text className="text-[#AAAAAA] text-[11px] mb-1">Nom de l'emprunteur</Text>
+            <Text className="text-[#AAAAAA] text-[11px] mb-1">{t('editLoan.borrowerLabel')}</Text>
             <View className="flex-row items-center bg-cream border border-[#E8E4DC] rounded-[12px] px-4 py-3.5">
               <Ionicons name="person-outline" size={16} color="#CFCFCF" />
               <Text className="text-[#888888] text-[15px] ml-3">{borrowerName}</Text>
@@ -122,7 +124,7 @@ export function EditLoanScreen({ route, navigation }: EditLoanProps) {
 
           {/* Montant */}
           <View className="mb-5">
-            <Text className="text-[#222222] text-[13px] font-bold mb-1">Montant du prêt (FCFA)</Text>
+            <Text className="text-[#222222] text-[13px] font-bold mb-1">{t('editLoan.amount')}</Text>
             <View className="flex-row items-center bg-white border-2 border-burgundy rounded-[12px] px-4 py-3.5">
               <Ionicons name="card-outline" size={16} color="#800020" />
               <TextInput
@@ -137,14 +139,14 @@ export function EditLoanScreen({ route, navigation }: EditLoanProps) {
           {/* Taux et Durée côte à côte */}
           <View className="flex-row gap-3 mb-6">
             <View className="flex-1">
-              <Text className="text-[#222222] text-[13px] font-bold mb-1">Taux d'intérêt (%)</Text>
+              <Text className="text-[#222222] text-[13px] font-bold mb-1">{t('editLoan.interestRate')}</Text>
               <View className="flex-row items-center bg-white border border-[#E8E4DC] rounded-[12px] px-4 py-3.5">
                 <TextInput className="flex-1 text-[15px] text-[#222222]" keyboardType="decimal-pad" value={interestRate} onChangeText={setInterestRate} />
                 <Text className="text-[#AAAAAA] text-[13px]">%</Text>
               </View>
             </View>
             <View className="flex-1">
-              <Text className="text-[#222222] text-[13px] font-bold mb-1">Durée (Mois)</Text>
+              <Text className="text-[#222222] text-[13px] font-bold mb-1">{t('editLoan.duration')}</Text>
               <View className="flex-row items-center bg-white border border-[#E8E4DC] rounded-[12px] px-4 py-3.5">
                 <TextInput className="flex-1 text-[15px] text-[#222222]" keyboardType="numeric" value={duration} onChangeText={setDuration} />
                 <Ionicons name="calendar-outline" size={16} color="#CFCFCF" />
@@ -155,7 +157,7 @@ export function EditLoanScreen({ route, navigation }: EditLoanProps) {
           {/* Carte burgundy avec calculs */}
           <View className="bg-burgundy rounded-[16px] p-5 mb-6">
             <View className="flex-row items-center justify-between mb-1">
-              <Text className="text-white/60 text-[11px] uppercase tracking-[1px]">Paiement Mensuel</Text>
+              <Text className="text-white/60 text-[11px] uppercase tracking-[1px]">{t('editLoan.monthlyPayment')}</Text>
               <View className="w-10 h-10 rounded-[8px] bg-white/10 items-center justify-center">
                 <Ionicons name="business-outline" size={20} color="#FFFFFF" />
               </View>
@@ -166,11 +168,11 @@ export function EditLoanScreen({ route, navigation }: EditLoanProps) {
 
             <View className="flex-row justify-between mb-3">
               <View>
-                <Text className="text-white/60 text-[11px]">Total à rembourser</Text>
+                <Text className="text-white/60 text-[11px]">{t('editLoan.totalRepayment')}</Text>
                 <Text className="text-white text-[16px] font-bold">{calculation ? formatCurrency(calculation.total) : '---'}</Text>
               </View>
               <View>
-                <Text className="text-white/60 text-[11px]">Intérêts totaux</Text>
+                <Text className="text-white/60 text-[11px]">{t('editLoan.totalInterest')}</Text>
                 <Text className="text-[#FFDB58] text-[16px] font-bold">{calculation ? `+${formatCurrency(calculation.interest)}` : '---'}</Text>
               </View>
             </View>
@@ -189,7 +191,7 @@ export function EditLoanScreen({ route, navigation }: EditLoanProps) {
             activeOpacity={0.8}
           >
             <Ionicons name="save-outline" size={18} color="#FFFFFF" />
-            <Text className="text-white text-[16px] font-bold ml-2">{loading ? 'Sauvegarde...' : 'Sauvegarder les modifications'}</Text>
+            <Text className="text-white text-[16px] font-bold ml-2">{loading ? t('editLoan.saving') : t('editLoan.submit')}</Text>
           </TouchableOpacity>
 
           {/* Bouton Annuler */}
@@ -198,7 +200,7 @@ export function EditLoanScreen({ route, navigation }: EditLoanProps) {
             className="border border-[#E8E4DC] bg-white rounded-[12px] py-4 items-center"
             activeOpacity={0.8}
           >
-            <Text className="text-burgundy text-[15px] font-bold">Annuler les modifications</Text>
+            <Text className="text-burgundy text-[15px] font-bold">{t('editLoan.cancel')}</Text>
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>

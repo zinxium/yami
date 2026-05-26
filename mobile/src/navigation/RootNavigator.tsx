@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import { View, ActivityIndicator } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAuthStore } from '../store/auth.store';
 import { OnboardingScreen } from '../screens/auth/OnboardingScreen';
@@ -15,24 +14,38 @@ import { ForgotPasswordScreen } from '../screens/auth/ForgotPasswordScreen';
 import { NotificationsScreen } from '../screens/notifications/NotificationsScreen';
 import { EditBorrowerScreen } from '../screens/loans/EditBorrowerScreen';
 import { EditLoanScreen } from '../screens/loans/EditLoanScreen';
-import { Colors } from '../constants/colors';
+import { AnimatedSplash } from '../components/common/AnimatedSplash';
 import type { RootStackParamList } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
+const MIN_SPLASH_MS = 2500;
+
 export function RootNavigator() {
   const { isAuthenticated, isLoading, restoreSession } = useAuthStore();
+  const [splashDone, setSplashDone] = useState(false);
 
   useEffect(() => {
-    restoreSession();
+    const start = Date.now();
+    const finish = () => {
+      const elapsed = Date.now() - start;
+      const remaining = Math.max(0, MIN_SPLASH_MS - elapsed);
+      setTimeout(() => setSplashDone(true), remaining);
+    };
+    try {
+      const result = restoreSession();
+      if (result && typeof result.then === 'function') {
+        result.then(finish).catch(finish);
+      } else {
+        finish();
+      }
+    } catch {
+      finish();
+    }
   }, []);
 
-  if (isLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: Colors.neutral }}>
-        <ActivityIndicator size="large" color={Colors.primary} />
-      </View>
-    );
+  if (!splashDone) {
+    return <AnimatedSplash />;
   }
 
   return (

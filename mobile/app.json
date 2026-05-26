@@ -1,30 +1,40 @@
 {
   "expo": {
-    "name": "mobile",
-    "slug": "mobile",
+    "name": "Ya Mi",
+    "slug": "ya-mi",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/yami_logo.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "splash": {
       "image": "./assets/yami_logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#800020"
     },
     "ios": {
+      "bundleIdentifier": "com.yami.app",
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/yami_logo.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#800020"
       },
+      "package": "com.yami.app",
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
     },
     "web": {
       "favicon": "./assets/yami_logo.png"
+    },
+    "plugins": [
+      "expo-localization"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "8c4f1ca5-bdd0-40b1-8e7c-f60a3d4ccdae"
+      }
     }
   }
 }

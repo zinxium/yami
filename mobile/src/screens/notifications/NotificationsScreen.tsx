@@ -3,6 +3,7 @@ import { View, Text, FlatList, TouchableOpacity, RefreshControl } from 'react-na
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { Card, EmptyState, LoadingSpinner, Avatar, Logo } from '../../components/common';
 import { notificationsApi, Notification } from '../../api/notifications.api';
 import { useAuthStore } from '../../store/auth.store';
@@ -16,6 +17,7 @@ const TYPE_CONFIG: Record<string, { icon: keyof typeof Ionicons.glyphMap; bgColo
 };
 
 export function NotificationsScreen() {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<any>();
   const user = useAuthStore((s) => s.user);
@@ -59,11 +61,11 @@ export function NotificationsScreen() {
     const now = new Date();
     const diffMs = now.getTime() - d.getTime();
     const diffMin = Math.floor(diffMs / 60000);
-    if (diffMin < 60) return `Il y a ${diffMin}min`;
+    if (diffMin < 60) return t('notifications.timeAgo', { value: `${diffMin}${t('notifications.minutes')}` });
     const diffH = Math.floor(diffMin / 60);
-    if (diffH < 24) return `Il y a ${diffH}h`;
+    if (diffH < 24) return t('notifications.timeAgo', { value: `${diffH}${t('notifications.hours')}` });
     const diffD = Math.floor(diffH / 24);
-    if (diffD === 1) return 'Hier';
+    if (diffD === 1) return t('notifications.yesterday');
     return new Date(dateStr).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
   };
 
@@ -94,11 +96,11 @@ export function NotificationsScreen() {
       {/* Titre + bouton tout marquer */}
       <View className="flex-row items-start justify-between px-5 mb-4">
         <View>
-          <Text className="text-[#222222] text-[24px] font-bold" style={{ fontFamily: 'LibreCaslon-Bold' }}>Notifications</Text>
-          <Text className="text-[#888888] text-[12px] mt-1">Restez informé de vos activités financières</Text>
+          <Text className="text-[#222222] text-[24px] font-bold" style={{ fontFamily: 'LibreCaslon-Bold' }}>{t('notifications.title')}</Text>
+          <Text className="text-[#888888] text-[12px] mt-1">{t('notifications.subtitle')}</Text>
         </View>
         <TouchableOpacity onPress={markAllRead} className="border border-burgundy rounded-[8px] px-3 py-2 mt-1">
-          <Text className="text-burgundy text-[11px] font-bold">Tout marquer{'\n'}comme lu</Text>
+          <Text className="text-burgundy text-[11px] font-bold">{t('notifications.markAllRead')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -117,7 +119,7 @@ export function NotificationsScreen() {
               {isFirstOlder && (
                 <View className="items-center my-4">
                   <View className="border border-[#E8E4DC] rounded-full px-4 py-1.5">
-                    <Text className="text-[#AAAAAA] text-[12px]">Activités précédentes</Text>
+                    <Text className="text-[#AAAAAA] text-[12px]">{t('notifications.previous')}</Text>
                   </View>
                 </View>
               )}
@@ -142,7 +144,7 @@ export function NotificationsScreen() {
                       <Text className="text-[#888888] text-[13px] leading-[18px]">{item.message}</Text>
                       {config.urgent && !item.read && (
                         <View className="mt-2 self-start border border-[#2D6A4F] rounded-full px-3 py-1">
-                          <Text className="text-[#2D6A4F] text-[11px] font-bold">Action requise</Text>
+                          <Text className="text-[#2D6A4F] text-[11px] font-bold">{t('notifications.actionRequired')}</Text>
                         </View>
                       )}
                     </View>
@@ -153,7 +155,7 @@ export function NotificationsScreen() {
           );
         }}
         ListEmptyComponent={
-          <EmptyState icon="notifications-off-outline" title="Aucune notification" message="Tu recevras des alertes quand tes prêts arrivent à échéance." />
+          <EmptyState icon="notifications-off-outline" title={t('notifications.none')} message={t('notifications.noneSubtitle')} />
         }
       />
     </View>

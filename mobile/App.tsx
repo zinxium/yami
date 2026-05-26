@@ -1,4 +1,5 @@
 import './global.css';
+import './src/i18n';
 import React, { useCallback, useEffect, useRef } from 'react';
 import { View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
@@ -62,7 +63,7 @@ export default function App() {
     <SafeAreaProvider>
       <View className="flex-1" onLayout={onLayoutRootView}>
         <NavigationContainer>
-          <StatusBar style="dark" />
+          <StatusBar style="auto" />
           <OfflineBanner />
           <RootNavigator />
         </NavigationContainer>

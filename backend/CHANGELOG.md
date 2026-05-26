@@ -2,6 +2,34 @@
 
 Tous les changements notables de ce projet seront documentés dans ce fichier.
 
+## [1.1.0] - 2026-05-26
+
+### Added
+- Utilitaire d'erreur typé (`utils/error.ts`) : `getErrorStatus()` / `getErrorMessage()`
+- Interfaces typées : `LoanForSchedule`, `LoanForTicket`, `LoanForNotification`
+- Support du type Prisma `Decimal` dans les interfaces de service
+- Suite de tests Jest complète — 54 tests, 5 suites :
+  - `error.test.ts` (14 tests) — utilitaire d'erreur
+  - `loan.calculator.test.ts` (7 tests) — calculateur de prêts
+  - `loan.service.test.ts` (14 tests) — schedule et ticket
+  - `notification.service.test.ts` (10 tests) — notifications avec mock Prisma
+  - `auth.test.ts` (9 tests) — auth avec mock Prisma + Firebase
+- Setup Jest global (`tests/setup.ts`) avec mock Firebase
+- Scripts npm : `test`, `test:watch`, `test:coverage`
+- Migration Prisma initiale (`20260525_init`)
+- Firebase optionnel — l'app démarre sans credentials
+
+### Changed
+- Tous les controllers : `catch (error: any)` → `catch (error: unknown)` (7 fichiers, 27 catch blocks)
+- `loan.service.ts` : `any` → `Prisma.LoanWhereInput`, `Prisma.LoanUpdateInput`
+- `payment.service.ts` : `any` → `{ remaining_balance: number; status?: LoanStatus }`
+- `notification.service.ts` : `loan: any` → `LoanForNotification` (4 fonctions)
+- `firebase.ts` : initialisation gracieuse avec try/catch
+
+### Security
+- JWT secrets générés avec `crypto.randomBytes(64)` (128 chars hex)
+- Cloudinary credentials configurés
+
 ## [1.0.0] - 2026-05-20
 
 ### Added

@@ -1,22 +1,26 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '../../store/auth.store';
 import { Button, Logo } from '../../components/common';
 import { Colors } from '../../constants/colors';
 import type { LoginProps } from '../../navigation/types';
 
 export function LoginScreen({ navigation }: LoginProps) {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const login = useAuthStore((s) => s.login);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async () => {
     if (!email.trim() || !password.trim()) {
-      setError('Remplis tous les champs.');
+      setError(t('login.fillAllFields'));
       return;
     }
     setLoading(true);
@@ -24,7 +28,7 @@ export function LoginScreen({ navigation }: LoginProps) {
     try {
       await login(email.trim(), password);
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Erreur de connexion.');
+      setError(e instanceof Error ? e.message : t('login.loginError'));
     } finally {
       setLoading(false);
     }
@@ -42,8 +46,8 @@ export function LoginScreen({ navigation }: LoginProps) {
         <View className="items-center mb-6">
           <Logo size="medium" style={{ marginBottom: 8 }} />
         </View>
-        <Text className="text-center text-[#222222] text-[28px] font-bold mb-2">Bon retour !</Text>
-        <Text className="text-center text-[#888888] text-[14px] mb-10">Connecte-toi pour gérer tes prêts.</Text>
+        <Text className="text-center text-[#222222] text-[28px] font-bold mb-2">{t('login.welcomeBack')}</Text>
+        <Text className="text-center text-[#888888] text-[14px] mb-10">{t('login.subtitle')}</Text>
 
         {error ? (
           <View className="bg-red-50 border border-red-200 rounded-[10px] p-3 mb-4">
@@ -52,7 +56,7 @@ export function LoginScreen({ navigation }: LoginProps) {
         ) : null}
 
         <View className="mb-5">
-          <Text className="text-[#222222] text-[14px] font-bold mb-2">Email</Text>
+          <Text className="text-[#222222] text-[14px] font-bold mb-2">{t('login.email')}</Text>
           <TextInput
             className={inputClass}
             placeholder="ton@email.com"
@@ -65,19 +69,24 @@ export function LoginScreen({ navigation }: LoginProps) {
         </View>
 
         <View className="mb-6">
-          <Text className="text-[#222222] text-[14px] font-bold mb-2">Mot de passe</Text>
-          <TextInput
-            className={inputClass}
-            placeholder="••••••••"
-            placeholderTextColor="#CFCFCF"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-          />
+          <Text className="text-[#222222] text-[14px] font-bold mb-2">{t('login.password')}</Text>
+          <View className="flex-row items-center">
+            <TextInput
+              className={`${inputClass} flex-1 pr-12`}
+              placeholder="••••••••"
+              placeholderTextColor="#CFCFCF"
+              secureTextEntry={!showPassword}
+              value={password}
+              onChangeText={setPassword}
+            />
+            <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: 12 }}>
+              <Ionicons name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={20} color="#CFCFCF" />
+            </TouchableOpacity>
+          </View>
         </View>
 
         <Button
-          title={loading ? '' : 'Se connecter'}
+          title={loading ? '' : t('login.submit')}
           onPress={handleLogin}
           variant="primary"
           fullWidth
@@ -86,12 +95,12 @@ export function LoginScreen({ navigation }: LoginProps) {
         {loading && <ActivityIndicator color={Colors.white} style={{ position: 'absolute', alignSelf: 'center' }} />}
 
         <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')} className="items-center mt-4">
-          <Text className="text-burgundy text-[13px]">Mot de passe oublié ?</Text>
+          <Text className="text-burgundy text-[13px]">{t('login.forgotPassword')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => navigation.navigate('Signup')} className="items-center mt-4">
           <Text className="text-[#888888] text-[14px]">
-            Pas de compte ? <Text className="text-burgundy font-bold">Créer un compte</Text>
+            {t('login.noAccount')} <Text className="text-burgundy font-bold">{t('login.createAccount')}</Text>
           </Text>
         </TouchableOpacity>
       </ScrollView>

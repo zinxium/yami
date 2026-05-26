@@ -1,13 +1,25 @@
 import admin from 'firebase-admin';
 
+const privateKey = process.env.FIREBASE_PRIVATE_KEY;
+
 if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert({
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    }),
-  });
+  if (privateKey && process.env.FIREBASE_PROJECT_ID) {
+    try {
+      admin.initializeApp({
+        credential: admin.credential.cert({
+          projectId: process.env.FIREBASE_PROJECT_ID,
+          clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+          privateKey: privateKey.replace(/\\n/g, '\n'),
+        }),
+      });
+    } catch (e) {
+      console.warn('⚠ Firebase init failed — push notifications disabled.', (e as Error).message);
+      admin.initializeApp();
+    }
+  } else {
+    console.warn('⚠ Firebase credentials missing — push notifications disabled.');
+    admin.initializeApp();
+  }
 }
 
 export async function sendPushNotification(

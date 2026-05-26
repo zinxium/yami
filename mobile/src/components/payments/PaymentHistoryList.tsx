@@ -1,17 +1,12 @@
 import React from 'react';
 import { View, Text, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { Card } from '../common';
 import { paymentsApi } from '../../api/payments.api';
 import { formatCurrency, formatDate } from '../../utils/format';
 import { Colors } from '../../constants/colors';
 import type { Payment } from '../../types';
-
-const TYPE_LABELS: Record<string, string> = {
-  full: 'Complet',
-  partial: 'Partiel',
-  advance: 'En avance',
-};
 
 const METHOD_ICONS: Record<string, keyof typeof Ionicons.glyphMap> = {
   'MTN MoMo': 'phone-portrait-outline',
@@ -26,18 +21,26 @@ interface PaymentHistoryListProps {
 }
 
 export function PaymentHistoryList({ payments, onRefresh }: PaymentHistoryListProps) {
+  const { t } = useTranslation();
+
+  const TYPE_LABELS: Record<string, string> = {
+    full: t('paymentHistory.full'),
+    partial: t('paymentHistory.partial'),
+    advance: t('paymentHistory.advance'),
+  };
+
   const handleDelete = (payment: Payment) => {
-    Alert.alert('Supprimer', `Supprimer ce paiement de ${formatCurrency(payment.amount_paid)} ?`, [
-      { text: 'Annuler', style: 'cancel' },
+    Alert.alert(t('common.delete'), t('paymentHistory.deleteConfirm', { amount: formatCurrency(payment.amount_paid) }), [
+      { text: t('common.cancel'), style: 'cancel' },
       {
-        text: 'Supprimer',
+        text: t('common.delete'),
         style: 'destructive',
         onPress: async () => {
           try {
             await paymentsApi.delete(payment.id);
             onRefresh();
           } catch (e: unknown) {
-            Alert.alert('Erreur', e instanceof Error ? e.message : 'Erreur inconnue');
+            Alert.alert(t('common.error'), e instanceof Error ? e.message : t('common.error'));
           }
         },
       },
@@ -48,7 +51,8 @@ export function PaymentHistoryList({ payments, onRefresh }: PaymentHistoryListPr
     return (
       <View className="items-center py-6">
         <Ionicons name="receipt-outline" size={32} color="#CFCFCF" />
-        <Text className="text-[#888888] text-[13px] mt-2">Aucun paiement enregistré.</Text>
+        <Text className="text-[#888888] text-[13px] mt-2">{t('paymentHistory.none')}</Text>
+        <Text className="text-[#AAAAAA] text-[11px] mt-1">{t('paymentHistory.noneSubtitle')}</Text>
       </View>
     );
   }

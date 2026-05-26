@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { View, Text, TextInput, Alert, KeyboardAvoidingView, Platform, ScrollView, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { Avatar, Button, Logo } from '../../components/common';
 import { useAuthStore } from '../../store/auth.store';
 import { useTheme } from '../../hooks/useTheme';
@@ -10,26 +11,34 @@ import type { EditBorrowerProps } from '../../navigation/types';
 import { useNetworkStore } from '../../store/network.store';
 import { useMutationQueueStore } from '../../store/mutationQueue.store';
 
-const RELATIONS = ['Ami(e)', 'Famille', 'Collègue', 'Voisin(e)', 'Autre'];
-
 export function EditBorrowerScreen({ route, navigation }: EditBorrowerProps) {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const user = useAuthStore(s => s.user);
   const { colors } = useTheme();
   const { borrower } = route.params;
   const [fullname, setFullname] = useState(borrower.fullname);
   const [phone, setPhone] = useState(borrower.phone || '');
-  const [relation, setRelation] = useState('Collègue');
   const [showRelationPicker, setShowRelationPicker] = useState(false);
   const [notes, setNotes] = useState(borrower.notes || '');
   const [loading, setLoading] = useState(false);
+
+  const RELATIONS = useMemo(() => [
+    t('relations.friend'),
+    t('relations.family'),
+    t('relations.colleague'),
+    t('relations.neighbor'),
+    t('relations.other'),
+  ], [t]);
+
+  const [relation, setRelation] = useState(t('relations.colleague'));
 
   const isConnected = useNetworkStore((s) => s.isConnected);
   const addMutation = useMutationQueueStore((s) => s.addMutation);
 
   const handleSubmit = async () => {
     if (!fullname.trim()) {
-      Alert.alert('Erreur', 'Le nom est requis.');
+      Alert.alert(t('common.error'), t('addBorrower.nameRequired'));
       return;
     }
     const data = {
@@ -41,32 +50,32 @@ export function EditBorrowerScreen({ route, navigation }: EditBorrowerProps) {
     try {
       if (isConnected) {
         await borrowersApi.update(borrower.id, data);
-        Alert.alert('Modifié', `${fullname} a été mis à jour.`, [
+        Alert.alert(t('editBorrower.successTitle'), t('editBorrower.successMessage', { name: fullname }), [
           { text: 'OK', onPress: () => navigation.goBack() },
         ]);
       } else {
         addMutation('UPDATE_BORROWER', { id: borrower.id, ...data });
-        Alert.alert('Sauvegardé localement', `${fullname} sera synchronisé dès la reconnexion.`, [
+        Alert.alert(t('common.savedLocally'), t('editBorrower.offlineMessage', { name: fullname }), [
           { text: 'OK', onPress: () => navigation.goBack() },
         ]);
       }
     } catch (e: unknown) {
-      Alert.alert('Erreur', e instanceof Error ? e.message : 'Erreur inconnue');
+      Alert.alert(t('common.error'), e instanceof Error ? e.message : t('common.error'));
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = () => {
-    Alert.alert('Supprimer', `Supprimer ${borrower.fullname} définitivement ?`, [
-      { text: 'Annuler', style: 'cancel' },
+    Alert.alert(t('editBorrower.deleteTitle'), t('editBorrower.deleteConfirm', { name: borrower.fullname }), [
+      { text: t('common.cancel'), style: 'cancel' },
       {
-        text: 'Supprimer', style: 'destructive', onPress: async () => {
+        text: t('common.delete'), style: 'destructive', onPress: async () => {
           try {
             await borrowersApi.delete(borrower.id);
             navigation.goBack();
           } catch (e: unknown) {
-            Alert.alert('Erreur', e instanceof Error ? e.message : 'Erreur inconnue');
+            Alert.alert(t('common.error'), e instanceof Error ? e.message : t('common.error'));
           }
         },
       },
@@ -84,7 +93,7 @@ export function EditBorrowerScreen({ route, navigation }: EditBorrowerProps) {
         </TouchableOpacity>
         <View className="flex-row items-center gap-2">
           <Logo size="small" />
-          <Text className="text-[16px] font-bold text-[#222222]">Modifier</Text>
+          <Text className="text-[16px] font-bold text-[#222222]">{t('editBorrower.title')}</Text>
         </View>
         <Avatar name={user?.fullname || 'U'} size="sm" />
       </View>
@@ -92,8 +101,8 @@ export function EditBorrowerScreen({ route, navigation }: EditBorrowerProps) {
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} className="flex-1">
         <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: insets.bottom + 40 }} keyboardShouldPersistTaps="handled">
           {/* Titre */}
-          <Text className="text-[#222222] text-[24px] font-bold mb-1" style={{ fontFamily: 'LibreCaslon-Bold' }}>Modifier l'Emprunteur</Text>
-          <Text className="text-[#888888] text-[13px] mb-6">Mettez à jour les informations essentielles de votre contact d'emprunt.</Text>
+          <Text className="text-[#222222] text-[24px] font-bold mb-1" style={{ fontFamily: 'LibreCaslon-Bold' }}>{t('editBorrower.heading')}</Text>
+          <Text className="text-[#888888] text-[13px] mb-6">{t('editBorrower.subtitle')}</Text>
 
           {/* Avatar photo */}
           <View className="items-center mb-6">
@@ -101,13 +110,13 @@ export function EditBorrowerScreen({ route, navigation }: EditBorrowerProps) {
               <Text className="text-white text-[32px] font-bold">{fullname.charAt(0).toUpperCase()}</Text>
             </View>
             <TouchableOpacity className="mt-2">
-              <Text className="text-[#888888] text-[13px]">Changer la photo</Text>
+              <Text className="text-[#888888] text-[13px]">{t('editBorrower.changePhoto')}</Text>
             </TouchableOpacity>
           </View>
 
           {/* Nom */}
           <View className="mb-5">
-            <Text className="text-[#222222] text-[14px] font-bold mb-2">Nom Complet</Text>
+            <Text className="text-[#222222] text-[14px] font-bold mb-2">{t('editBorrower.fullname')}</Text>
             <View className="flex-row items-center">
               <TextInput className={`${inputClass} flex-1`} value={fullname} onChangeText={setFullname} autoCapitalize="words" />
               <Ionicons name="person-outline" size={18} color="#CFCFCF" style={{ marginLeft: -36 }} />
@@ -116,7 +125,7 @@ export function EditBorrowerScreen({ route, navigation }: EditBorrowerProps) {
 
           {/* Téléphone */}
           <View className="mb-5">
-            <Text className="text-[#222222] text-[14px] font-bold mb-2">Numéro de Téléphone</Text>
+            <Text className="text-[#222222] text-[14px] font-bold mb-2">{t('editBorrower.phone')}</Text>
             <View className="flex-row items-center">
               <TextInput className={`${inputClass} flex-1`} keyboardType="phone-pad" value={phone} onChangeText={setPhone} placeholder="+237 678 901 234" placeholderTextColor="#CFCFCF" />
               <Ionicons name="call-outline" size={18} color="#CFCFCF" style={{ marginLeft: -36 }} />
@@ -125,7 +134,7 @@ export function EditBorrowerScreen({ route, navigation }: EditBorrowerProps) {
 
           {/* Relation (dropdown) */}
           <View className="mb-5">
-            <Text className="text-[#222222] text-[14px] font-bold mb-2">Relation</Text>
+            <Text className="text-[#222222] text-[14px] font-bold mb-2">{t('editBorrower.relation')}</Text>
             <TouchableOpacity
               onPress={() => setShowRelationPicker(!showRelationPicker)}
               className="flex-row items-center justify-between bg-white border border-[#E8E4DC] rounded-[12px] px-4 py-3.5"
@@ -146,7 +155,7 @@ export function EditBorrowerScreen({ route, navigation }: EditBorrowerProps) {
 
           {/* Notes */}
           <View className="mb-8">
-            <Text className="text-[#222222] text-[14px] font-bold mb-2">Notes (Optionnel)</Text>
+            <Text className="text-[#222222] text-[14px] font-bold mb-2">{t('editBorrower.notes')}</Text>
             <TextInput
               className={`${inputClass} min-h-[90px]`}
               placeholder="Emprunteur fiable, projet de commerce de détail."
@@ -166,14 +175,14 @@ export function EditBorrowerScreen({ route, navigation }: EditBorrowerProps) {
             activeOpacity={0.8}
           >
             <Ionicons name="save-outline" size={18} color="#FFFFFF" />
-            <Text className="text-white text-[16px] font-bold ml-2">{loading ? 'Mise à jour...' : 'Mettre à jour'}</Text>
+            <Text className="text-white text-[16px] font-bold ml-2">{loading ? t('editBorrower.updating') : t('editBorrower.submit')}</Text>
           </TouchableOpacity>
 
           {/* Séparateur + Supprimer */}
           <View className="border-t border-[#E8E4DC] pt-4">
             <TouchableOpacity onPress={handleDelete} className="flex-row items-center justify-center py-3">
               <Ionicons name="trash-outline" size={16} color={Colors.danger} />
-              <Text className="text-[#4D0013] text-[14px] font-bold ml-2">Supprimer cet emprunteur</Text>
+              <Text className="text-[#4D0013] text-[14px] font-bold ml-2">{t('common.delete')}</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

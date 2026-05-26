@@ -1,6 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { HomeStack } from './HomeStack';
 import { LoansStack } from './LoansStack';
 import { PayScreen } from '../screens/payments/PayScreen';
@@ -16,14 +17,16 @@ const TAB_ICONS: Record<keyof MainTabParamList, { active: keyof typeof Ionicons.
   ProfileTab: { active: 'person',        inactive: 'person-outline' },
 };
 
-const TAB_LABELS: Record<keyof MainTabParamList, string> = {
-  HomeTab: 'Home',
-  LoansTab: 'Loans',
-  PayTab: 'Pay',
-  ProfileTab: 'Profile',
-};
-
 export function MainTabs() {
+  const { t } = useTranslation();
+
+  const TAB_LABELS: Record<keyof MainTabParamList, string> = {
+    HomeTab: t('tabs.home'),
+    LoansTab: t('tabs.loans'),
+    PayTab: t('tabs.pay'),
+    ProfileTab: t('tabs.profile'),
+  };
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
