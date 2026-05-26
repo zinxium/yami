@@ -82,27 +82,33 @@ export function EditLoanScreen({ route, navigation }: EditLoanProps) {
 
   if (fetching) {
     return (
-      <View className="flex-1 bg-cream items-center justify-center">
-        <ActivityIndicator size="large" color={Colors.primary} />
+      <View className="flex-1 items-center justify-center" style={{ backgroundColor: colors.background }}>
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
 
   const borrowerName = loan?.borrower?.fullname || 'Emprunteur';
-  const inputClass = 'bg-white border border-[#E8E4DC] rounded-[12px] px-4 py-3.5 text-[15px] text-[#222222]';
+
+  const inputStyle = {
+    backgroundColor: colors.surface,
+    borderColor: colors.borderLight,
+    borderWidth: 1,
+    color: colors.textPrimary,
+  };
 
   return (
-    <View className="flex-1 bg-cream">
+    <View className="flex-1" style={{ backgroundColor: colors.background }}>
       {/* Header Ya Mi */}
       <View className="flex-row items-center justify-between px-5" style={{ paddingTop: insets.top + 8, paddingBottom: 8 }}>
         <TouchableOpacity onPress={() => navigation.goBack()} className="p-1">
-          <Ionicons name="arrow-back" size={22} color="#222222" />
+          <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
         </TouchableOpacity>
         <View className="flex-row items-center gap-1">
           <View className="w-6 h-6 rounded-full bg-burgundy items-center justify-center">
             <Text className="text-white text-[10px] font-bold">Y</Text>
           </View>
-          <Text className="text-burgundy text-[16px] font-bold" style={{ fontFamily: 'LibreCaslon-Bold' }}>Ya Mi</Text>
+          <Text className="text-[16px] font-bold" style={{ fontFamily: 'LibreCaslon-Bold', color: colors.primary }}>Ya Mi</Text>
         </View>
         <Avatar name={user?.fullname || 'U'} size="sm" />
       </View>
@@ -110,25 +116,26 @@ export function EditLoanScreen({ route, navigation }: EditLoanProps) {
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} className="flex-1">
         <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: insets.bottom + 40 }} keyboardShouldPersistTaps="handled">
           {/* Titre */}
-          <Text className="text-[#222222] text-[24px] font-bold mb-1" style={{ fontFamily: 'LibreCaslon-Bold' }}>{t('editLoan.title')}</Text>
-          <Text className="text-[#888888] text-[13px] mb-6">{t('editLoan.subtitle', { name: borrowerName })}</Text>
+          <Text className="text-[24px] font-bold mb-1" style={{ fontFamily: 'LibreCaslon-Bold', color: colors.textPrimary }}>{t('editLoan.title')}</Text>
+          <Text className="text-[13px] mb-6" style={{ color: colors.textSecondary }}>{t('editLoan.subtitle', { name: borrowerName })}</Text>
 
           {/* Emprunteur (disabled) */}
           <View className="mb-5">
-            <Text className="text-[#AAAAAA] text-[11px] mb-1">{t('editLoan.borrowerLabel')}</Text>
-            <View className="flex-row items-center bg-cream border border-[#E8E4DC] rounded-[12px] px-4 py-3.5">
-              <Ionicons name="person-outline" size={16} color="#CFCFCF" />
-              <Text className="text-[#888888] text-[15px] ml-3">{borrowerName}</Text>
+            <Text className="text-[11px] mb-1" style={{ color: colors.textMuted }}>{t('editLoan.borrowerLabel')}</Text>
+            <View className="flex-row items-center rounded-[12px] px-4 py-3.5" style={{ backgroundColor: colors.background, borderColor: colors.borderLight, borderWidth: 1 }}>
+              <Ionicons name="person-outline" size={16} color={colors.dustGrey} />
+              <Text className="text-[15px] ml-3" style={{ color: colors.textSecondary }}>{borrowerName}</Text>
             </View>
           </View>
 
           {/* Montant */}
           <View className="mb-5">
-            <Text className="text-[#222222] text-[13px] font-bold mb-1">{t('editLoan.amount')}</Text>
-            <View className="flex-row items-center bg-white border-2 border-burgundy rounded-[12px] px-4 py-3.5">
-              <Ionicons name="card-outline" size={16} color="#800020" />
+            <Text className="text-[13px] font-bold mb-1" style={{ color: colors.textPrimary }}>{t('editLoan.amount')}</Text>
+            <View className="flex-row items-center border-2 border-burgundy rounded-[12px] px-4 py-3.5" style={{ backgroundColor: colors.surface }}>
+              <Ionicons name="card-outline" size={16} color={colors.primary} />
               <TextInput
-                className="flex-1 ml-3 text-[15px] text-[#222222]"
+                className="flex-1 ml-3 text-[15px]"
+                style={{ color: colors.textPrimary }}
                 keyboardType="numeric"
                 value={amount}
                 onChangeText={setAmount}
@@ -136,20 +143,20 @@ export function EditLoanScreen({ route, navigation }: EditLoanProps) {
             </View>
           </View>
 
-          {/* Taux et Durée côte à côte */}
+          {/* Taux et Duree cote a cote */}
           <View className="flex-row gap-3 mb-6">
             <View className="flex-1">
-              <Text className="text-[#222222] text-[13px] font-bold mb-1">{t('editLoan.interestRate')}</Text>
-              <View className="flex-row items-center bg-white border border-[#E8E4DC] rounded-[12px] px-4 py-3.5">
-                <TextInput className="flex-1 text-[15px] text-[#222222]" keyboardType="decimal-pad" value={interestRate} onChangeText={setInterestRate} />
-                <Text className="text-[#AAAAAA] text-[13px]">%</Text>
+              <Text className="text-[13px] font-bold mb-1" style={{ color: colors.textPrimary }}>{t('editLoan.interestRate')}</Text>
+              <View className="flex-row items-center rounded-[12px] px-4 py-3.5" style={inputStyle}>
+                <TextInput className="flex-1 text-[15px]" style={{ color: colors.textPrimary }} keyboardType="decimal-pad" value={interestRate} onChangeText={setInterestRate} />
+                <Text className="text-[13px]" style={{ color: colors.textMuted }}>%</Text>
               </View>
             </View>
             <View className="flex-1">
-              <Text className="text-[#222222] text-[13px] font-bold mb-1">{t('editLoan.duration')}</Text>
-              <View className="flex-row items-center bg-white border border-[#E8E4DC] rounded-[12px] px-4 py-3.5">
-                <TextInput className="flex-1 text-[15px] text-[#222222]" keyboardType="numeric" value={duration} onChangeText={setDuration} />
-                <Ionicons name="calendar-outline" size={16} color="#CFCFCF" />
+              <Text className="text-[13px] font-bold mb-1" style={{ color: colors.textPrimary }}>{t('editLoan.duration')}</Text>
+              <View className="flex-row items-center rounded-[12px] px-4 py-3.5" style={inputStyle}>
+                <TextInput className="flex-1 text-[15px]" style={{ color: colors.textPrimary }} keyboardType="numeric" value={duration} onChangeText={setDuration} />
+                <Ionicons name="calendar-outline" size={16} color={colors.dustGrey} />
               </View>
             </View>
           </View>
@@ -197,10 +204,11 @@ export function EditLoanScreen({ route, navigation }: EditLoanProps) {
           {/* Bouton Annuler */}
           <TouchableOpacity
             onPress={() => navigation.goBack()}
-            className="border border-[#E8E4DC] bg-white rounded-[12px] py-4 items-center"
+            className="rounded-[12px] py-4 items-center"
+            style={{ borderColor: colors.borderLight, borderWidth: 1, backgroundColor: colors.surface }}
             activeOpacity={0.8}
           >
-            <Text className="text-burgundy text-[15px] font-bold">{t('editLoan.cancel')}</Text>
+            <Text className="text-[15px] font-bold" style={{ color: colors.primary }}>{t('editLoan.cancel')}</Text>
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>

@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTheme } from '../../hooks/useTheme';
 
 interface ScreenHeaderProps {
   title: string;
@@ -12,6 +13,7 @@ interface ScreenHeaderProps {
 
 export function ScreenHeader({ title, showBack, onBack, rightElement }: ScreenHeaderProps) {
   const insets = useSafeAreaInsets();
+  const { colors } = useTheme();
 
   return (
     <View
@@ -21,10 +23,10 @@ export function ScreenHeader({ title, showBack, onBack, rightElement }: ScreenHe
       <View className="flex-row items-center gap-3 flex-1">
         {showBack && (
           <TouchableOpacity onPress={onBack} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-            <Ionicons name="arrow-back" size={22} color="#222222" />
+            <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
           </TouchableOpacity>
         )}
-        <Text className="text-[18px] font-bold text-[#222222]">{title}</Text>
+        <Text className="text-[18px] font-bold" style={{ color: colors.textPrimary }}>{title}</Text>
       </View>
       {rightElement && <View>{rightElement}</View>}
     </View>

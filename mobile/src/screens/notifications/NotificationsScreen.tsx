@@ -78,17 +78,17 @@ export function NotificationsScreen() {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <View className="flex-1 bg-cream">
+    <View className="flex-1" style={{ backgroundColor: colors.background }}>
       {/* Header Ya Mi */}
       <View className="flex-row items-center justify-between px-5 pb-3" style={{ paddingTop: insets.top + 8 }}>
         <View className="flex-row items-center gap-2">
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Ionicons name="menu" size={22} color="#222222" />
+            <Ionicons name="menu" size={22} color={colors.textPrimary} />
           </TouchableOpacity>
-          <View className="w-6 h-6 rounded-full bg-burgundy items-center justify-center">
-            <Text className="text-white text-[10px] font-bold">Y</Text>
+          <View className="w-6 h-6 rounded-full items-center justify-center" style={{ backgroundColor: colors.primary }}>
+            <Text className="text-[10px] font-bold" style={{ color: colors.surface }}>Y</Text>
           </View>
-          <Text className="text-burgundy text-[16px] font-bold" style={{ fontFamily: 'LibreCaslon-Bold' }}>Ya Mi</Text>
+          <Text className="text-[16px] font-bold" style={{ fontFamily: 'LibreCaslon-Bold', color: colors.primary }}>Ya Mi</Text>
         </View>
         <Avatar name={user?.fullname || 'U'} size="sm" />
       </View>
@@ -96,11 +96,11 @@ export function NotificationsScreen() {
       {/* Titre + bouton tout marquer */}
       <View className="flex-row items-start justify-between px-5 mb-4">
         <View>
-          <Text className="text-[#222222] text-[24px] font-bold" style={{ fontFamily: 'LibreCaslon-Bold' }}>{t('notifications.title')}</Text>
-          <Text className="text-[#888888] text-[12px] mt-1">{t('notifications.subtitle')}</Text>
+          <Text className="text-[24px] font-bold" style={{ fontFamily: 'LibreCaslon-Bold', color: colors.textPrimary }}>{t('notifications.title')}</Text>
+          <Text className="text-[12px] mt-1" style={{ color: colors.textSecondary }}>{t('notifications.subtitle')}</Text>
         </View>
-        <TouchableOpacity onPress={markAllRead} className="border border-burgundy rounded-[8px] px-3 py-2 mt-1">
-          <Text className="text-burgundy text-[11px] font-bold">{t('notifications.markAllRead')}</Text>
+        <TouchableOpacity onPress={markAllRead} className="rounded-[8px] px-3 py-2 mt-1" style={{ borderWidth: 1, borderColor: colors.primary }}>
+          <Text className="text-[11px] font-bold" style={{ color: colors.primary }}>{t('notifications.markAllRead')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -108,7 +108,7 @@ export function NotificationsScreen() {
         data={notifications}
         keyExtractor={item => item.id}
         contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: insets.bottom + 20 }}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.primary} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />}
         ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
         renderItem={({ item, index }) => {
           const config = TYPE_CONFIG[item.type] || TYPE_CONFIG.created;
@@ -118,8 +118,8 @@ export function NotificationsScreen() {
             <>
               {isFirstOlder && (
                 <View className="items-center my-4">
-                  <View className="border border-[#E8E4DC] rounded-full px-4 py-1.5">
-                    <Text className="text-[#AAAAAA] text-[12px]">{t('notifications.previous')}</Text>
+                  <View className="rounded-full px-4 py-1.5" style={{ borderWidth: 1, borderColor: colors.borderLight }}>
+                    <Text className="text-[12px]" style={{ color: colors.textMuted }}>{t('notifications.previous')}</Text>
                   </View>
                 </View>
               )}
@@ -136,15 +136,18 @@ export function NotificationsScreen() {
                     </View>
                     <View className="flex-1">
                       <View className="flex-row items-center justify-between mb-1">
-                        <Text className={`text-[14px] flex-1 ${!item.read ? 'text-[#222222] font-bold' : 'text-[#666666]'}`}>
+                        <Text
+                          className={`text-[14px] flex-1 ${!item.read ? 'font-bold' : ''}`}
+                          style={{ color: !item.read ? colors.textPrimary : colors.textSecondary }}
+                        >
                           {item.title}
                         </Text>
-                        <Text className="text-[#AAAAAA] text-[11px] ml-2">{formatTime(item.sent_at)}</Text>
+                        <Text className="text-[11px] ml-2" style={{ color: colors.textMuted }}>{formatTime(item.sent_at)}</Text>
                       </View>
-                      <Text className="text-[#888888] text-[13px] leading-[18px]">{item.message}</Text>
+                      <Text className="text-[13px] leading-[18px]" style={{ color: colors.textSecondary }}>{item.message}</Text>
                       {config.urgent && !item.read && (
-                        <View className="mt-2 self-start border border-[#2D6A4F] rounded-full px-3 py-1">
-                          <Text className="text-[#2D6A4F] text-[11px] font-bold">{t('notifications.actionRequired')}</Text>
+                        <View className="mt-2 self-start rounded-full px-3 py-1" style={{ borderWidth: 1, borderColor: '#2D6A4F' }}>
+                          <Text className="text-[11px] font-bold" style={{ color: '#2D6A4F' }}>{t('notifications.actionRequired')}</Text>
                         </View>
                       )}
                     </View>

@@ -9,3 +9,4 @@ export { AppText } from './AppText';
 export { Logo } from './Logo';
 export { ThemedSwitch } from './ThemedSwitch';
 export { OfflineBanner } from './OfflineBanner';
+export { SuccessModal } from './SuccessModal';

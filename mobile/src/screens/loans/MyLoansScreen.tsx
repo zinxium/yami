@@ -40,20 +40,21 @@ export function MyLoansScreen() {
   if (loading && loans.length === 0) return <LoadingSpinner />;
 
   return (
-    <View className="flex-1 bg-cream">
+    <View className="flex-1" style={{ backgroundColor: colors.background }}>
       <View className="px-5 pb-2" style={{ paddingTop: insets.top + 8 }}>
         <View className="flex-row items-center gap-2 mb-3">
           <Logo size="small" />
-          <Text className="text-[#222222] text-[20px] font-bold">{t('myLoans.title')}</Text>
+          <Text className="text-[20px] font-bold" style={{ color: colors.textPrimary }}>{t('myLoans.title')}</Text>
         </View>
 
         {/* Search */}
-        <View className="flex-row items-center bg-white border border-[#E8E4DC] rounded-[8px] px-4 py-2.5 mb-3">
-          <Ionicons name="search-outline" size={18} color="#CFCFCF" />
+        <View className="flex-row items-center rounded-[8px] px-4 py-2.5 mb-3" style={{ backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.borderLight }}>
+          <Ionicons name="search-outline" size={18} color={colors.dustGrey} />
           <TextInput
-            className="flex-1 ml-2 text-[14px] text-[#222222]"
+            className="flex-1 ml-2 text-[14px]"
+            style={{ color: colors.textPrimary }}
             placeholder={t('myLoans.search')}
-            placeholderTextColor="#CFCFCF"
+            placeholderTextColor={colors.dustGrey}
             value={search}
             onChangeText={setSearch}
           />
@@ -65,9 +66,19 @@ export function MyLoansScreen() {
             <TouchableOpacity
               key={f.key}
               onPress={() => setFilter(f.key)}
-              className={`px-4 py-2 rounded-full ${filter === f.key ? 'bg-burgundy' : 'bg-white border border-[#E8E4DC]'}`}
+              className={`px-4 py-2 rounded-full`}
+              style={
+                filter === f.key
+                  ? { backgroundColor: colors.primary }
+                  : { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.borderLight }
+              }
             >
-              <Text className={`text-[13px] font-bold ${filter === f.key ? 'text-white' : 'text-[#222222]'}`}>{f.label}</Text>
+              <Text
+                className="text-[13px] font-bold"
+                style={{ color: filter === f.key ? colors.surface : colors.textPrimary }}
+              >
+                {f.label}
+              </Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -77,7 +88,7 @@ export function MyLoansScreen() {
         data={filtered}
         keyExtractor={item => item.id}
         contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: insets.bottom + 80 }}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.primary} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />}
         ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
         renderItem={({ item }) => (
           <LoanCard

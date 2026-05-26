@@ -2,6 +2,8 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTheme } from '../hooks/useTheme';
 import { HomeStack } from './HomeStack';
 import { LoansStack } from './LoansStack';
 import { PayScreen } from '../screens/payments/PayScreen';
@@ -19,6 +21,8 @@ const TAB_ICONS: Record<keyof MainTabParamList, { active: keyof typeof Ionicons.
 
 export function MainTabs() {
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
+  const { colors } = useTheme();
 
   const TAB_LABELS: Record<keyof MainTabParamList, string> = {
     HomeTab: t('tabs.home'),
@@ -31,25 +35,25 @@ export function MainTabs() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarIcon: ({ focused, size }) => {
+        tabBarIcon: ({ focused }) => {
           const icons = TAB_ICONS[route.name];
           return (
             <Ionicons
               name={focused ? icons.active : icons.inactive}
               size={22}
-              color={focused ? '#800020' : '#CFCFCF'}
+              color={focused ? colors.primary : colors.dustGrey}
             />
           );
         },
         tabBarLabel: TAB_LABELS[route.name],
-        tabBarActiveTintColor: '#800020',
-        tabBarInactiveTintColor: '#CFCFCF',
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.dustGrey,
         tabBarStyle: {
-          backgroundColor: '#FAF7F2',
-          borderTopColor: '#E8E4DC',
+          backgroundColor: colors.surface,
+          borderTopColor: colors.border,
           borderTopWidth: 0.5,
-          height: 64,
-          paddingBottom: 8,
+          height: 64 + insets.bottom,
+          paddingBottom: 8 + insets.bottom,
           paddingTop: 6,
         },
         tabBarLabelStyle: {

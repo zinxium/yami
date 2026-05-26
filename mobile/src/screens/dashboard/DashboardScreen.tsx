@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput, RefreshControl, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, RefreshControl, ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
@@ -36,97 +36,101 @@ export function DashboardScreen() {
   const activeCount = loans.filter(l => l.status === 'active').length;
   const overdueCount = loans.filter(l => l.status === 'overdue').length;
 
-  const firstName = user?.fullname?.split(' ')[0] || 'Utilisateur';
+  const firstName = user?.fullname?.split(' ')[0] || t('common.user');
   const recentLoans = loans.slice(0, 5);
 
   if (loading && loans.length === 0) {
     return (
-      <View className="flex-1 bg-cream items-center justify-center">
-        <ActivityIndicator size="large" color={Colors.primary} />
+      <View style={{ flex: 1, backgroundColor: colors.background, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
 
   return (
-    <View className="flex-1 bg-cream">
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 100 }}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.primary} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />}
       >
         {/* Header */}
-        <View className="flex-row items-center justify-between px-5 pb-4" style={{ paddingTop: insets.top + 8 }}>
-          <View className="flex-row items-center gap-2 flex-1">
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingBottom: 16, paddingTop: insets.top + 8 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1 }}>
             <Logo size="small" />
             <View>
-              <Text className="text-[#888888] text-[13px]">{t('dashboard.hello')},</Text>
-              <Text className="text-[#222222] text-[20px] font-bold">{firstName}</Text>
+              <Text style={{ color: colors.textSecondary, fontSize: 13 }}>{t('dashboard.hello')},</Text>
+              <Text style={{ color: colors.textPrimary, fontSize: 20, fontWeight: 'bold' }}>{firstName}</Text>
             </View>
           </View>
           <TouchableOpacity onPress={() => navigation.getParent()?.getParent()?.navigate('Notifications')}>
-            <Ionicons name="notifications-outline" size={24} color="#222222" />
+            <Ionicons name="notifications-outline" size={24} color={colors.textPrimary} />
           </TouchableOpacity>
         </View>
 
         {/* Stat cards */}
-        <View className="flex-row gap-3 px-5 mb-3">
-          <View className="flex-1 bg-burgundy rounded-[12px] p-4 border-l-4 border-l-[#B8003A]">
-            <Text className="text-white/70 text-[12px] mb-1">{t('dashboard.totalLent')}</Text>
-            <Text className="text-white text-[22px] font-bold">{formatCurrency(totalLent)}</Text>
+        <View style={{ flexDirection: 'row', gap: 12, paddingHorizontal: 20, marginBottom: 12 }}>
+          <View style={{ flex: 1, backgroundColor: colors.primary, borderRadius: 12, padding: 16 }}>
+            <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 12, marginBottom: 4 }}>{t('dashboard.totalLent')}</Text>
+            <Text style={{ color: '#FFFFFF', fontSize: 22, fontWeight: 'bold' }}>{formatCurrency(totalLent)}</Text>
           </View>
-          <View className="flex-1 bg-mustard rounded-[12px] p-4 border-l-4 border-l-[#E6C200]">
-            <Text className="text-[#222222]/70 text-[12px] mb-1">{t('dashboard.toReceive')}</Text>
-            <Text className="text-[#222222] text-[22px] font-bold">{formatCurrency(totalToReceive)}</Text>
+          <View style={{ flex: 1, backgroundColor: colors.secondary, borderRadius: 12, padding: 16 }}>
+            <Text style={{ color: 'rgba(0,0,0,0.5)', fontSize: 12, marginBottom: 4 }}>{t('dashboard.toReceive')}</Text>
+            <Text style={{ color: colors.graphite, fontSize: 22, fontWeight: 'bold' }}>{formatCurrency(totalToReceive)}</Text>
           </View>
         </View>
 
-        <View className="flex-row gap-3 px-5 mb-5">
-          <Card className="flex-1 border-l-4 border-l-[#CFCFCF]">
-            <Text className="text-[#888888] text-[12px] mb-1">{t('dashboard.activeLoans')}</Text>
-            <Text className="text-[#222222] text-[24px] font-bold">{activeCount}</Text>
-          </Card>
-          <Card className={`flex-1 border-l-4 ${overdueCount > 0 ? 'border-l-[#4D0013]' : 'border-l-[#CFCFCF]'}`}>
-            <Text className="text-[#888888] text-[12px] mb-1">{t('dashboard.overdue')}</Text>
-            <Text className={`text-[24px] font-bold ${overdueCount > 0 ? 'text-[#4D0013]' : 'text-[#222222]'}`}>{overdueCount}</Text>
-          </Card>
+        <View style={{ flexDirection: 'row', gap: 12, paddingHorizontal: 20, marginBottom: 20 }}>
+          <View style={{ flex: 1, backgroundColor: colors.surface, borderRadius: 12, padding: 16, borderLeftWidth: 4, borderLeftColor: colors.dustGrey }}>
+            <Text style={{ color: colors.textSecondary, fontSize: 12, marginBottom: 4 }}>{t('dashboard.activeLoans')}</Text>
+            <Text style={{ color: colors.textPrimary, fontSize: 24, fontWeight: 'bold' }}>{activeCount}</Text>
+          </View>
+          <View style={{ flex: 1, backgroundColor: colors.surface, borderRadius: 12, padding: 16, borderLeftWidth: 4, borderLeftColor: overdueCount > 0 ? colors.danger : colors.dustGrey }}>
+            <Text style={{ color: colors.textSecondary, fontSize: 12, marginBottom: 4 }}>{t('dashboard.overdue')}</Text>
+            <Text style={{ color: overdueCount > 0 ? colors.danger : colors.textPrimary, fontSize: 24, fontWeight: 'bold' }}>{overdueCount}</Text>
+          </View>
         </View>
 
         {/* Alerte retard */}
         {overdueCount > 0 && (
-          <View className="mx-5 mb-5 bg-red-50 border border-red-200 rounded-[12px] p-4 flex-row items-center">
-            <Ionicons name="warning-outline" size={20} color="#4D0013" />
-            <Text className="text-[#4D0013] text-[13px] ml-2 flex-1">
+          <View style={{
+            marginHorizontal: 20, marginBottom: 20, backgroundColor: colors.danger + '15',
+            borderWidth: 1, borderColor: colors.danger + '30', borderRadius: 12, padding: 16,
+            flexDirection: 'row', alignItems: 'center',
+          }}>
+            <Ionicons name="warning-outline" size={20} color={colors.danger} />
+            <Text style={{ color: colors.danger, fontSize: 13, marginLeft: 8, flex: 1 }}>
               {overdueCount} {t('dashboard.overdueWarning')}
             </Text>
           </View>
         )}
 
         {/* Prêts récents */}
-        <View className="px-5 mb-3">
-          <Text className="text-[#222222] text-[18px] font-bold mb-3">{t('dashboard.recentLoans')}</Text>
+        <View style={{ paddingHorizontal: 20, marginBottom: 12 }}>
+          <Text style={{ color: colors.textPrimary, fontSize: 18, fontWeight: 'bold', marginBottom: 12 }}>{t('dashboard.recentLoans')}</Text>
           {recentLoans.length === 0 ? (
-            <Card className="items-center py-8">
-              <Ionicons name="wallet-outline" size={40} color="#CFCFCF" />
-              <Text className="text-[#888888] text-[14px] mt-3">{t('dashboard.noLoans')}</Text>
-            </Card>
+            <View style={{ backgroundColor: colors.surface, borderRadius: 12, padding: 32, alignItems: 'center' }}>
+              <Ionicons name="wallet-outline" size={40} color={colors.dustGrey} />
+              <Text style={{ color: colors.textSecondary, fontSize: 14, marginTop: 12 }}>{t('dashboard.noLoans')}</Text>
+            </View>
           ) : (
-            <View className="gap-2">
+            <View style={{ gap: 8 }}>
               {recentLoans.map((loan) => (
                 <TouchableOpacity
                   key={loan.id}
                   onPress={() => navigation.navigate('LoanDetail', { loanId: loan.id })}
                   activeOpacity={0.7}
                 >
-                  <Card className="flex-row items-center">
+                  <View style={{ backgroundColor: colors.surface, borderRadius: 12, padding: 16, flexDirection: 'row', alignItems: 'center' }}>
                     <Avatar name={loan.borrower?.fullname || '?'} size="md" />
-                    <View className="flex-1 ml-3">
-                      <Text className="text-[#222222] text-[15px] font-bold">{loan.borrower?.fullname}</Text>
-                      <Text className="text-[#888888] text-[12px]">
+                    <View style={{ flex: 1, marginLeft: 12 }}>
+                      <Text style={{ color: colors.textPrimary, fontSize: 15, fontWeight: 'bold' }}>{loan.borrower?.fullname}</Text>
+                      <Text style={{ color: colors.textSecondary, fontSize: 12 }}>
                         {formatCurrency(Number(loan.amount))} · {loan.duration} {loan.duration_unit === 'months' ? t('common.month_short') : t('common.week_short')}
                       </Text>
                     </View>
                     <StatusBadge status={loan.status} />
-                  </Card>
+                  </View>
                 </TouchableOpacity>
               ))}
             </View>
@@ -134,17 +138,16 @@ export function DashboardScreen() {
         </View>
 
         {/* CTA Nouveau prêt */}
-        <View className="px-5 mt-3">
-          <View className="bg-burgundy-dark rounded-[16px] p-6">
-            <Text className="text-white text-[20px] font-bold mb-2">{t('dashboard.newLoan')}</Text>
-            <Text className="text-white/70 text-[13px] mb-4 leading-[19px]">
+        <View style={{ paddingHorizontal: 20, marginTop: 12 }}>
+          <View style={{ backgroundColor: colors.tertiary, borderRadius: 16, padding: 24 }}>
+            <Text style={{ color: '#FFFFFF', fontSize: 20, fontWeight: 'bold', marginBottom: 8 }}>{t('dashboard.newLoan')}</Text>
+            <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 13, marginBottom: 16, lineHeight: 19 }}>
               {t('dashboard.newLoanSubtitle')}
             </Text>
             <Button
               title={t('dashboard.create')}
               onPress={() => navigation.getParent()?.navigate('LoansTab', { screen: 'CreateLoan' })}
               variant="secondary"
-              className="self-start"
             />
           </View>
         </View>
@@ -153,8 +156,13 @@ export function DashboardScreen() {
       {/* FAB */}
       <TouchableOpacity
         onPress={() => navigation.getParent()?.navigate('LoansTab', { screen: 'CreateLoan' })}
-        className="absolute bottom-6 right-6 w-14 h-14 bg-burgundy rounded-full items-center justify-center"
-        style={{ shadowColor: '#800020', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 6 }}
+        style={{
+          position: 'absolute', bottom: 24, right: 24, width: 56, height: 56,
+          backgroundColor: colors.primary, borderRadius: 28,
+          alignItems: 'center', justifyContent: 'center',
+          shadowColor: colors.primary, shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.3, shadowRadius: 8, elevation: 6,
+        }}
         activeOpacity={0.8}
       >
         <Ionicons name="add" size={28} color="#FFFFFF" />

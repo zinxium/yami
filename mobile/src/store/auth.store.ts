@@ -5,6 +5,8 @@ import { User } from '../types';
 import { useCacheStore } from './cache.store';
 import { useMutationQueueStore } from './mutationQueue.store';
 
+const USER_STORAGE_KEY = 'user_data';
+
 interface AuthState {
   user: User | null;
   accessToken: string | null;
@@ -29,6 +31,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     );
     await SecureStore.setItemAsync('access_token', res.accessToken);
     await SecureStore.setItemAsync('refresh_token', res.refreshToken);
+    await SecureStore.setItemAsync(USER_STORAGE_KEY, JSON.stringify(res.user));
     set({ user: res.user, accessToken: res.accessToken, isAuthenticated: true });
   },
 
@@ -39,6 +42,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     );
     await SecureStore.setItemAsync('access_token', res.accessToken);
     await SecureStore.setItemAsync('refresh_token', res.refreshToken);
+    await SecureStore.setItemAsync(USER_STORAGE_KEY, JSON.stringify(res.user));
     set({ user: res.user, accessToken: res.accessToken, isAuthenticated: true });
   },
 
@@ -50,6 +54,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
     await SecureStore.deleteItemAsync('access_token');
     await SecureStore.deleteItemAsync('refresh_token');
+    await SecureStore.deleteItemAsync(USER_STORAGE_KEY);
     // Clear offline data
     useCacheStore.getState().clearCache();
     useMutationQueueStore.getState().clearQueue();
@@ -63,13 +68,27 @@ export const useAuthStore = create<AuthState>((set) => ({
         set({ isLoading: false });
         return;
       }
+
+      // Restore cached user data
+      let savedUser: User | null = null;
+      try {
+        const userData = await SecureStore.getItemAsync(USER_STORAGE_KEY);
+        if (userData) savedUser = JSON.parse(userData);
+      } catch {}
+
       const refreshToken = await SecureStore.getItemAsync('refresh_token');
       if (refreshToken) {
         try {
           const res = await api.post<{ accessToken: string }>('/api/auth/refresh', { refreshToken });
           await SecureStore.setItemAsync('access_token', res.accessToken);
           await SecureStore.setItemAsync('last_refresh_at', String(Date.now()));
-          set({ accessToken: res.accessToken, isAuthenticated: true, isLoading: false });
+          set({ user: savedUser, accessToken: res.accessToken, isAuthenticated: true, isLoading: false });
+          // Fetch fresh user profile in background
+          try {
+            const profile = await api.get<{ user: User }>('/api/auth/me');
+            await SecureStore.setItemAsync(USER_STORAGE_KEY, JSON.stringify(profile.user));
+            set({ user: profile.user });
+          } catch {}
         } catch {
           // Offline or token expired — allow offline mode with time limit
           const cachedLoans = useCacheStore.getState().loans;
@@ -78,17 +97,18 @@ export const useAuthStore = create<AuthState>((set) => ({
           const isStale = lastRefresh && (Date.now() - Number(lastRefresh)) > MAX_OFFLINE_MS;
 
           if (cachedLoans.length > 0 && !isStale) {
-            set({ accessToken: token, isAuthenticated: true, isLoading: false });
+            set({ user: savedUser, accessToken: token, isAuthenticated: true, isLoading: false });
           } else {
             await SecureStore.deleteItemAsync('access_token');
             await SecureStore.deleteItemAsync('refresh_token');
             await SecureStore.deleteItemAsync('last_refresh_at');
+            await SecureStore.deleteItemAsync(USER_STORAGE_KEY);
             useCacheStore.getState().clearCache();
             set({ isLoading: false });
           }
         }
       } else {
-        set({ accessToken: token, isAuthenticated: true, isLoading: false });
+        set({ user: savedUser, accessToken: token, isAuthenticated: true, isLoading: false });
       }
     } catch {
       set({ isLoading: false });

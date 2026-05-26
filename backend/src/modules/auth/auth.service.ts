@@ -83,6 +83,17 @@ export async function refresh(refreshToken: string) {
   }
 }
 
+export async function getProfile(userId: string) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true, fullname: true, email: true, phone: true, created_at: true },
+  });
+  if (!user) {
+    throw { status: 404, message: 'Utilisateur introuvable.' };
+  }
+  return user;
+}
+
 export async function forgotPassword(_email: string) {
   // Placeholder — à implémenter avec un service email
   return { message: 'Si cet email existe, un lien de réinitialisation a été envoyé.' };

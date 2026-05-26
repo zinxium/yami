@@ -82,18 +82,23 @@ export function EditBorrowerScreen({ route, navigation }: EditBorrowerProps) {
     ]);
   };
 
-  const inputClass = 'bg-white border border-[#E8E4DC] rounded-[12px] px-4 py-3.5 text-[15px] text-[#222222]';
+  const inputStyle = {
+    backgroundColor: colors.surface,
+    borderColor: colors.borderLight,
+    borderWidth: 1,
+    color: colors.textPrimary,
+  };
 
   return (
-    <View className="flex-1 bg-cream">
+    <View className="flex-1" style={{ backgroundColor: colors.background }}>
       {/* Header Ya Mi */}
       <View className="flex-row items-center justify-between px-5" style={{ paddingTop: insets.top + 8, paddingBottom: 8 }}>
         <TouchableOpacity onPress={() => navigation.goBack()} className="p-1" hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-          <Ionicons name="arrow-back" size={22} color="#222222" />
+          <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
         </TouchableOpacity>
         <View className="flex-row items-center gap-2">
           <Logo size="small" />
-          <Text className="text-[16px] font-bold text-[#222222]">{t('editBorrower.title')}</Text>
+          <Text className="text-[16px] font-bold" style={{ color: colors.textPrimary }}>{t('editBorrower.title')}</Text>
         </View>
         <Avatar name={user?.fullname || 'U'} size="sm" />
       </View>
@@ -101,8 +106,8 @@ export function EditBorrowerScreen({ route, navigation }: EditBorrowerProps) {
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} className="flex-1">
         <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: insets.bottom + 40 }} keyboardShouldPersistTaps="handled">
           {/* Titre */}
-          <Text className="text-[#222222] text-[24px] font-bold mb-1" style={{ fontFamily: 'LibreCaslon-Bold' }}>{t('editBorrower.heading')}</Text>
-          <Text className="text-[#888888] text-[13px] mb-6">{t('editBorrower.subtitle')}</Text>
+          <Text className="text-[24px] font-bold mb-1" style={{ fontFamily: 'LibreCaslon-Bold', color: colors.textPrimary }}>{t('editBorrower.heading')}</Text>
+          <Text className="text-[13px] mb-6" style={{ color: colors.textSecondary }}>{t('editBorrower.subtitle')}</Text>
 
           {/* Avatar photo */}
           <View className="items-center mb-6">
@@ -110,43 +115,44 @@ export function EditBorrowerScreen({ route, navigation }: EditBorrowerProps) {
               <Text className="text-white text-[32px] font-bold">{fullname.charAt(0).toUpperCase()}</Text>
             </View>
             <TouchableOpacity className="mt-2">
-              <Text className="text-[#888888] text-[13px]">{t('editBorrower.changePhoto')}</Text>
+              <Text className="text-[13px]" style={{ color: colors.textSecondary }}>{t('editBorrower.changePhoto')}</Text>
             </TouchableOpacity>
           </View>
 
           {/* Nom */}
           <View className="mb-5">
-            <Text className="text-[#222222] text-[14px] font-bold mb-2">{t('editBorrower.fullname')}</Text>
+            <Text className="text-[14px] font-bold mb-2" style={{ color: colors.textPrimary }}>{t('editBorrower.fullname')}</Text>
             <View className="flex-row items-center">
-              <TextInput className={`${inputClass} flex-1`} value={fullname} onChangeText={setFullname} autoCapitalize="words" />
-              <Ionicons name="person-outline" size={18} color="#CFCFCF" style={{ marginLeft: -36 }} />
+              <TextInput className="flex-1 rounded-[12px] px-4 py-3.5 text-[15px]" style={inputStyle} value={fullname} onChangeText={setFullname} autoCapitalize="words" />
+              <Ionicons name="person-outline" size={18} color={colors.dustGrey} style={{ marginLeft: -36 }} />
             </View>
           </View>
 
-          {/* Téléphone */}
+          {/* Telephone */}
           <View className="mb-5">
-            <Text className="text-[#222222] text-[14px] font-bold mb-2">{t('editBorrower.phone')}</Text>
+            <Text className="text-[14px] font-bold mb-2" style={{ color: colors.textPrimary }}>{t('editBorrower.phone')}</Text>
             <View className="flex-row items-center">
-              <TextInput className={`${inputClass} flex-1`} keyboardType="phone-pad" value={phone} onChangeText={setPhone} placeholder="+237 678 901 234" placeholderTextColor="#CFCFCF" />
-              <Ionicons name="call-outline" size={18} color="#CFCFCF" style={{ marginLeft: -36 }} />
+              <TextInput className="flex-1 rounded-[12px] px-4 py-3.5 text-[15px]" style={inputStyle} keyboardType="phone-pad" value={phone} onChangeText={setPhone} placeholder="+237 678 901 234" placeholderTextColor={colors.dustGrey} />
+              <Ionicons name="call-outline" size={18} color={colors.dustGrey} style={{ marginLeft: -36 }} />
             </View>
           </View>
 
           {/* Relation (dropdown) */}
           <View className="mb-5">
-            <Text className="text-[#222222] text-[14px] font-bold mb-2">{t('editBorrower.relation')}</Text>
+            <Text className="text-[14px] font-bold mb-2" style={{ color: colors.textPrimary }}>{t('editBorrower.relation')}</Text>
             <TouchableOpacity
               onPress={() => setShowRelationPicker(!showRelationPicker)}
-              className="flex-row items-center justify-between bg-white border border-[#E8E4DC] rounded-[12px] px-4 py-3.5"
+              className="flex-row items-center justify-between rounded-[12px] px-4 py-3.5"
+              style={{ backgroundColor: colors.surface, borderColor: colors.borderLight, borderWidth: 1 }}
             >
-              <Text className="text-[#222222] text-[15px]">{relation}</Text>
-              <Ionicons name="chevron-down" size={18} color="#CFCFCF" />
+              <Text className="text-[15px]" style={{ color: colors.textPrimary }}>{relation}</Text>
+              <Ionicons name="chevron-down" size={18} color={colors.dustGrey} />
             </TouchableOpacity>
             {showRelationPicker && (
-              <View className="bg-white border border-[#E8E4DC] rounded-[12px] mt-1">
+              <View className="rounded-[12px] mt-1" style={{ backgroundColor: colors.surface, borderColor: colors.borderLight, borderWidth: 1 }}>
                 {RELATIONS.map(r => (
-                  <TouchableOpacity key={r} onPress={() => { setRelation(r); setShowRelationPicker(false); }} className="px-4 py-3 border-b border-[#E8E4DC]">
-                    <Text className={`text-[14px] ${r === relation ? 'text-burgundy font-bold' : 'text-[#222222]'}`}>{r}</Text>
+                  <TouchableOpacity key={r} onPress={() => { setRelation(r); setShowRelationPicker(false); }} className="px-4 py-3" style={{ borderBottomColor: colors.borderLight, borderBottomWidth: 1 }}>
+                    <Text className="text-[14px]" style={r === relation ? { color: colors.primary, fontWeight: 'bold' } : { color: colors.textPrimary }}>{r}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
@@ -155,11 +161,12 @@ export function EditBorrowerScreen({ route, navigation }: EditBorrowerProps) {
 
           {/* Notes */}
           <View className="mb-8">
-            <Text className="text-[#222222] text-[14px] font-bold mb-2">{t('editBorrower.notes')}</Text>
+            <Text className="text-[14px] font-bold mb-2" style={{ color: colors.textPrimary }}>{t('editBorrower.notes')}</Text>
             <TextInput
-              className={`${inputClass} min-h-[90px]`}
+              className="rounded-[12px] px-4 py-3.5 text-[15px] min-h-[90px]"
+              style={inputStyle}
               placeholder="Emprunteur fiable, projet de commerce de détail."
-              placeholderTextColor="#CFCFCF"
+              placeholderTextColor={colors.dustGrey}
               multiline
               value={notes}
               onChangeText={setNotes}
@@ -167,7 +174,7 @@ export function EditBorrowerScreen({ route, navigation }: EditBorrowerProps) {
             />
           </View>
 
-          {/* Bouton Mettre à jour */}
+          {/* Bouton Mettre a jour */}
           <TouchableOpacity
             onPress={handleSubmit}
             disabled={loading}
@@ -178,11 +185,11 @@ export function EditBorrowerScreen({ route, navigation }: EditBorrowerProps) {
             <Text className="text-white text-[16px] font-bold ml-2">{loading ? t('editBorrower.updating') : t('editBorrower.submit')}</Text>
           </TouchableOpacity>
 
-          {/* Séparateur + Supprimer */}
-          <View className="border-t border-[#E8E4DC] pt-4">
+          {/* Separateur + Supprimer */}
+          <View className="pt-4" style={{ borderTopColor: colors.borderLight, borderTopWidth: 1 }}>
             <TouchableOpacity onPress={handleDelete} className="flex-row items-center justify-center py-3">
-              <Ionicons name="trash-outline" size={16} color={Colors.danger} />
-              <Text className="text-[#4D0013] text-[14px] font-bold ml-2">{t('common.delete')}</Text>
+              <Ionicons name="trash-outline" size={16} color={colors.danger} />
+              <Text className="text-[14px] font-bold ml-2" style={{ color: colors.danger }}>{t('common.delete')}</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

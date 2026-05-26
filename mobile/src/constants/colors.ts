@@ -72,6 +72,32 @@ export const Colors = {
     surface:     '#261d1f',
     surfaceHigh: '#31282a',
   },
+  // Raccourcis (light par défaut) pour accès direct : Colors.primary, etc.
+  ...({
+    primary:    '#800020',
+    secondary:  '#FFDB58',
+    tertiary:   '#4D0013',
+    neutral:    '#FAF7F2',
+    graphite:   '#222222',
+    dustGrey:   '#CFCFCF',
+    white:      '#FFFFFF',
+    black:      '#000000',
+    primaryLight:   '#80002015',
+    secondaryLight: '#FFDB5825',
+    tertiaryLight:  '#4D001315',
+    success: '#2D6A4F',
+    warning: '#7A5F00',
+    danger:  '#4D0013',
+    info:    '#1A56DB',
+    textPrimary:   '#222222',
+    textSecondary: '#888888',
+    textMuted:     '#AAAAAA',
+    border:      '#CFCFCF',
+    borderLight: '#E8E4DC',
+    background:  '#FAF7F2',
+    surface:     '#FFFFFF',
+    surfaceHigh: '#FFFFFF',
+  }),
 } as const;
 
 // Helper pour obtenir les couleurs selon le mode

@@ -91,18 +91,23 @@ export function AddPaymentScreen({ route, navigation }: AddPaymentProps) {
     }
   };
 
-  const inputClass = 'bg-white border border-[#E8E4DC] rounded-[12px] px-4 py-3.5 text-[15px] text-[#222222]';
+  const inputStyle = {
+    backgroundColor: colors.surface,
+    borderColor: colors.borderLight,
+    borderWidth: 1,
+    color: colors.textPrimary,
+  };
 
   return (
-    <View className="flex-1 bg-cream">
+    <View className="flex-1" style={{ backgroundColor: colors.background }}>
       {/* Header Ya Mi */}
       <View className="flex-row items-center justify-between px-5" style={{ paddingTop: insets.top + 8, paddingBottom: 8 }}>
         <View className="flex-row items-center gap-2">
           <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-            <Ionicons name="arrow-back" size={22} color="#222222" />
+            <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
           </TouchableOpacity>
           <Logo size="small" />
-          <Text className="text-[16px] font-bold text-[#222222]">{t('addPayment.title')}</Text>
+          <Text className="text-[16px] font-bold" style={{ color: colors.textPrimary }}>{t('addPayment.title')}</Text>
         </View>
         <Avatar name={user?.fullname || 'U'} size="sm" />
       </View>
@@ -110,25 +115,25 @@ export function AddPaymentScreen({ route, navigation }: AddPaymentProps) {
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} className="flex-1">
         <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: insets.bottom + 80 }} keyboardShouldPersistTaps="handled">
           {/* Titre */}
-          <Text className="text-[#222222] text-[24px] font-bold mb-1" style={{ fontFamily: 'LibreCaslon-Bold' }}>{t('addPayment.heading')}</Text>
-          <Text className="text-[#888888] text-[13px] mb-5">{t('addPayment.subtitle')}</Text>
+          <Text className="text-[24px] font-bold mb-1" style={{ fontFamily: 'LibreCaslon-Bold', color: colors.textPrimary }}>{t('addPayment.heading')}</Text>
+          <Text className="text-[13px] mb-5" style={{ color: colors.textSecondary }}>{t('addPayment.subtitle')}</Text>
 
           {/* Carte solde */}
           {loan && (
-            <Card className="mb-6 bg-cream border border-[#E8E4DC]">
+            <Card className="mb-6" style={{ backgroundColor: colors.background, borderColor: colors.borderLight, borderWidth: 1 }}>
               <View className="flex-row items-center justify-between mb-2">
-                <Text className="text-[#888888] text-[12px]">{t('addPayment.loanBalance')}</Text>
+                <Text className="text-[12px]" style={{ color: colors.textSecondary }}>{t('addPayment.loanBalance')}</Text>
                 <StatusBadge status={loan.status} />
               </View>
-              <Text className="text-burgundy text-[28px] font-bold mb-3">{formatCurrency(Number(loan.remaining_balance))}</Text>
+              <Text className="text-[28px] font-bold mb-3" style={{ color: colors.primary }}>{formatCurrency(Number(loan.remaining_balance))}</Text>
               <View className="flex-row gap-4">
                 <View>
-                  <Text className="text-[#888888] text-[11px]">{t('addPayment.nextDue')}</Text>
-                  <Text className="text-[#222222] text-[14px] font-bold">{formatCurrency(Number(loan.monthly_payment))}</Text>
+                  <Text className="text-[11px]" style={{ color: colors.textSecondary }}>{t('addPayment.nextDue')}</Text>
+                  <Text className="text-[14px] font-bold" style={{ color: colors.textPrimary }}>{formatCurrency(Number(loan.monthly_payment))}</Text>
                 </View>
                 <View>
-                  <Text className="text-[#888888] text-[11px]">{t('addPayment.deadline')}</Text>
-                  <Text className="text-[#222222] text-[14px] font-bold">{formatDate(loan.end_date)}</Text>
+                  <Text className="text-[11px]" style={{ color: colors.textSecondary }}>{t('addPayment.deadline')}</Text>
+                  <Text className="text-[14px] font-bold" style={{ color: colors.textPrimary }}>{formatDate(loan.end_date)}</Text>
                 </View>
               </View>
             </Card>
@@ -136,54 +141,58 @@ export function AddPaymentScreen({ route, navigation }: AddPaymentProps) {
 
           {/* Montant */}
           <View className="mb-5">
-            <Text className="text-[#222222] text-[14px] font-bold mb-2">{t('addPayment.amount')}</Text>
+            <Text className="text-[14px] font-bold mb-2" style={{ color: colors.textPrimary }}>{t('addPayment.amount')}</Text>
             <View className="flex-row items-center">
               <TextInput
-                className={`${inputClass} flex-1`}
+                className="flex-1 rounded-[12px] px-4 py-3.5 text-[15px]"
+                style={inputStyle}
                 placeholder="0.00"
-                placeholderTextColor="#CFCFCF"
+                placeholderTextColor={colors.dustGrey}
                 keyboardType="numeric"
                 value={amount}
                 onChangeText={setAmount}
               />
-              <Text className="text-[#888888] text-[14px] font-bold ml-3">{t('common.fcfa')}</Text>
+              <Text className="text-[14px] font-bold ml-3" style={{ color: colors.textSecondary }}>{t('common.fcfa')}</Text>
             </View>
           </View>
 
           {/* Date */}
           <View className="mb-5">
-            <Text className="text-[#222222] text-[14px] font-bold mb-2">{t('addPayment.date')}</Text>
+            <Text className="text-[14px] font-bold mb-2" style={{ color: colors.textPrimary }}>{t('addPayment.date')}</Text>
             <View className="flex-row items-center">
               <TextInput
-                className={`${inputClass} flex-1`}
+                className="flex-1 rounded-[12px] px-4 py-3.5 text-[15px]"
+                style={inputStyle}
                 placeholder="2026-01-15"
-                placeholderTextColor="#CFCFCF"
+                placeholderTextColor={colors.dustGrey}
                 value={date}
                 onChangeText={setDate}
               />
-              <Ionicons name="calendar-outline" size={20} color="#CFCFCF" style={{ marginLeft: -36 }} />
+              <Ionicons name="calendar-outline" size={20} color={colors.dustGrey} style={{ marginLeft: -36 }} />
             </View>
           </View>
 
           {/* Mode de paiement (dropdown) */}
           <View className="mb-5">
-            <Text className="text-[#222222] text-[14px] font-bold mb-2">{t('addPayment.method')}</Text>
+            <Text className="text-[14px] font-bold mb-2" style={{ color: colors.textPrimary }}>{t('addPayment.method')}</Text>
             <TouchableOpacity
               onPress={() => setShowMethodPicker(!showMethodPicker)}
-              className="flex-row items-center justify-between bg-white border border-[#E8E4DC] rounded-[12px] px-4 py-3.5"
+              className="flex-row items-center justify-between rounded-[12px] px-4 py-3.5"
+              style={{ backgroundColor: colors.surface, borderColor: colors.borderLight, borderWidth: 1 }}
             >
-              <Text className="text-[#222222] text-[15px]">{paymentMethod}</Text>
-              <Ionicons name="chevron-down" size={18} color="#CFCFCF" />
+              <Text className="text-[15px]" style={{ color: colors.textPrimary }}>{paymentMethod}</Text>
+              <Ionicons name="chevron-down" size={18} color={colors.dustGrey} />
             </TouchableOpacity>
             {showMethodPicker && (
-              <View className="bg-white border border-[#E8E4DC] rounded-[12px] mt-1">
+              <View className="rounded-[12px] mt-1" style={{ backgroundColor: colors.surface, borderColor: colors.borderLight, borderWidth: 1 }}>
                 {PAYMENT_METHODS.map(m => (
                   <TouchableOpacity
                     key={m}
                     onPress={() => { setPaymentMethod(m); setShowMethodPicker(false); }}
-                    className="px-4 py-3 border-b border-[#E8E4DC]"
+                    className="px-4 py-3"
+                    style={{ borderBottomColor: colors.borderLight, borderBottomWidth: 1 }}
                   >
-                    <Text className={`text-[14px] ${m === paymentMethod ? 'text-burgundy font-bold' : 'text-[#222222]'}`}>{m}</Text>
+                    <Text className="text-[14px]" style={m === paymentMethod ? { color: colors.primary, fontWeight: 'bold' } : { color: colors.textPrimary }}>{m}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
@@ -192,11 +201,12 @@ export function AddPaymentScreen({ route, navigation }: AddPaymentProps) {
 
           {/* Notes */}
           <View className="mb-6">
-            <Text className="text-[#222222] text-[14px] font-bold mb-2">{t('addPayment.notes')}</Text>
+            <Text className="text-[14px] font-bold mb-2" style={{ color: colors.textPrimary }}>{t('addPayment.notes')}</Text>
             <TextInput
-              className={`${inputClass} min-h-[80px]`}
+              className="rounded-[12px] px-4 py-3.5 text-[15px] min-h-[80px]"
+              style={inputStyle}
               placeholder={t('addPayment.notesPlaceholder')}
-              placeholderTextColor="#CFCFCF"
+              placeholderTextColor={colors.dustGrey}
               multiline
               value={notes}
               onChangeText={setNotes}

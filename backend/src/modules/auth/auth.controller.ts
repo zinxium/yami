@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import * as authService from './auth.service';
 import { getErrorStatus, getErrorMessage } from '../../utils/error';
+import { AuthRequest } from '../../types';
 
 export async function register(req: Request, res: Response): Promise<void> {
   try {
@@ -37,6 +38,15 @@ export async function refresh(req: Request, res: Response): Promise<void> {
 export async function logout(_req: Request, res: Response): Promise<void> {
   // Côté client, supprimer le token. Côté serveur, rien à faire pour l'instant (stateless JWT).
   res.json({ message: 'Déconnexion réussie.' });
+}
+
+export async function me(req: AuthRequest, res: Response): Promise<void> {
+  try {
+    const user = await authService.getProfile(req.user!.userId);
+    res.json({ user });
+  } catch (error: unknown) {
+    res.status(getErrorStatus(error)).json({ error: getErrorMessage(error) });
+  }
 }
 
 export async function forgotPassword(req: Request, res: Response): Promise<void> {

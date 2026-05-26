@@ -1,8 +1,9 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { View, Text, TextInput, KeyboardAvoidingView, Platform, Alert, TouchableOpacity } from 'react-native';
+
 import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { ScreenHeader, Button, Card, Logo } from '../../components/common';
+import { ScreenHeader, Button, Card, Logo, SuccessModal } from '../../components/common';
 import { useTheme } from '../../hooks/useTheme';
 import { formatCurrency } from '../../utils/format';
 import { loansApi } from '../../api/loans.api';
@@ -31,6 +32,8 @@ export function CreateLoanScreen({ navigation }: CreateLoanProps) {
   const [selectedBorrower, setSelectedBorrower] = useState<Borrower | null>(null);
   const [showBorrowers, setShowBorrowers] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [successOffline, setSuccessOffline] = useState(false);
 
   useEffect(() => {
     borrowersApi.getAll().then(setBorrowers).catch(() => {});
@@ -73,9 +76,8 @@ export function CreateLoanScreen({ navigation }: CreateLoanProps) {
           start_date: new Date().toISOString(),
           notes: data.notes || undefined,
         });
-        Alert.alert(t('createLoan.successTitle'), t('createLoan.successMessage'), [
-          { text: 'OK', onPress: () => navigation.goBack() },
-        ]);
+        setSuccessOffline(false);
+        setShowSuccess(true);
       } else {
         // Mode offline: queue mutations
         let borrowerId = selectedBorrower?.id;
@@ -130,9 +132,8 @@ export function CreateLoanScreen({ navigation }: CreateLoanProps) {
           created_at: new Date().toISOString(),
         } as Loan);
 
-        Alert.alert(t('common.savedLocally'), t('createLoan.offlineMessage'), [
-          { text: 'OK', onPress: () => navigation.goBack() },
-        ]);
+        setSuccessOffline(true);
+        setShowSuccess(true);
       }
     } catch (e: unknown) {
       Alert.alert(t('common.error'), e instanceof Error ? e.message : t('common.error'));
@@ -147,12 +148,19 @@ export function CreateLoanScreen({ navigation }: CreateLoanProps) {
     setShowBorrowers(false);
   };
 
-  const inputClass = 'bg-white border border-[#E8E4DC] rounded-[8px] px-3 py-2.5 text-[15px] text-[#222222]';
-  const labelClass = 'text-[#222222] text-[13px] font-bold mb-1';
-  const errorClass = 'text-red-500 text-[11px] mt-0.5';
+  const inputStyle = {
+    backgroundColor: colors.surface,
+    borderColor: colors.borderLight,
+    borderWidth: 1,
+    color: colors.textPrimary,
+  };
+
+  const labelStyle = {
+    color: colors.textPrimary,
+  };
 
   return (
-    <View className="flex-1 bg-cream">
+    <View className="flex-1" style={{ backgroundColor: colors.background }}>
       <ScreenHeader title={t('createLoan.title')} showBack onBack={() => navigation.goBack()} />
 
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} className="flex-1">
@@ -160,16 +168,17 @@ export function CreateLoanScreen({ navigation }: CreateLoanProps) {
           <View>
             {/* Emprunteur */}
             <View className="mb-3">
-              <Text className={labelClass}>{t('createLoan.borrower')}</Text>
+              <Text className="text-[13px] font-bold mb-1" style={labelStyle}>{t('createLoan.borrower')}</Text>
               <Controller
                 control={control}
                 name="borrowerName"
                 rules={{ required: t('common.required') }}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
-                    className={inputClass}
+                    className="rounded-[8px] px-3 py-2.5 text-[15px]"
+                    style={inputStyle}
                     placeholder={t('createLoan.borrowerPlaceholder')}
-                    placeholderTextColor="#CFCFCF"
+                    placeholderTextColor={colors.dustGrey}
                     onBlur={onBlur}
                     onChangeText={(v) => { onChange(v); setSelectedBorrower(null); setShowBorrowers(v.length > 0); }}
                     value={value}
@@ -177,12 +186,12 @@ export function CreateLoanScreen({ navigation }: CreateLoanProps) {
                   />
                 )}
               />
-              {errors.borrowerName && <Text className={errorClass}>{errors.borrowerName.message}</Text>}
+              {errors.borrowerName && <Text className="text-red-500 text-[11px] mt-0.5">{errors.borrowerName.message}</Text>}
               {showBorrowers && borrowers.length > 0 && (
-                <View className="bg-white border border-[#E8E4DC] rounded-[8px] mt-1 absolute top-14 left-0 right-0 z-10">
+                <View className="rounded-[8px] mt-1 absolute top-14 left-0 right-0 z-10" style={{ backgroundColor: colors.surface, borderColor: colors.borderLight, borderWidth: 1 }}>
                   {borrowers.filter(b => b.fullname.toLowerCase().includes(watch('borrowerName').toLowerCase())).slice(0, 3).map(b => (
-                    <TouchableOpacity key={b.id} onPress={() => selectBorrower(b)} className="px-3 py-2 border-b border-[#E8E4DC]">
-                      <Text className="text-[#222222] text-[13px]">{b.fullname}</Text>
+                    <TouchableOpacity key={b.id} onPress={() => selectBorrower(b)} className="px-3 py-2" style={{ borderBottomColor: colors.borderLight, borderBottomWidth: 1 }}>
+                      <Text className="text-[13px]" style={{ color: colors.textPrimary }}>{b.fullname}</Text>
                     </TouchableOpacity>
                   ))}
                 </View>
@@ -191,56 +200,56 @@ export function CreateLoanScreen({ navigation }: CreateLoanProps) {
 
             {/* Montant */}
             <View className="mb-3">
-              <Text className={labelClass}>{t('createLoan.amount')}</Text>
+              <Text className="text-[13px] font-bold mb-1" style={labelStyle}>{t('createLoan.amount')}</Text>
               <Controller control={control} name="amount" rules={{ required: t('common.required'), validate: v => parseFloat(v) > 0 || t('common.mustBePositive') }}
                 render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput className={inputClass} placeholder="50 000" placeholderTextColor="#CFCFCF" keyboardType="numeric" onBlur={onBlur} onChangeText={onChange} value={value} />
+                  <TextInput className="rounded-[8px] px-3 py-2.5 text-[15px]" style={inputStyle} placeholder="50 000" placeholderTextColor={colors.dustGrey} keyboardType="numeric" onBlur={onBlur} onChangeText={onChange} value={value} />
                 )} />
-              {errors.amount && <Text className={errorClass}>{errors.amount.message}</Text>}
+              {errors.amount && <Text className="text-red-500 text-[11px] mt-0.5">{errors.amount.message}</Text>}
             </View>
 
-            {/* Taux + Durée côte à côte */}
+            {/* Taux + Duree cote a cote */}
             <View className="flex-row gap-3 mb-3">
               <View className="flex-1">
-                <Text className={labelClass}>{t('createLoan.interestRate')}</Text>
+                <Text className="text-[13px] font-bold mb-1" style={labelStyle}>{t('createLoan.interestRate')}</Text>
                 <Controller control={control} name="interestRate" rules={{ required: t('common.required') }}
                   render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput className={inputClass} placeholder="5" placeholderTextColor="#CFCFCF" keyboardType="decimal-pad" onBlur={onBlur} onChangeText={onChange} value={value} />
+                    <TextInput className="rounded-[8px] px-3 py-2.5 text-[15px]" style={inputStyle} placeholder="5" placeholderTextColor={colors.dustGrey} keyboardType="decimal-pad" onBlur={onBlur} onChangeText={onChange} value={value} />
                   )} />
-                {errors.interestRate && <Text className={errorClass}>{errors.interestRate.message}</Text>}
+                {errors.interestRate && <Text className="text-red-500 text-[11px] mt-0.5">{errors.interestRate.message}</Text>}
               </View>
               <View className="flex-1">
-                <Text className={labelClass}>{t('createLoan.duration')}</Text>
+                <Text className="text-[13px] font-bold mb-1" style={labelStyle}>{t('createLoan.duration')}</Text>
                 <Controller control={control} name="duration" rules={{ required: t('common.required'), validate: v => parseInt(v, 10) > 0 || t('common.mustBePositive') }}
                   render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput className={inputClass} placeholder="6" placeholderTextColor="#CFCFCF" keyboardType="numeric" onBlur={onBlur} onChangeText={onChange} value={value} />
+                    <TextInput className="rounded-[8px] px-3 py-2.5 text-[15px]" style={inputStyle} placeholder="6" placeholderTextColor={colors.dustGrey} keyboardType="numeric" onBlur={onBlur} onChangeText={onChange} value={value} />
                   )} />
-                {errors.duration && <Text className={errorClass}>{errors.duration.message}</Text>}
+                {errors.duration && <Text className="text-red-500 text-[11px] mt-0.5">{errors.duration.message}</Text>}
               </View>
             </View>
 
             {/* Notes (ligne simple) */}
             <View className="mb-3">
-              <Text className={labelClass}>{t('createLoan.notes')}</Text>
+              <Text className="text-[13px] font-bold mb-1" style={labelStyle}>{t('createLoan.notes')}</Text>
               <Controller control={control} name="notes"
                 render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput className={inputClass} placeholder="Notes..." placeholderTextColor="#CFCFCF" onBlur={onBlur} onChangeText={onChange} value={value} />
+                  <TextInput className="rounded-[8px] px-3 py-2.5 text-[15px]" style={inputStyle} placeholder="Notes..." placeholderTextColor={colors.dustGrey} onBlur={onBlur} onChangeText={onChange} value={value} />
                 )} />
             </View>
 
-            {/* Calcul en temps réel — compact */}
+            {/* Calcul en temps reel -- compact */}
             <Card className="p-3">
               <View className="flex-row items-center justify-between mb-1">
-                <Text className="text-[#888888] text-[13px]">{t('createLoan.interest')}</Text>
-                <Text className="text-[#222222] text-[14px] font-bold">{calculation ? formatCurrency(calculation.interest) : '---'}</Text>
+                <Text className="text-[13px]" style={{ color: colors.textSecondary }}>{t('createLoan.interest')}</Text>
+                <Text className="text-[14px] font-bold" style={{ color: colors.textPrimary }}>{calculation ? formatCurrency(calculation.interest) : '---'}</Text>
               </View>
               <View className="flex-row items-center justify-between mb-1">
-                <Text className="text-[#888888] text-[13px]">{t('createLoan.monthlyPayment')}</Text>
-                <Text className="text-[#222222] text-[14px] font-bold">{calculation ? formatCurrency(calculation.monthlyPayment) : '---'}</Text>
+                <Text className="text-[13px]" style={{ color: colors.textSecondary }}>{t('createLoan.monthlyPayment')}</Text>
+                <Text className="text-[14px] font-bold" style={{ color: colors.textPrimary }}>{calculation ? formatCurrency(calculation.monthlyPayment) : '---'}</Text>
               </View>
               <View className="flex-row items-center justify-between">
-                <Text className="text-[#888888] text-[13px]">{t('createLoan.totalRepayment')}</Text>
-                <Text className="text-burgundy text-[18px] font-bold">{calculation ? formatCurrency(calculation.totalRepayment) : '---'}</Text>
+                <Text className="text-[13px]" style={{ color: colors.textSecondary }}>{t('createLoan.totalRepayment')}</Text>
+                <Text className="text-[18px] font-bold" style={{ color: colors.primary }}>{calculation ? formatCurrency(calculation.totalRepayment) : '---'}</Text>
               </View>
             </Card>
           </View>
@@ -248,6 +257,14 @@ export function CreateLoanScreen({ navigation }: CreateLoanProps) {
           <Button title={loading ? t('createLoan.creating') : t('createLoan.submit')} onPress={handleSubmit(onSubmit)} variant="primary" fullWidth disabled={loading} />
         </View>
       </KeyboardAvoidingView>
+
+      <SuccessModal
+        visible={showSuccess}
+        icon={successOffline ? 'cloud-offline-outline' : 'checkmark-circle'}
+        title={successOffline ? t('common.savedLocally') : t('createLoan.successTitle')}
+        message={successOffline ? t('createLoan.offlineMessage') : t('createLoan.successMessage')}
+        onClose={() => { setShowSuccess(false); navigation.goBack(); }}
+      />
     </View>
   );
 }

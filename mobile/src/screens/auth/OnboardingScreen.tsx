@@ -53,7 +53,7 @@ export function OnboardingScreen({ navigation }: OnboardingProps) {
           </Text>
         </View>
         {!isLastPage && (
-          <TouchableOpacity onPress={() => flatListRef.current?.scrollToIndex({ index: PAGES.length - 1, animated: true })}>
+          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
             <Text className="text-[#888888] text-[14px]">{t('onboarding.skip')}</Text>
           </TouchableOpacity>
         )}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { ScreenHeader, Button, Logo } from '../../components/common';
 import { useTheme } from '../../hooks/useTheme';
@@ -64,33 +65,38 @@ export function AddBorrowerScreen({ navigation }: AddBorrowerProps) {
     }
   };
 
-  const inputClass = 'bg-white border border-[#E8E4DC] rounded-[8px] px-4 py-3.5 text-[15px] text-[#222222]';
+  const inputStyle = {
+    backgroundColor: colors.surface,
+    borderColor: colors.borderLight,
+    borderWidth: 1,
+    color: colors.textPrimary,
+  };
 
   return (
-    <View className="flex-1 bg-cream">
+    <View className="flex-1" style={{ backgroundColor: colors.background }}>
       <View className="flex-row items-center gap-2 px-5" style={{ paddingTop: insets.top + 8 }}>
-        <Ionicons name="arrow-back" size={22} color="#222222" onPress={() => navigation.goBack()} />
+        <Ionicons name="arrow-back" size={22} color={colors.textPrimary} onPress={() => navigation.goBack()} />
         <Logo size="small" />
-        <Text className="text-[18px] font-bold text-[#222222]">{t('addBorrower.title')}</Text>
+        <Text className="text-[18px] font-bold" style={{ color: colors.textPrimary }}>{t('addBorrower.title')}</Text>
       </View>
 
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} className="flex-1">
         <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: insets.bottom + 40 }} keyboardShouldPersistTaps="handled">
           <View className="mb-5">
-            <Text className="text-[#222222] text-[14px] font-bold mb-2">{t('addBorrower.fullname')}</Text>
-            <TextInput className={inputClass} placeholder={t('addBorrower.fullname')} placeholderTextColor="#CFCFCF" value={fullname} onChangeText={setFullname} autoCapitalize="words" />
+            <Text className="text-[14px] font-bold mb-2" style={{ color: colors.textPrimary }}>{t('addBorrower.fullname')}</Text>
+            <TextInput className="rounded-[8px] px-4 py-3.5 text-[15px]" style={inputStyle} placeholder={t('addBorrower.fullname')} placeholderTextColor={colors.dustGrey} value={fullname} onChangeText={setFullname} autoCapitalize="words" />
           </View>
           <View className="mb-5">
-            <Text className="text-[#222222] text-[14px] font-bold mb-2">{t('addBorrower.phone')}</Text>
-            <TextInput className={inputClass} placeholder="+225 07 00 00 00" placeholderTextColor="#CFCFCF" keyboardType="phone-pad" value={phone} onChangeText={setPhone} />
+            <Text className="text-[14px] font-bold mb-2" style={{ color: colors.textPrimary }}>{t('addBorrower.phone')}</Text>
+            <TextInput className="rounded-[8px] px-4 py-3.5 text-[15px]" style={inputStyle} placeholder="+225 07 00 00 00" placeholderTextColor={colors.dustGrey} keyboardType="phone-pad" value={phone} onChangeText={setPhone} />
           </View>
           <View className="mb-5">
-            <Text className="text-[#222222] text-[14px] font-bold mb-2">{t('addBorrower.address')}</Text>
-            <TextInput className={inputClass} placeholder="Ville, quartier" placeholderTextColor="#CFCFCF" value={address} onChangeText={setAddress} />
+            <Text className="text-[14px] font-bold mb-2" style={{ color: colors.textPrimary }}>{t('addBorrower.address')}</Text>
+            <TextInput className="rounded-[8px] px-4 py-3.5 text-[15px]" style={inputStyle} placeholder="Ville, quartier" placeholderTextColor={colors.dustGrey} value={address} onChangeText={setAddress} />
           </View>
           <View className="mb-6">
-            <Text className="text-[#222222] text-[14px] font-bold mb-2">{t('addBorrower.notes')}</Text>
-            <TextInput className={`${inputClass} min-h-[80px]`} placeholder="Notes..." placeholderTextColor="#CFCFCF" multiline value={notes} onChangeText={setNotes} textAlignVertical="top" />
+            <Text className="text-[14px] font-bold mb-2" style={{ color: colors.textPrimary }}>{t('addBorrower.notes')}</Text>
+            <TextInput className="rounded-[8px] px-4 py-3.5 text-[15px] min-h-[80px]" style={inputStyle} placeholder="Notes..." placeholderTextColor={colors.dustGrey} multiline value={notes} onChangeText={setNotes} textAlignVertical="top" />
           </View>
 
           <Button title={loading ? t('addBorrower.adding') : t('addBorrower.submit')} onPress={handleSubmit} variant="primary" fullWidth disabled={loading} />

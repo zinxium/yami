@@ -32,6 +32,7 @@ export type HomeStackParamList = {
 };
 
 export type LoansStackParamList = {
+  MyLoans: undefined;
   CreateLoan: undefined;
   LoanDetail: { loanId: string };
 };

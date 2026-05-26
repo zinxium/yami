@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://yami-production.up.railway.app)"
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://yami-production.up.railway.app)",
+      "Bash(while read:*)",
+      "Bash(do grep:*)",
+      "Bash(done)",
+      "Bash(npx expo:*)"
     ]
   }
 }

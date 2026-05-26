@@ -1,5 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
+import { useTheme } from '../../hooks/useTheme';
 
 interface CardProps {
   children: React.ReactNode;
@@ -7,8 +8,13 @@ interface CardProps {
 }
 
 export function Card({ children, className = '' }: CardProps) {
+  const { colors } = useTheme();
+
   return (
-    <View className={`bg-white rounded-[12px] p-4 border border-[#E8E4DC] ${className}`}>
+    <View
+      className={`rounded-[12px] p-4 ${className}`}
+      style={{ backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.borderLight }}
+    >
       {children}
     </View>
   );

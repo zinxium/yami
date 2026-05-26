@@ -7,6 +7,7 @@ import * as Sharing from 'expo-sharing';
 import { ScreenHeader, Card, Avatar, Logo } from '../../components/common';
 import { api } from '../../api/client';
 import { loansApi } from '../../api/loans.api';
+import { useAuthStore } from '../../store/auth.store';
 import { useTheme } from '../../hooks/useTheme';
 import { formatCurrency, formatDate } from '../../utils/format';
 import type { Loan } from '../../types';
@@ -16,6 +17,7 @@ export function ContractScreen({ route, navigation }: ContractProps) {
   const insets = useSafeAreaInsets();
   const { loanId } = route.params;
   const { colors } = useTheme();
+  const user = useAuthStore((s) => s.user);
   const [loan, setLoan] = useState<Loan | null>(null);
   const [schedule, setSchedule] = useState<{ period: number; due_date: string; amount: number; status: string }[]>([]);
   const [contract, setContract] = useState<{ pdf_url?: string; contract_number?: string } | null>(null);
@@ -67,8 +69,8 @@ export function ContractScreen({ route, navigation }: ContractProps) {
 
   if (fetching || !loan) {
     return (
-      <View className="flex-1 bg-cream items-center justify-center">
-        <ActivityIndicator size="large" color={Colors.primary} />
+      <View className="flex-1 items-center justify-center" style={{ backgroundColor: colors.background }}>
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
@@ -87,124 +89,147 @@ export function ContractScreen({ route, navigation }: ContractProps) {
   }
 
   return (
-    <View className="flex-1 bg-cream">
+    <View className="flex-1" style={{ backgroundColor: colors.background }}>
       {/* Header */}
       <View className="flex-row items-center justify-between px-4" style={{ paddingTop: insets.top + 4 }}>
         <TouchableOpacity onPress={() => navigation.goBack()} className="p-2">
-          <Ionicons name="chevron-back" size={22} color="#800020" />
+          <Ionicons name="chevron-back" size={22} color={colors.primary} />
         </TouchableOpacity>
         <View className="flex-row items-center gap-2">
           <Logo size="small" />
-          <Text className="text-burgundy text-[16px] font-bold" style={{ fontFamily: 'LibreCaslon-Bold' }}>Contrat</Text>
+          <Text className="text-[16px] font-bold" style={{ fontFamily: 'LibreCaslon-Bold', color: colors.primary }}>Contrat</Text>
         </View>
         <View className="w-8" />
       </View>
 
       <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: insets.bottom + 20 }} showsVerticalScrollIndicator={false}>
-        {/* Référence */}
+        {/* Reference */}
         {contract?.contract_number && (
           <View className="mb-4">
-            <Text className="text-[#AAAAAA] text-[11px] uppercase tracking-[1px]">Référence du contrat</Text>
-            <Text className="text-[#222222] text-[14px] font-bold">{contract.contract_number}</Text>
-            <Text className="text-[#AAAAAA] text-[11px] mt-1">Daté d'émission : {new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</Text>
+            <Text className="text-[11px] uppercase tracking-[1px]" style={{ color: colors.textMuted }}>Référence du contrat</Text>
+            <Text className="text-[14px] font-bold" style={{ color: colors.textPrimary }}>{contract.contract_number}</Text>
+            <Text className="text-[11px] mt-1" style={{ color: colors.textMuted }}>Daté d'émission : {new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</Text>
           </View>
         )}
 
-        {/* Le Prêteur */}
+        {/* Le Preteur */}
         <View className="mb-3">
-          <Text className="text-[#AAAAAA] text-[11px] uppercase tracking-[1px] mb-1">Le Prêteur</Text>
-          <Text className="text-[#222222] text-[14px] font-bold">Ya Mi Fintech S.A.</Text>
+          <Text className="text-[11px] uppercase tracking-[1px] mb-1" style={{ color: colors.textMuted }}>Le Prêteur</Text>
+          <Text className="text-[14px] font-bold" style={{ color: colors.textPrimary }}>{user?.fullname || 'Prêteur'}</Text>
+          {user?.phone && <Text className="text-[12px]" style={{ color: colors.textSecondary }}>{user.phone}</Text>}
         </View>
 
         {/* L'Emprunteur */}
         <View className="mb-5">
-          <Text className="text-[#AAAAAA] text-[11px] uppercase tracking-[1px] mb-1">L'Emprunteur</Text>
-          <Text className="text-[#222222] text-[14px] font-bold">{borrowerName}</Text>
-          {loan.borrower?.phone && <Text className="text-[#888888] text-[12px]">{loan.borrower.phone}</Text>}
-          {loan.borrower?.address && <Text className="text-[#888888] text-[12px]">{loan.borrower.address}</Text>}
+          <Text className="text-[11px] uppercase tracking-[1px] mb-1" style={{ color: colors.textMuted }}>L'Emprunteur</Text>
+          <Text className="text-[14px] font-bold" style={{ color: colors.textPrimary }}>{borrowerName}</Text>
+          {loan.borrower?.phone && <Text className="text-[12px]" style={{ color: colors.textSecondary }}>{loan.borrower.phone}</Text>}
+          {loan.borrower?.address && <Text className="text-[12px]" style={{ color: colors.textSecondary }}>{loan.borrower.address}</Text>}
         </View>
 
-        {/* Montant / Taux / Durée en gros */}
+        {/* Montant / Taux / Duree en gros */}
         <View className="items-center mb-2">
-          <Text className="text-[#AAAAAA] text-[11px] uppercase tracking-[1px]">Montant du Principal</Text>
-          <Text className="text-[#222222] text-[32px] font-bold">{formatCurrency(amount)}</Text>
+          <Text className="text-[11px] uppercase tracking-[1px]" style={{ color: colors.textMuted }}>Montant du Principal</Text>
+          <Text className="text-[32px] font-bold" style={{ color: colors.textPrimary }}>{formatCurrency(amount)}</Text>
         </View>
         <View className="flex-row justify-center gap-6 mb-5">
-          <View className="items-center border border-[#E8E4DC] rounded-[10px] px-4 py-2">
-            <Text className="text-[#AAAAAA] text-[10px] uppercase">Taux Annuel</Text>
-            <Text className="text-[#222222] text-[18px] font-bold">{rate}%</Text>
+          <View className="items-center rounded-[10px] px-4 py-2" style={{ borderColor: colors.borderLight, borderWidth: 1 }}>
+            <Text className="text-[10px] uppercase" style={{ color: colors.textMuted }}>Taux Annuel</Text>
+            <Text className="text-[18px] font-bold" style={{ color: colors.textPrimary }}>{rate}%</Text>
           </View>
-          <View className="items-center border border-[#E8E4DC] rounded-[10px] px-4 py-2">
-            <Text className="text-[#AAAAAA] text-[10px] uppercase">Durée du Prêt</Text>
-            <Text className="text-[#222222] text-[18px] font-bold">{loan.duration} Mois</Text>
+          <View className="items-center rounded-[10px] px-4 py-2" style={{ borderColor: colors.borderLight, borderWidth: 1 }}>
+            <Text className="text-[10px] uppercase" style={{ color: colors.textMuted }}>Durée du Prêt</Text>
+            <Text className="text-[18px] font-bold" style={{ color: colors.textPrimary }}>{loan.duration} Mois</Text>
           </View>
         </View>
 
-        {/* Échéancier */}
-        <Text className="text-[#222222] text-[16px] font-bold mb-3">Échéancier de Remboursement</Text>
+        {/* Echeancier */}
+        <Text className="text-[16px] font-bold mb-3" style={{ color: colors.textPrimary }}>Échéancier de Remboursement</Text>
         <Card className="p-0 overflow-hidden mb-2">
           {/* Header */}
-          <View className="flex-row bg-cream px-4 py-2.5 border-b border-[#E8E4DC]">
-            <Text className="text-[#AAAAAA] text-[11px] font-bold w-[70px]">Date</Text>
-            <Text className="text-[#AAAAAA] text-[11px] font-bold flex-1 text-center">Principal</Text>
-            <Text className="text-[#AAAAAA] text-[11px] font-bold flex-1 text-center">Intérêts</Text>
-            <Text className="text-[#AAAAAA] text-[11px] font-bold flex-1 text-right">Total Mensuel</Text>
+          <View className="flex-row px-4 py-2.5" style={{ backgroundColor: colors.background, borderBottomColor: colors.borderLight, borderBottomWidth: 1 }}>
+            <Text className="text-[11px] font-bold w-[70px]" style={{ color: colors.textMuted }}>Date</Text>
+            <Text className="text-[11px] font-bold flex-1 text-center" style={{ color: colors.textMuted }}>Principal</Text>
+            <Text className="text-[11px] font-bold flex-1 text-center" style={{ color: colors.textMuted }}>Intérêts</Text>
+            <Text className="text-[11px] font-bold flex-1 text-right" style={{ color: colors.textMuted }}>Total Mensuel</Text>
           </View>
           {displaySchedule.map((item, i) => (
-            <View key={i} className={`flex-row items-center px-4 py-3 ${i < displaySchedule.length - 1 ? 'border-b border-[#E8E4DC]' : ''}`}>
-              <Text className="text-[#222222] text-[12px] w-[70px]">{formatDate(item.due_date)}</Text>
-              <Text className="text-[#222222] text-[12px] flex-1 text-center">{formatCurrency(amount / loan.duration)}</Text>
-              <Text className="text-[#222222] text-[12px] flex-1 text-center">{formatCurrency(interest / loan.duration)}</Text>
-              <Text className="text-burgundy text-[12px] font-bold flex-1 text-right">{formatCurrency(monthly)}</Text>
+            <View key={i} className="flex-row items-center px-4 py-3" style={i < displaySchedule.length - 1 ? { borderBottomColor: colors.borderLight, borderBottomWidth: 1 } : undefined}>
+              <Text className="text-[12px] w-[70px]" style={{ color: colors.textPrimary }}>{formatDate(item.due_date)}</Text>
+              <Text className="text-[12px] flex-1 text-center" style={{ color: colors.textPrimary }}>{formatCurrency(amount / loan.duration)}</Text>
+              <Text className="text-[12px] flex-1 text-center" style={{ color: colors.textPrimary }}>{formatCurrency(interest / loan.duration)}</Text>
+              <Text className="text-[12px] font-bold flex-1 text-right" style={{ color: colors.primary }}>{formatCurrency(monthly)}</Text>
             </View>
           ))}
         </Card>
         {schedule.length > 3 && (
           <TouchableOpacity onPress={() => setShowFullSchedule(!showFullSchedule)} className="items-center mb-5">
-            <Text className="text-burgundy text-[13px] underline">
+            <Text className="text-[13px] underline" style={{ color: colors.primary }}>
               {showFullSchedule ? 'Masquer' : 'Voir tout l\'échéancier'}
             </Text>
           </TouchableOpacity>
         )}
 
         {/* Termes */}
-        <Text className="text-[#222222] text-[14px] font-bold mb-2">Termes et Conditions</Text>
-        <Text className="text-[#888888] text-[12px] leading-[18px] mb-1">
+        <Text className="text-[14px] font-bold mb-2" style={{ color: colors.textPrimary }}>Termes et Conditions</Text>
+        <Text className="text-[12px] leading-[18px] mb-1" style={{ color: colors.textSecondary }}>
           1. <Text className="font-bold">Engagement de remboursement :</Text> L'emprunteur s'engage irrévocablement à rembourser le montant total du prêt, incluant les intérêts et frais, selon l'échéancier défini ci-dessus.
         </Text>
-        <Text className="text-[#888888] text-[12px] leading-[18px] mb-5">
+        <Text className="text-[12px] leading-[18px] mb-5" style={{ color: colors.textSecondary }}>
           2. <Text className="font-bold">Retards de paiement :</Text> Tout retard entraînera des frais supplémentaires.
         </Text>
 
         {/* Signatures */}
-        <View className="flex-row justify-between mb-6">
-          <View className="flex-1 mr-3">
-            <Text className="text-[#AAAAAA] text-[11px] mb-2">Signature du Prêteur (Ya Mi)</Text>
-            <View className="border border-[#E8E4DC] rounded-[10px] py-4 items-center bg-cream">
-              <Ionicons name="checkmark-circle" size={20} color="#2D6A4F" />
-              <Text className="text-[#2D6A4F] text-[10px] mt-1 font-bold uppercase">Approuvé par système</Text>
+        <Text className="text-[14px] font-bold mb-3" style={{ color: colors.textPrimary }}>Signatures</Text>
+
+        {/* Signature du Preteur */}
+        <View className="mb-4">
+          <View className="rounded-[10px] p-4" style={{ borderColor: colors.borderLight, borderWidth: 1, backgroundColor: colors.background }}>
+            <Text className="text-[12px] leading-[18px] mb-3" style={{ color: colors.textSecondary }}>
+              Je soussigné(e), <Text style={{ fontWeight: 'bold', color: colors.textPrimary }}>{user?.fullname || 'Prêteur'}</Text>, déclare accorder un prêt d'un montant de{' '}
+              <Text style={{ fontWeight: 'bold', color: colors.textPrimary }}>{formatCurrency(amount)}</Text> à{' '}
+              <Text style={{ fontWeight: 'bold', color: colors.textPrimary }}>{borrowerName}</Text>, aux conditions définies dans le présent contrat.
+              Je m'engage à respecter les termes de cet accord.
+            </Text>
+            <View className="pt-3 items-center" style={{ borderTopColor: colors.borderLight, borderTopWidth: 1 }}>
+              <Text className="text-[10px] uppercase tracking-[1px] mb-1" style={{ color: colors.textMuted }}>Signature du Prêteur</Text>
+              <Text className="text-[16px] font-bold" style={{ fontFamily: 'LibreCaslon', color: colors.textPrimary }}>{user?.fullname || 'Prêteur'}</Text>
+              <Text className="text-[10px] mt-1" style={{ color: colors.textMuted }}>
+                Signé le {new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+              </Text>
             </View>
           </View>
-          <View className="flex-1 ml-3">
-            <Text className="text-[#AAAAAA] text-[11px] mb-2">Signature de l'Emprunteur</Text>
-            <View className="border border-[#E8E4DC] rounded-[10px] py-4 items-center bg-white">
-              <Text className="text-[#222222] text-[16px] font-bold" style={{ fontFamily: 'LibreCaslon' }}>{borrowerName}</Text>
+        </View>
+
+        {/* Signature de l'Emprunteur */}
+        <View className="mb-6">
+          <View className="rounded-[10px] p-4" style={{ borderColor: colors.borderLight, borderWidth: 1, backgroundColor: colors.surface }}>
+            <Text className="text-[12px] leading-[18px] mb-3" style={{ color: colors.textSecondary }}>
+              Je soussigné(e), <Text style={{ fontWeight: 'bold', color: colors.textPrimary }}>{borrowerName}</Text>, reconnais avoir reçu un prêt d'un montant de{' '}
+              <Text style={{ fontWeight: 'bold', color: colors.textPrimary }}>{formatCurrency(amount)}</Text> de la part de{' '}
+              <Text style={{ fontWeight: 'bold', color: colors.textPrimary }}>{user?.fullname || 'Prêteur'}</Text>.
+              Je m'engage à rembourser la totalité du montant dû, soit{' '}
+              <Text style={{ fontWeight: 'bold', color: colors.textPrimary }}>{formatCurrency(total)}</Text>, selon l'échéancier prévu.
+            </Text>
+            <View className="pt-3 items-center" style={{ borderTopColor: colors.borderLight, borderTopWidth: 1 }}>
+              <Text className="text-[10px] uppercase tracking-[1px] mb-1" style={{ color: colors.textMuted }}>Signature de l'Emprunteur</Text>
+              <Text className="text-[16px] font-bold" style={{ fontFamily: 'LibreCaslon', color: colors.textPrimary }}>{borrowerName}</Text>
             </View>
           </View>
         </View>
 
         {/* Boutons */}
         {loading ? (
-          <ActivityIndicator size="large" color={Colors.primary} className="my-4" />
+          <ActivityIndicator size="large" color={colors.primary} className="my-4" />
         ) : (
           <View className="gap-3">
             <TouchableOpacity onPress={handleDownload} className="bg-burgundy rounded-[12px] py-4 flex-row items-center justify-center" activeOpacity={0.8}>
               <Ionicons name="download-outline" size={18} color="#FFFFFF" />
               <Text className="text-white text-[15px] font-bold ml-2">Télécharger le PDF</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleShareWhatsApp} className="border border-[#E8E4DC] bg-white rounded-[12px] py-4 flex-row items-center justify-center" activeOpacity={0.8}>
+            <TouchableOpacity onPress={handleShareWhatsApp} className="rounded-[12px] py-4 flex-row items-center justify-center" style={{ borderColor: colors.borderLight, borderWidth: 1, backgroundColor: colors.surface }} activeOpacity={0.8}>
               <Ionicons name="logo-whatsapp" size={18} color="#25D366" />
-              <Text className="text-[#222222] text-[15px] font-bold ml-2">Partager via WhatsApp</Text>
+              <Text className="text-[15px] font-bold ml-2" style={{ color: colors.textPrimary }}>Partager via WhatsApp</Text>
             </TouchableOpacity>
           </View>
         )}
