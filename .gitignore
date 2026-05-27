@@ -2,12 +2,11 @@
 backend/node_modules
 mobile/node_modules
 node_modules/
-backend/.env
-mobile/.env
+
 # Environment variables and secrets
-.env
-.env.local
-.env.*.local
+**/.env
+**/.env.local
+**/.env.*.local
 gcp_credentials.json
 credentials.json
 
@@ -35,3 +34,6 @@ yarn-debug.log*
 # Misc
 .cache/
 .parcel-cache/
+
+# Claude settings
+**/.claude/

@@ -5,7 +5,8 @@
       "Bash(while read:*)",
       "Bash(do grep:*)",
       "Bash(done)",
-      "Bash(npx expo:*)"
+      "Bash(npx expo:*)",
+      "Bash(npm install:*)"
     ]
   }
 }
