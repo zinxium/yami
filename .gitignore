@@ -2,7 +2,7 @@
 backend/node_modules
 mobile/node_modules
 node_modules/
-
+_Docs/
 # Environment variables and secrets
 **/.env
 **/.env.local
