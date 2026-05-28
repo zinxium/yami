@@ -1,0 +1,7 @@
+{
+  "default": true,
+  "line-length": 120,
+  "no-hard-tabs": true,
+  "proper-names": true,
+  "trim-trailing-punctuation": false
+}

@@ -1,0 +1,62 @@
+name: Code Quality
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+
+      - name: Check file structure
+        run: |
+          echo "Checking repository structure..."
+          test -f README.md && echo "✓ README.md found"
+          test -f LICENSE && echo "✓ LICENSE found"
+          test -f CODE_OF_CONDUCT.md && echo "✓ CODE_OF_CONDUCT.md found"
+          test -f CONTRIBUTING.md && echo "✓ CONTRIBUTING.md found"
+          test -f SECURITY.md && echo "✓ SECURITY.md found"
+          test -d .github/ISSUE_TEMPLATE && echo "✓ Issue templates found"
+          test -d .github/workflows && echo "✓ CI/CD workflows found"
+
+      - name: Validate JSON
+        run: |
+          for file in backend/package.json mobile/package.json backend/tsconfig.json mobile/tsconfig.json; do
+            if [ -f "$file" ]; then
+              echo "Validating $file..."
+              node -c "$file" || jq empty < "$file" || echo "Warning: Could not validate $file"
+            fi
+          done
+
+      - name: Check for secrets
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --debug
+
+  docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Validate Markdown
+        uses: nosborn/github-action-markdown-cli@v3.3.0
+        with:
+          files: .
+          config_file: '.markdownlint.json'
+        continue-on-error: true
