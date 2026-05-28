@@ -10,6 +10,8 @@ on:
     branches: [main, develop]
     paths:
       - 'backend/**'
+  schedule:
+    - cron: '0 */2 * * *'
 
 jobs:
   test:
