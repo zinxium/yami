@@ -30,6 +30,7 @@
     "home": "Accueil",
     "loans": "Prêts",
     "pay": "Payer",
+    "analytics": "Analyse",
     "profile": "Profil"
   },
   "onboarding": {
@@ -301,6 +302,20 @@
   "loanCard": {
     "borrower": "Emprunteur",
     "end": "Fin"
+  },
+  "analytics": {
+    "title": "Analyse & Statistiques",
+    "subtitle": "Vue d'ensemble de votre activit\u00e9 de pr\u00eats",
+    "totalLent": "Total pr\u00eat\u00e9",
+    "totalRepaid": "Total rembours\u00e9",
+    "remaining": "Reste \u00e0 recevoir",
+    "avgLoan": "Pr\u00eat moyen",
+    "recoveryRate": "Taux de recouvrement",
+    "avgRate": "Taux d'int\u00e9r\u00eat moyen",
+    "distribution": "R\u00e9partition des pr\u00eats",
+    "monthlyActivity": "Activit\u00e9 mensuelle",
+    "topBorrowers": "Principaux emprunteurs",
+    "loans": "pr\u00eat(s)"
   },
   "relations": {
     "friend": "Ami(e)",

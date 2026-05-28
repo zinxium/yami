@@ -23,6 +23,7 @@ export type MainTabParamList = {
   HomeTab: NavigatorScreenParams<HomeStackParamList>;
   LoansTab: NavigatorScreenParams<LoansStackParamList>;
   PayTab: undefined;
+  AnalyticsTab: undefined;
   ProfileTab: undefined;
 };
 

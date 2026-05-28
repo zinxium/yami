@@ -7,16 +7,18 @@ import { useTheme } from '../hooks/useTheme';
 import { HomeStack } from './HomeStack';
 import { LoansStack } from './LoansStack';
 import { PayScreen } from '../screens/payments/PayScreen';
+import { AnalyticsScreen } from '../screens/analytics/AnalyticsScreen';
 import { ProfileScreen } from '../screens/auth/ProfileScreen';
 import type { MainTabParamList } from './types';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
 const TAB_ICONS: Record<keyof MainTabParamList, { active: keyof typeof Ionicons.glyphMap; inactive: keyof typeof Ionicons.glyphMap }> = {
-  HomeTab:    { active: 'home',          inactive: 'home-outline' },
-  LoansTab:   { active: 'document-text', inactive: 'document-text-outline' },
-  PayTab:     { active: 'card',          inactive: 'card-outline' },
-  ProfileTab: { active: 'person',        inactive: 'person-outline' },
+  HomeTab:      { active: 'home',           inactive: 'home-outline' },
+  LoansTab:     { active: 'document-text',  inactive: 'document-text-outline' },
+  PayTab:       { active: 'card',           inactive: 'card-outline' },
+  AnalyticsTab: { active: 'stats-chart',    inactive: 'stats-chart-outline' },
+  ProfileTab:   { active: 'person',         inactive: 'person-outline' },
 };
 
 export function MainTabs() {
@@ -28,6 +30,7 @@ export function MainTabs() {
     HomeTab: t('tabs.home'),
     LoansTab: t('tabs.loans'),
     PayTab: t('tabs.pay'),
+    AnalyticsTab: t('tabs.analytics'),
     ProfileTab: t('tabs.profile'),
   };
 
@@ -65,6 +68,7 @@ export function MainTabs() {
       <Tab.Screen name="HomeTab" component={HomeStack} />
       <Tab.Screen name="LoansTab" component={LoansStack} />
       <Tab.Screen name="PayTab" component={PayScreen} />
+      <Tab.Screen name="AnalyticsTab" component={AnalyticsScreen} />
       <Tab.Screen name="ProfileTab" component={ProfileScreen} />
     </Tab.Navigator>
   );

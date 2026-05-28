@@ -30,6 +30,7 @@
     "home": "Home",
     "loans": "Loans",
     "pay": "Pay",
+    "analytics": "Analytics",
     "profile": "Profile"
   },
   "onboarding": {
@@ -301,6 +302,20 @@
   "loanCard": {
     "borrower": "Borrower",
     "end": "End"
+  },
+  "analytics": {
+    "title": "Analytics & Statistics",
+    "subtitle": "Overview of your lending activity",
+    "totalLent": "Total lent",
+    "totalRepaid": "Total repaid",
+    "remaining": "Remaining",
+    "avgLoan": "Avg. loan",
+    "recoveryRate": "Recovery rate",
+    "avgRate": "Avg. interest rate",
+    "distribution": "Loan distribution",
+    "monthlyActivity": "Monthly activity",
+    "topBorrowers": "Top borrowers",
+    "loans": "loan(s)"
   },
   "relations": {
     "friend": "Friend",
