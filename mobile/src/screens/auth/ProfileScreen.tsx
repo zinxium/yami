@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, Alert, ScrollView } from 'react-native';
+import { View, Text, Alert, ScrollView, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { documentDirectory, downloadAsync } from 'expo-file-system/legacy';
@@ -16,6 +17,7 @@ const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://yami-production.up.r
 export function ProfileScreen() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation<any>();
   const { user, logout } = useAuthStore();
   const { isDarkMode, toggleDarkMode, colors } = useTheme();
 
@@ -76,6 +78,19 @@ export function ProfileScreen() {
 
         {/* Settings */}
         <View style={{ paddingHorizontal: 20, gap: 12 }}>
+          <TouchableOpacity
+            onPress={() => navigation.getParent()?.navigate('Borrowers')}
+            activeOpacity={0.7}
+          >
+            <Card className="flex-row items-center">
+              <Ionicons name="people-outline" size={20} color={colors.primary} />
+              <Text style={{ color: colors.textPrimary, fontSize: 15, marginLeft: 12, flex: 1 }}>
+                {t('profile.borrowers')}
+              </Text>
+              <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
+            </Card>
+          </TouchableOpacity>
+
           <Card className="flex-row items-center">
             <Ionicons name="document-text-outline" size={20} color={colors.primary} />
             <Text style={{ color: colors.textPrimary, fontSize: 15, marginLeft: 12, flex: 1 }}>

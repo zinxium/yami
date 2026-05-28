@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, Alert, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, Alert, ActivityIndicator, TouchableOpacity, Image } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { documentDirectory, downloadAsync } from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
-import { ScreenHeader, Card, Avatar, Logo } from '../../components/common';
-import { api } from '../../api/client';
+import { Card, Logo } from '../../components/common';
 import { loansApi } from '../../api/loans.api';
+import { contractsApi, Contract } from '../../api/contracts.api';
 import { useAuthStore } from '../../store/auth.store';
 import { useTheme } from '../../hooks/useTheme';
 import { formatCurrency, formatDate } from '../../utils/format';
@@ -20,8 +20,9 @@ export function ContractScreen({ route, navigation }: ContractProps) {
   const user = useAuthStore((s) => s.user);
   const [loan, setLoan] = useState<Loan | null>(null);
   const [schedule, setSchedule] = useState<{ period: number; due_date: string; amount: number; status: string }[]>([]);
-  const [contract, setContract] = useState<{ pdf_url?: string; contract_number?: string } | null>(null);
+  const [contract, setContract] = useState<Contract | null>(null);
   const [loading, setLoading] = useState(false);
+  const [signing, setSigning] = useState(false);
   const [fetching, setFetching] = useState(true);
   const [showFullSchedule, setShowFullSchedule] = useState(false);
 
@@ -29,9 +30,11 @@ export function ContractScreen({ route, navigation }: ContractProps) {
     Promise.all([
       loansApi.getById(loanId),
       loansApi.getSchedule(loanId),
-    ]).then(([l, s]) => {
+      contractsApi.getByLoanId(loanId),
+    ]).then(([l, s, c]) => {
       setLoan(l);
       setSchedule(s);
+      if (c) setContract(c);
       setFetching(false);
     }).catch(() => setFetching(false));
   }, [loanId]);
@@ -39,12 +42,37 @@ export function ContractScreen({ route, navigation }: ContractProps) {
   const handleGenerate = async () => {
     setLoading(true);
     try {
-      const result = await api.post<{ pdf_url: string; contract_number: string }>('/api/contracts/generate', { loan_id: loanId });
+      const result = await contractsApi.generate(loanId);
       setContract(result);
     } catch (e: unknown) {
       Alert.alert('Erreur', e instanceof Error ? e.message : 'Erreur inconnue');
     }
     setLoading(false);
+  };
+
+  const handleSign = async () => {
+    if (!contract) return;
+    Alert.alert(
+      'Confirmer la signature',
+      'En signant ce contrat, vous confirmez que les deux parties ont accepté les termes. Cette action est irréversible.',
+      [
+        { text: 'Annuler', style: 'cancel' },
+        {
+          text: 'Signer',
+          style: 'destructive',
+          onPress: async () => {
+            setSigning(true);
+            try {
+              const updated = await contractsApi.sign(contract.id);
+              setContract(updated);
+            } catch (e: unknown) {
+              Alert.alert('Erreur', e instanceof Error ? e.message : 'Erreur inconnue');
+            }
+            setSigning(false);
+          },
+        },
+      ],
+    );
   };
 
   const handleDownload = async () => {
@@ -103,12 +131,34 @@ export function ContractScreen({ route, navigation }: ContractProps) {
       </View>
 
       <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: insets.bottom + 20 }} showsVerticalScrollIndicator={false}>
-        {/* Reference */}
+        {/* Reference + Signed status */}
         {contract?.contract_number && (
           <View className="mb-4">
-            <Text className="text-[11px] uppercase tracking-[1px]" style={{ color: colors.textMuted }}>Référence du contrat</Text>
-            <Text className="text-[14px] font-bold" style={{ color: colors.textPrimary }}>{contract.contract_number}</Text>
-            <Text className="text-[11px] mt-1" style={{ color: colors.textMuted }}>Daté d'émission : {new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</Text>
+            <View className="flex-row items-center justify-between">
+              <View>
+                <Text className="text-[11px] uppercase tracking-[1px]" style={{ color: colors.textMuted }}>Référence du contrat</Text>
+                <Text className="text-[14px] font-bold" style={{ color: colors.textPrimary }}>{contract.contract_number}</Text>
+              </View>
+              <View
+                className="flex-row items-center rounded-full px-3 py-1.5"
+                style={{ backgroundColor: contract.signed ? '#E8F5E8' : '#FFF5E5' }}
+              >
+                <Ionicons
+                  name={contract.signed ? 'checkmark-circle' : 'time-outline'}
+                  size={14}
+                  color={contract.signed ? '#2D6A4F' : '#7A5F00'}
+                />
+                <Text
+                  className="text-[11px] font-bold ml-1"
+                  style={{ color: contract.signed ? '#2D6A4F' : '#7A5F00' }}
+                >
+                  {contract.signed ? 'Signé' : 'En attente'}
+                </Text>
+              </View>
+            </View>
+            <Text className="text-[11px] mt-1" style={{ color: colors.textMuted }}>
+              Date d'émission : {new Date(contract.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+            </Text>
           </View>
         )}
 
@@ -218,11 +268,44 @@ export function ContractScreen({ route, navigation }: ContractProps) {
           </View>
         </View>
 
+        {/* QR Code */}
+        {contract?.qr_code && (
+          <View className="items-center mb-6">
+            <Text className="text-[11px] uppercase tracking-[1px] mb-3" style={{ color: colors.textMuted }}>QR Code de vérification</Text>
+            <View className="rounded-[12px] p-4" style={{ backgroundColor: '#FFFFFF', borderColor: colors.borderLight, borderWidth: 1 }}>
+              <Image source={{ uri: contract.qr_code }} style={{ width: 160, height: 160 }} />
+            </View>
+            <Text className="text-[11px] mt-2 text-center" style={{ color: colors.textMuted }}>
+              Scannez ce code pour vérifier l'authenticité du contrat
+            </Text>
+          </View>
+        )}
+
         {/* Boutons */}
         {loading ? (
           <ActivityIndicator size="large" color={colors.primary} className="my-4" />
         ) : (
           <View className="gap-3">
+            {/* Bouton signer — visible seulement si pas encore signé */}
+            {contract && !contract.signed && (
+              <TouchableOpacity
+                onPress={handleSign}
+                disabled={signing}
+                className="rounded-[12px] py-4 flex-row items-center justify-center"
+                style={{ backgroundColor: '#2D6A4F' }}
+                activeOpacity={0.8}
+              >
+                {signing ? (
+                  <ActivityIndicator size="small" color="#FFFFFF" />
+                ) : (
+                  <>
+                    <Ionicons name="create-outline" size={18} color="#FFFFFF" />
+                    <Text className="text-white text-[15px] font-bold ml-2">Signer le contrat</Text>
+                  </>
+                )}
+              </TouchableOpacity>
+            )}
+
             <TouchableOpacity onPress={handleDownload} className="bg-burgundy rounded-[12px] py-4 flex-row items-center justify-center" activeOpacity={0.8}>
               <Ionicons name="download-outline" size={18} color="#FFFFFF" />
               <Text className="text-white text-[15px] font-bold ml-2">Télécharger le PDF</Text>

@@ -92,6 +92,7 @@
     "subtitle": "Gestion de prêts personnels"
   },
   "profile": {
+    "borrowers": "Mes emprunteurs",
     "exportData": "Exporter mes données",
     "excel": "Excel",
     "darkMode": "Mode sombre",

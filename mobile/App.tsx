@@ -17,9 +17,12 @@ import {
   PlusJakartaSans_700Bold,
 } from '@expo-google-fonts/plus-jakarta-sans';
 import { RootNavigator } from './src/navigation/RootNavigator';
+import { navigationRef } from './src/navigation/navigationRef';
 import { OfflineBanner } from './src/components/common';
 import { useNetworkStore } from './src/store/network.store';
+import { useAuthStore } from './src/store/auth.store';
 import { syncAll } from './src/services/sync.service';
+import { registerForPushNotifications, addNotificationResponseListener } from './src/services/notifications.service';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -51,6 +54,27 @@ export default function App() {
     }
   }, [isConnected]);
 
+  // Register for push notifications when authenticated
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  useEffect(() => {
+    if (isAuthenticated) {
+      registerForPushNotifications();
+    }
+  }, [isAuthenticated]);
+
+  // Handle notification tap → navigate to loan detail
+  useEffect(() => {
+    const subscription = addNotificationResponseListener((loanId) => {
+      if (loanId && navigationRef.isReady()) {
+        navigationRef.navigate('Main', {
+          screen: 'HomeTab',
+          params: { screen: 'LoanDetail', params: { loanId } },
+        });
+      }
+    });
+    return () => subscription.remove();
+  }, []);
+
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
       await SplashScreen.hideAsync();
@@ -62,7 +86,7 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <View className="flex-1" onLayout={onLayoutRootView}>
-        <NavigationContainer>
+        <NavigationContainer ref={navigationRef}>
           <StatusBar style="auto" />
           <OfflineBanner />
           <RootNavigator />

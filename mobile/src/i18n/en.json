@@ -92,6 +92,7 @@
     "subtitle": "Personal loan management"
   },
   "profile": {
+    "borrowers": "My borrowers",
     "exportData": "Export my data",
     "excel": "Excel",
     "darkMode": "Dark mode",
