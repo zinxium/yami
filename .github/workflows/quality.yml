@@ -42,13 +42,24 @@ jobs:
             fi
           done
 
-      - name: Check for secrets
+      - name: Check for secrets (PR)
+        if: github.event_name == 'pull_request'
         uses: trufflesecurity/trufflehog@main
         with:
           path: ./
-          base: ${{ github.event.repository.default_branch }}
-          head: HEAD
+          base: ${{ github.event.pull_request.base.sha }}
+          head: ${{ github.event.pull_request.head.sha }}
           extra_args: --debug
+
+      - name: Check for secrets (push/schedule)
+        if: github.event_name != 'pull_request'
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.before || github.sha }}
+          head: ${{ github.sha }}
+          extra_args: --debug
+        continue-on-error: true
 
   docs:
     runs-on: ubuntu-latest
